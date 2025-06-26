@@ -6,7 +6,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import BtnToTop from '@/components/button/BtnToTop'
 
 const AuthenticationLayout = ({
-    title = '@adityarizqiardhana - Me Site',
+    title = 'Masuk - Seleksi Tenaga Teknis Operasional Amdalnet',
     children = '',
 }) => {
     return (
