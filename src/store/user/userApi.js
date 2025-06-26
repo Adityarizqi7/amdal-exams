@@ -1,0 +1,21 @@
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { customBaseQuery } from "../../utils/customFetch";
+
+export const userApi = createApi({
+    reducerPath: "userApi",
+    baseQuery: customBaseQuery,
+    tagTypes: ["User"],
+    endpoints: (builder) => ({
+        getExam: builder.query({
+            query: () => ({
+                url: "exam",
+                method: "GET",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["User"],
+        })
+    }),
+});
+export const {
+    useLazyGetExamQuery
+} = userApi;

@@ -1,19 +1,25 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 // import { ThemeProvider } from "@material-tailwind/react";
 
-import './index.css'
-import App from './App'
+import "./custom.css"
+import "./index.css";
+import App from "./App";
+import store from "./store";
+import GlobalProvider from "./context/GlobalProvider";
+import { Provider } from "react-redux";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
-        {/* <ThemeProvider> */}
-          <App />
-        {/* </ThemeProvider> */}
-    </BrowserRouter>
-)
-
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <Provider store={store}>
+        <GlobalProvider>
+            <BrowserRouter>
+                {/* <ThemeProvider> */}
+                <App />
+                {/* </ThemeProvider> */}
+            </BrowserRouter>
+        </GlobalProvider>
+    </Provider>
+);
 
 // import { StrictMode } from 'react'
 // import { createRoot } from 'react-dom/client'
