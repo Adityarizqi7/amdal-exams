@@ -1,7 +1,27 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Outlet } from "react-router-dom";
+import QuizSideBar from "../components/Quiz/Sidebar";
+import QuizNavbar from "../components/Quiz/Navbar";
+import { useDispatch } from "react-redux";
+import { setOnline } from "../store/inet/inetSlice";
+import { useEffect } from "react";
 
 const QuizLayout = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const handleOnline = () => dispatch(setOnline(true))
+        const handleOffline = () => dispatch(setOnline(false))
+
+        window.addEventListener("online", handleOnline)
+        window.addEventListener("offline", handleOffline)
+
+        return () => {
+            window.removeEventListener("online", handleOnline)
+            window.removeEventListener("offline", handleOffline)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }}, [])
+
     return (
         <>
             <HelmetProvider>
@@ -31,8 +51,10 @@ const QuizLayout = () => {
                 </Helmet>
             </HelmetProvider>
             <>
+                <QuizNavbar/>
+                <QuizSideBar />
                 <div className="relative w-[100svw] min-h-[100svh] bg-[#017bff] flex justify-center items-center">
-                  <Outlet/>
+                    <Outlet/>
                 </div>
             </>
         </>

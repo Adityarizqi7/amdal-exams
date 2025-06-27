@@ -1,6 +1,5 @@
-import { Routes, Route } from 'react-router-dom'
-
-import Home from '../pages/Home'
+import { Routes, Route } from "react-router-dom";
+import Home from "../pages/Home";
 
 // Authentication
 import Login from '../pages/Authentication/Login'
@@ -20,7 +19,7 @@ export default function Router() {
             <Route path='quiz' element={<QuizLayout />}>
                 <Route index element={<Ready />}/>
             </Route>
-            {/* <Route path='*' element={<NotFound />} /> */}
+            <Route path='*' element={"Not Found"} />
         </Routes>
     )
 }

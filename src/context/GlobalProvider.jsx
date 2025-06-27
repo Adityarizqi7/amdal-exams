@@ -13,8 +13,6 @@ const GlobalProvider = ({ children }) => {
     const exam = useSelector((state) => state.user.exam);
     const dispatch = useDispatch();
 
-    // const [fetchGetExam] = useLazyGetExamQuery();
-
     const handleLogout = () => {
         dispatch(logout());
         clearAuth();
@@ -22,13 +20,6 @@ const GlobalProvider = ({ children }) => {
 
     useEffect(() => {
         // logic fetching exam jika perlu
-        dispatch(
-            setUserDetails({
-                id: 19,
-                username: "guni",
-                exam: "programmer",
-            })
-        );
     }, [user, exam, dispatch]);
 
     return (

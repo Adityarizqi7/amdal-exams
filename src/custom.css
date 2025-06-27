@@ -59,3 +59,24 @@ p {
   color: #ffff;
   background-color: #4154be;
 }
+
+@keyframes shake {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-1deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
+  75% {
+    transform: rotate(-1deg);
+  }
+}
+
+.shake {
+  animation: shake 1s ease-in-out infinite;
+}
+
+

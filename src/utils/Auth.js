@@ -17,9 +17,9 @@ export const getRefreshToken = () => {
     return Cookies.get('refresh_token')
 }
 
-export const setToken = (access_token, refresh_token) => {
+export const setToken = (access_token) => {
     Cookies.set('access_token', access_token)
-    Cookies.set('refresh_token', refresh_token)
+    // Cookies.set('refresh_token', refresh_token)
 }
 export const clearAuth = () => {
     Cookies.remove('access_token')

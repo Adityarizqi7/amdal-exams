@@ -7,10 +7,10 @@ export const authApi = createApi({
     tagTypes: ["Auth"],
     endpoints: (builder) => ({
         login: builder.mutation({
-            query: ({ username, password }) =>({
-                url: "auth/login",
+            query: ({ email, password }) =>({
+                url: "login",
                 method: "POST",
-                body: { username, password },
+                body: { email, password },
             }),
             transformResponse(response) {
                 return response;
@@ -18,9 +18,9 @@ export const authApi = createApi({
             },
             invalidatesTags:["Auth"],
         }),
-        whoami: builder.query({
+        me: builder.query({
             query: () => ({
-                url: "auth/whoami",
+                url: "me",
                 method: "GET",
             }),
             transformResponse: (response) => response,
@@ -31,5 +31,5 @@ export const authApi = createApi({
 
 export const {
     useLoginMutation,
-    useWhoamiQuery
+    useMeQuery
 } = authApi;
