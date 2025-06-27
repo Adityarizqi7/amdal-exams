@@ -60,7 +60,7 @@ const QuizLayout = () => {
       <>
         <QuizNavbar />
         <QuizSideBar />
-        <div className="relative w-[100svw] min-h-[100svh] bg-[#017bff] flex justify-center items-center">
+        <div className="relative w-[100svw] min-h-[100svh] bg-green-base flex justify-center items-center">
           <Outlet />
         </div>
       </>

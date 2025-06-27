@@ -9,7 +9,6 @@ import { clearAuth } from "./utils/Auth";
 export default function App() {
     const dispatch = useDispatch();
     const { isLoading, data } = useMeQuery();
-
     useEffect(() => {
         const fetchUser = async () => {
             if (data) {
@@ -22,7 +21,8 @@ export default function App() {
         if (!isLoading) {
             fetchUser(); // Call fetchUser properly
         }
-    }, [data, dispatch, isLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, isLoading]);
 
     return <Outlet />;
     // return <Router />

@@ -32,7 +32,7 @@ const Info = () => {
   return (
     <div className="flex items-center justify-center px-4">
       <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-full max-w-md">
-        <h2 className="text-lg font-bold text-blue-900 mb-4">Informasi Asesmen</h2>
+        <h2 className="text-lg font-bold text-green-base mb-4">Informasi Asesmen</h2>
 
         <div className="text-sm text-gray-800 space-y-2">
           <div>
@@ -73,7 +73,7 @@ const Info = () => {
 
           <button
             onClick={() => setIsOpen(true)}
-            className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all"
+            className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all"
           >
             <PlayCircleIcon className="w-5 h-5" />
             Mulai Asesmen
@@ -117,7 +117,7 @@ const Info = () => {
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="px-4 py-2 rounded-md text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium"
+                  className="px-4 py-2 rounded-md text-sm bg-green-base text-white font-medium"
                 >
                   Ya, Mulai
                 </button>
