@@ -4,6 +4,7 @@ import CONST from "./Constant";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 
 // Function to refresh the access token
+// eslint-disable-next-line no-unused-vars
 const refreshAccessToken = async () => {
     try {
         const refreshToken = getRefreshToken();
@@ -31,7 +32,6 @@ const refreshAccessToken = async () => {
 // Custom baseQuery with refresh logic
 const customBaseQuery = async (args, api, extraOptions) => {
     const token = await getToken();
-    console.log(token, "token Custom")
     let result = await fetchBaseQuery({
         baseUrl: CONST.BASE_URL_API,
         prepareHeaders: async (headers) => {

@@ -9,19 +9,18 @@ const CardBody = () => {
   const activeQuestion = useSelector((state) => state.quiz.activeQuestion);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
   const storedAnswer = useSelector(
-    (state) => state.quiz.answerQuestion?.[activeQuestion?.question?.id]
+    (state) => state.quiz.answerQuestion?.[activeQuestion?.id]
   );
 
   const [listChoice, setListChoice] = useState([]);
 
   useEffect(() => {
     if (!activeQuestion) return;
+    console.log(activeQuestion)
 
-    const { question, choice } = activeQuestion;
-
-    if (question.type === "choice" || question.type === "multiple_choice") {
+    if (activeQuestion.question_type === "choice" || activeQuestion.question_type === "multiple_choice") {
       setListChoice(
-        choice?.map((el) => ({
+        activeQuestion.options?.map((el) => ({
           ...el,
           selected: Array.isArray(storedAnswer)
             ? storedAnswer.includes(el.id)
@@ -30,11 +29,11 @@ const CardBody = () => {
       );
     } 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeQuestion?.question.id]); // refresh on question change
+  }, [activeQuestion?.id]); // refresh on question change
 
   const handleChangeChoice = (index) => {
     const updated = listChoice.map((el, i) => {
-      if (activeQuestion.question.type === "choice") {
+      if (activeQuestion.question_type === "choice") {
         return { ...el, selected: i === index };
       } else {
         return i === index ? { ...el, selected: !el.selected } : el;
@@ -45,8 +44,8 @@ const CardBody = () => {
     const selectedIds = updated.filter((c) => c.selected).map((c) => c.id);
     dispatch(
       setAnswerQuestion({
-        [activeQuestion.question.id]:
-          activeQuestion.question.type === "choice"
+        [activeQuestion.id]:
+          activeQuestion.question_type === "choice"
             ? selectedIds[0]
             : selectedIds,
       })
@@ -58,22 +57,22 @@ const CardBody = () => {
   return (
     <div className="px-4 py-8">
       <p className="font-bold text-xl mb-5">
-        {activeQuestion.question.number}
-        {startQuiz && "."} {activeQuestion.question.title}
+        {activeQuestion.order}
+        {startQuiz && "."} {activeQuestion.question_text}
       </p>
 
-      {activeQuestion.question.type === "choice" ||
-      activeQuestion.question.type === "multiple_choice" ? (
+      {activeQuestion.question_type === "choice" ||
+      activeQuestion.question_type === "multiple_choice" ? (
         <ChoiceOption listChoice={listChoice} onChange={handleChangeChoice} />
-      ) : activeQuestion.question.type === "essay" ? (
+      ) : activeQuestion.question_type === "essay" ? (
         <TinyMCEEditor 
         // value={essayAnswer} 
         value={storedAnswer || ""} 
         onChange={(val) => {
           console.log(val)
-          dispatch(setAnswerQuestion({ [activeQuestion.question.id]: val }))
+          dispatch(setAnswerQuestion({ [activeQuestion.id]: val }))
         }} 
-        key={`${activeQuestion.question.id}-${storedAnswer ?? ""}`}  />
+        key={`${activeQuestion.id}-${storedAnswer ?? ""}`}  />
       ) : null}
     </div>
   );

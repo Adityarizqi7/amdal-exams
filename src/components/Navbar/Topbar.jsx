@@ -112,10 +112,7 @@ export default function Topbar() {
                     </div>
                     <div className='lg:block hidden'>
                     {
-                        !userLog.name ?
-                            <h3>Memuat..</h3>
-                        : 
-                        userLog.name ? 
+                        userLog.email ? 
                             <div className="account-popup relative">
                                 <button onClick={toggleAccount} type="button" className="cursor-pointer inline-flex items-center gap-2 rounded-md bg-green-base hover:bg-green-base/80 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10">
                                     {formatShortName(userLog.name)}

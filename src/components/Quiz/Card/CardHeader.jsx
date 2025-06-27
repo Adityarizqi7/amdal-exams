@@ -2,9 +2,12 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { getTimeStart, setTimeStart } from "../../../utils/Exam";
+import dayjs from "dayjs";
+import Cookies from "js-cookie"
 
 const CardHeader = ({ setTimeOut }) => {
-  const infoQuiz = useSelector((state) => state.quiz.infoQuiz);
+  const activeExam = useSelector((state) => state.exam.activeExam);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
 
   const [quizTime, setQuizTime] = useState(0);
@@ -13,13 +16,29 @@ const CardHeader = ({ setTimeOut }) => {
 
   // Inisialisasi waktu saat quiz mulai
   useEffect(() => {
-    if (startQuiz && infoQuiz?.time) {
-      setQuizTime(infoQuiz.time);
-      timeRef.current = infoQuiz.time;
-    }
-  }, [startQuiz, infoQuiz?.time]);
+    if (startQuiz && activeExam?.duration) {
+      let start = getTimeStart() || Cookies.get('exam-start');
+      if (!start) {
+        const now = dayjs().toISOString();
+        setTimeStart(now);
+        start = now;
+      }
 
-  // Jalankan interval hanya sekali saat quiz dimulai
+      const endTime = dayjs(start).add(activeExam.duration, 'minute');
+      const diff = endTime.diff(dayjs(), 'second');
+
+      if (diff <= 0) {
+        setQuizTime(0);
+        setTimeOut(true);
+      } else {
+        setQuizTime(diff);
+        timeRef.current = diff;
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startQuiz, activeExam?.duration]);
+
+  // Jalankan timer countdown
   useEffect(() => {
     if (!startQuiz || intervalRef.current) return;
 
@@ -38,13 +57,13 @@ const CardHeader = ({ setTimeOut }) => {
     return () => clearInterval(intervalRef.current); // Cleanup
   }, [startQuiz, setTimeOut]);
 
-  if (!infoQuiz) return null;
+  if (!activeExam) return null;
 
   return (
     <div className="py-4 px-6 flex justify-between items-center"
 				style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
-      <p className="font-bold">{infoQuiz.title}</p>
-      <Transition show={Boolean(infoQuiz.time)}>
+      <p className="font-bold">{activeExam.title}</p>
+      <Transition show={Boolean(activeExam.duration)}>
         <div className={clsx(
           "px-1 py-2 rounded text-black border flex items-center gap-2",
           quizTime < 60 ? "bg-red-300 border-red-500 animate-pulse" : "bg-blue-300 border-blue-500"
