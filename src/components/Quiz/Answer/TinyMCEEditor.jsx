@@ -4,7 +4,7 @@ const TinyMCEEditor = ({ value, onChange }) => {
   return (
     <div className="mt-5">
       <Editor
-        apiKey="no-api-key" // Ganti dengan API key TinyMCE jika perlu
+        apiKey="vunlkd82s6nb9dectc0s0m0ygv69372bvjy3x8jdzhhggc3x" // Ganti dengan API key TinyMCE jika perlu
         value={value}
         init={{
           height: 300,
