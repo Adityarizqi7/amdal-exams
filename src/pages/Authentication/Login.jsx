@@ -3,14 +3,20 @@ import CommonLayout from "../../layouts/CommonLayout";
 
 import klh from '../../assets/images/klh-half-gray.png'
 // import { authApi } from "../../store/auth/authApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getToken, setToken } from "../../utils/Auth";
+import { setUserDetails } from "../../store/user/userSlice";
+import { useDispatch } from "react-redux";
+import { useLoginMutation } from "../../store/auth/authApi";
 
 export default function Login() {
-
+    const [login] = useLoginMutation();
     const location = useLocation()
+    const dispatch = useDispatch()
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: '',
     });
     
@@ -19,7 +25,7 @@ export default function Login() {
 
     const validate = (fields = formData) => {
         const newErrors = {};
-        if (!fields.username) newErrors.username = 'Kolom Username harus diisi!';
+        if (!fields.email) newErrors.email = 'Kolom Email harus diisi!';
         if (!fields.password) newErrors.password = 'Kolom Password harus diisi!';
         return newErrors;
     };
@@ -43,7 +49,7 @@ export default function Login() {
         passwordType === "password" ? setPasswordType("text") : setPasswordType("password")
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const validationErrors = validate();
@@ -55,7 +61,26 @@ export default function Login() {
         }, {}));
 
         if (Object.keys(validationErrors).length === 0) {
-            // Logicnya disi
+            try {
+                const response = await login(formData);
+    
+                const { data, error } = response; // Explicitly destructure
+    
+                if (error) {
+                    throw new Error("Username atau password salah");
+                }
+                setToken(data.access_token);
+                dispatch(setUserDetails(data.user));
+                if (await getToken()) {
+                    // navigate("/dashboard"); // Ensure navigation only on success
+                    navigate("/quiz")
+                    // window.location.href = "/dashboard"
+                } else {
+                    throw new Error("Error when login");
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     };
 
@@ -86,8 +111,8 @@ export default function Login() {
                                 <label className="inline-block mb-1">Email <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
-                                    name="username"
-                                    value={formData.username}
+                                    name="email"
+                                    value={formData.email}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     style={{
@@ -102,7 +127,7 @@ export default function Login() {
                                     }}
                                     placeholder="Masukkan username anda"
                                 />
-                                {touched.username && errors.username && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.username}</div>}
+                                {touched.email && errors.email && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.email}</div>}
                             </div>
 
                             <div className="form-input relative">

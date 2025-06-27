@@ -2,19 +2,19 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 // import { ThemeProvider } from "@material-tailwind/react";
 
-import "./custom.css"
+import "./custom.css";
 import "./index.css";
-import App from "./App";
 import store from "./store";
 import GlobalProvider from "./context/GlobalProvider";
 import { Provider } from "react-redux";
+import Router from "./routes/Router";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
         <GlobalProvider>
             <BrowserRouter>
                 {/* <ThemeProvider> */}
-                <App />
+                <Router />
                 {/* </ThemeProvider> */}
             </BrowserRouter>
         </GlobalProvider>

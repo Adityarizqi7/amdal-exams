@@ -1,11 +1,15 @@
 import { Transition } from "@headlessui/react";
+import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const CardHeader = ({ data, setForcedNext }) => {
-    const [quizTime, setQuizTime] = useState(data.time || 0);
+const CardHeader = ({ setForcedNext }) => {
+    const infoQuiz = useSelector(state => state.quiz.infoQuiz)
+    const startQuiz = useSelector(state => state.quiz.startQuiz)
+    const [quizTime, setQuizTime] = useState(infoQuiz.time || 0);
 
     useEffect(() => {
-        if (quizTime <= 0) return;
+        if (quizTime <= 0 || !startQuiz) return;
 
         const countDownTimer = setInterval(() => {
             setQuizTime((prev) => {
@@ -19,16 +23,34 @@ const CardHeader = ({ data, setForcedNext }) => {
         }, 1000);
 
         return () => clearInterval(countDownTimer); // cleanup on unmount
-    }, [quizTime, setForcedNext]);
+    }, [quizTime, setForcedNext, startQuiz]);
 
     return (
-        <div className="py-4 px-6 flex justify-between items-center shadow-b">
-            <p className="font-bold">{data.title}</p>
-            <Transition show={data.time}>
-                <div className="px-1 py-2 bg-blue-300 rounded-[.25em] text-black border border-blue-500 flex items-center gap-2">
+        <div
+            className="py-4 px-6 flex justify-between items-center"
+            style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
+            <p className="font-bold">{infoQuiz.title}</p>
+            <Transition show={Boolean(infoQuiz.time)}>
+                <div
+                    className={clsx(
+                        "px-1 py-2 rounded-[.25em] text-black border flex items-center gap-2",
+                        quizTime < 60
+                            ? "bg-red-300 border-red-500 shake"
+                            : "bg-blue-300 border-blue-500"
+                    )}>
                     <p>Time Left</p>
                     <div className="bg-black text-white px-1 font-bold rounded-[.25em]">
-                        {quizTime.toString().padStart(2, "0")}
+                        {Math.floor(quizTime / 3600)
+                            .toString()
+                            .padStart(2, "0")}
+                    </div>
+                    <div className="bg-black text-white px-1 font-bold rounded-[.25em]">
+                        {Math.floor((quizTime % 3600) / 60)
+                            .toString()
+                            .padStart(2, "0")}
+                    </div>
+                    <div className="bg-black text-white px-1 font-bold rounded-[.25em]">
+                        {(quizTime % 60).toString().padStart(2, "0")}
                     </div>
                 </div>
             </Transition>

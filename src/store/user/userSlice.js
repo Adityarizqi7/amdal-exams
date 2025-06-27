@@ -1,9 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialValue = {
-    id: "",
-    username: "",
-    exam: "",
+    id: null,
+    name: null,
+    email: null,
+    email_verified_at: null,
+    role: null,
+    is_active: false,
 };
 
 const userSlice = createSlice({
@@ -11,8 +14,8 @@ const userSlice = createSlice({
     initialState: initialValue,
     reducers: {
         setUserDetails: (state, action) => {
-          console.log(action.payload)
-          return { ...state, ...action.payload };
+            console.log(action.payload);
+            return { ...state, ...action.payload };
         },
         logout: () => initialValue,
     },

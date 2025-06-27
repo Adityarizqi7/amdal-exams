@@ -43,23 +43,23 @@ const customBaseQuery = async (args, api, extraOptions) => {
     })(args, api, extraOptions);
 
     // If token is expired (401 Unauthorized), try refreshing
-    if (result.error && result.error.status === 401) {
-        console.log("Access token expired. Attempting refresh...");
-        const newAccessToken = await refreshAccessToken();
+    // if (result.error && result.error.status === 401) {
+    //     console.log("Access token expired. Attempting refresh...");
+    //     const newAccessToken = await refreshAccessToken();
 
-        if (newAccessToken) {
-            result = await fetchBaseQuery({
-                baseUrl: CONST.BASE_URL_API,
-                prepareHeaders: (headers) => {
-                    headers.set("Authorization", `Bearer ${newAccessToken}`);
-                    return headers;
-                },
-            })(args, api, extraOptions);
-        } else {
-            console.warn("Refresh token failed. Logging out...");
-            clearAuth(); // Clear tokens if refresh fails
-        }
-    }
+    //     if (newAccessToken) {
+    //         result = await fetchBaseQuery({
+    //             baseUrl: CONST.BASE_URL_API,
+    //             prepareHeaders: (headers) => {
+    //                 headers.set("Authorization", `Bearer ${newAccessToken}`);
+    //                 return headers;
+    //             },
+    //         })(args, api, extraOptions);
+    //     } else {
+    //         console.warn("Refresh token failed. Logging out...");
+    //         clearAuth(); // Clear tokens if refresh fails
+    //     }
+    // }
 
     return result;
 };
