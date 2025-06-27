@@ -30,7 +30,7 @@ const Info = () => {
   };
 
   return (
-    <div className="flex items-center justify-center px-4">
+    <div className="flex items-center justify-center px-4 montserrat">
       <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-full max-w-md">
         <h2 className="text-lg font-bold text-blue-900 mb-4">Informasi Asesmen</h2>
 

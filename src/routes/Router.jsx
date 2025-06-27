@@ -3,7 +3,9 @@ import Home from "../pages/Home";
 
 // Authentication
 import Login from '../pages/Authentication/Login'
-import LoginAdmin from '../pages/Authentication/Login'
+
+// Dashboard
+import CreateExam from '../pages/Dashboard/CreateExam'
 
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'
@@ -18,6 +20,9 @@ export default function Router() {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/admin/signin' element={<Login />} />
+
+            <Route path='dashboard/exam/create' element={<CreateExam />}/>
+
             <Route path='quiz' element={<QuizLayout />}>
                 <Route index element={<Info />}/>
                 <Route path="ready" element={<Ready />}/>

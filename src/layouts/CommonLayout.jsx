@@ -4,7 +4,7 @@ import Footer from '../components/Footer/Footer'
 import TopBar from '../components/Navbar/Topbar'
 
 const CommonLayout = ({
-    title = 'Masuk - Seleksi Tenaga Teknis Operasional Amdalnet 2025',
+    title = 'Seleksi Tenaga Teknis Operasional Amdalnet 2025',
     children = '',
 }) => {
     return (
