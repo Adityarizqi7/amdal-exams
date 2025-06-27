@@ -1,16 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setNumberQuestion } from "../../../store/quiz/quizSlice";
+import { useState, Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 const CardFooter = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const currentIndex = useSelector((state) => state.quiz.numberQuestion);
-  const total = useSelector((state) => state.quiz.listQuestion.length);
+  const list = useSelector((state) => state.quiz.listQuestion);
+  const total = useSelector((state) => state.quiz.listQuestion?.length);
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!list) return null;
 
   const handleNext = () => {
     if (currentIndex + 1 < total) {
       dispatch(setNumberQuestion(currentIndex + 1));
     } else {
-      alert("Quiz selesai!");
+      setIsOpen(true); // ⬅️ tampilkan modal jika soal terakhir
     }
   };
 
@@ -20,26 +29,82 @@ const CardFooter = () => {
     }
   };
 
+  const confirmFinish = () => {
+    setIsOpen(false);
+    navigate("/quiz/finish");
+  };
+
   return (
-    <div
-      className="flex justify-end px-4 py-2"
-      style={{ boxShadow: "0 -4px 6px rgba(0, 0, 0, 0.1)" }}
-    >
-      {currentIndex > 0 ? (
-        <button
-          onClick={handleBack}
-          className="bg-gray-300 px-4 py-2 rounded font-bold text-black"
-        >
-          Kembali
-        </button>
-      ) : <div />}
-      <button
-        className="bg-blue-500 px-4 py-2 rounded-[.5em] font-bold text-white cursor-pointer"
-        onClick={handleNext}
+    <>
+      <div
+        className="flex justify-between px-4 py-2"
+        style={{ boxShadow: "0 -4px 6px rgba(0, 0, 0, 0.1)" }}
       >
-        Next Question
-      </button>
-    </div>
+        {currentIndex > 0 ? (
+          <button
+            onClick={handleBack}
+            className="bg-gray-300 px-4 py-2 rounded font-bold text-black"
+          >
+            Kembali
+          </button>
+        ) : (
+          <div />
+        )}
+
+        <button
+          className="bg-blue-500 px-4 py-2 rounded font-bold text-white"
+          onClick={handleNext}
+        >
+          {currentIndex + 1 === total ? "Selesai" : "Next Question"}
+        </button>
+      </div>
+
+      {/* Modal Konfirmasi */}
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 flex items-center justify-center px-4">
+            <Dialog.Panel className="w-full max-w-sm bg-white rounded-xl shadow-xl p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <ExclamationTriangleIcon className="w-6 h-6 text-yellow-500" />
+                <Dialog.Title className="text-lg font-semibold text-gray-800">
+                  Akhiri Ujian?
+                </Dialog.Title>
+              </div>
+              <Dialog.Description className="text-sm text-gray-600">
+                Apakah kamu yakin ingin mengakhiri ujian sekarang? Pastikan semua soal sudah dijawab.
+              </Dialog.Description>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 rounded-md text-sm bg-gray-100 hover:bg-gray-200 text-gray-700"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={confirmFinish}
+                  className="px-4 py-2 rounded-md text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                >
+                  Ya, Akhiri
+                </button>
+              </div>
+            </Dialog.Panel>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
   );
 };
 
