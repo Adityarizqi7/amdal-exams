@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react"
 import CardBody from "./CardBody"
 import CardFooter from "./CardFooter"
 import CardHeader from "./CardHeader"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setFinishQuiz } from "../../../store/quiz/quizSlice"
 import { Dialog, Transition } from "@headlessui/react"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
@@ -12,16 +12,15 @@ const CardQuiz = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const finishQuiz = useSelector(state => state.quiz.finishQuiz) 
+  // const finishQuiz = useSelector(state => state.quiz.finishQuiz) 
   const [timeOut, setTimeOut] = useState(false)
   const [showTimeoutDialog, setShowTimeoutDialog] = useState(false);
 
   useEffect(() => {
     setTimeOut(false);
-    if (timeOut && finishQuiz) {
+    if (timeOut) {
       setShowTimeoutDialog(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeOut]);
 
   const handleTimeoutConfirm = () => {
@@ -68,7 +67,7 @@ const CardQuiz = () => {
               </div>
               <Dialog.Description className="text-sm text-gray-600">
                 Waktu pengerjaan telah habis. Klik tombol di bawah untuk
-                menyelesaikan ujian.
+                melihat hasil ujian.
               </Dialog.Description>
 
               <div className="flex justify-end">
@@ -76,7 +75,7 @@ const CardQuiz = () => {
                   onClick={handleTimeoutConfirm}
                   className="cursor-pointer bg-green-base text-white px-4 py-2 rounded-md font-medium text-sm"
                 >
-                  Selesai
+                  Cek Hasil
                 </button>
               </div>
             </Dialog.Panel>
