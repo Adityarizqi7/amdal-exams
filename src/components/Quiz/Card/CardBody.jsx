@@ -13,7 +13,6 @@ const CardBody = () => {
   );
 
   const [listChoice, setListChoice] = useState([]);
-  const [essayAnswer, setEssayAnswer] = useState("");
 
   useEffect(() => {
     if (!activeQuestion) return;
@@ -29,9 +28,7 @@ const CardBody = () => {
             : storedAnswer === el.id,
         }))
       );
-    } else if (question.type === "essay") {
-      setEssayAnswer(storedAnswer || "");
-    }
+    } 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeQuestion?.question.id]); // refresh on question change
 
@@ -56,11 +53,6 @@ const CardBody = () => {
     );
   };
 
-  const handleEssayChange = (content) => {
-    setEssayAnswer(content);
-    dispatch(setAnswerQuestion({ [activeQuestion.question.id]: content }));
-  };
-
   if (!activeQuestion) return null;
 
   return (
@@ -74,7 +66,14 @@ const CardBody = () => {
       activeQuestion.question.type === "multiple_choice" ? (
         <ChoiceOption listChoice={listChoice} onChange={handleChangeChoice} />
       ) : activeQuestion.question.type === "essay" ? (
-        <TinyMCEEditor value={essayAnswer} onChange={handleEssayChange} />
+        <TinyMCEEditor 
+        // value={essayAnswer} 
+        value={storedAnswer || ""} 
+        onChange={(val) => {
+          console.log(val)
+          dispatch(setAnswerQuestion({ [activeQuestion.question.id]: val }))
+        }} 
+        key={`${activeQuestion.question.id}-${storedAnswer ?? ""}`}  />
       ) : null}
     </div>
   );

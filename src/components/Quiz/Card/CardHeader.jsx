@@ -1,70 +1,63 @@
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 const CardHeader = ({ setTimeOut }) => {
   const infoQuiz = useSelector((state) => state.quiz.infoQuiz);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
-  const [quizTime, setQuizTime] = useState(0);
 
-  // Sinkronkan quizTime dengan infoQuiz saat quiz dimulai
+  const [quizTime, setQuizTime] = useState(0);
+  const timeRef = useRef(0);
+  const intervalRef = useRef(null);
+
+  // Inisialisasi waktu saat quiz mulai
   useEffect(() => {
     if (startQuiz && infoQuiz?.time) {
       setQuizTime(infoQuiz.time);
+      timeRef.current = infoQuiz.time;
     }
   }, [startQuiz, infoQuiz?.time]);
 
-  // Timer countdown
+  // Jalankan interval hanya sekali saat quiz dimulai
   useEffect(() => {
-    if (!startQuiz || quizTime <= 0) return;
+    if (!startQuiz || intervalRef.current) return;
 
-    const timer = setInterval(() => {
-      setQuizTime((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
+    intervalRef.current = setInterval(() => {
+      if (timeRef.current <= 1) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+        setQuizTime(0);
+        setTimeOut(true); // Trigger timeout
+      } else {
+        timeRef.current -= 1;
+        setQuizTime(timeRef.current);
+      }
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [startQuiz, quizTime]);
-
-  // Trigger timeout secara aman
-  useEffect(() => {
-    if (quizTime === 0 && startQuiz) {
-      setTimeOut(true);
-    }
-  }, [quizTime, startQuiz, setTimeOut]);
+    return () => clearInterval(intervalRef.current); // Cleanup
+  }, [startQuiz, setTimeOut]);
 
   if (!infoQuiz) return null;
 
   return (
-    <div
-      className="py-4 px-6 flex justify-between items-center"
-      style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
-    >
+    <div className="py-4 px-6 flex justify-between items-center"
+				style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
       <p className="font-bold">{infoQuiz.title}</p>
       <Transition show={Boolean(infoQuiz.time)}>
-        <div
-          className={clsx(
-            "px-1 py-2 rounded-[.25em] text-black border flex items-center gap-2",
-            quizTime < 60
-              ? "bg-red-300 border-red-500 animate-pulse"
-              : "bg-blue-300 border-blue-500"
-          )}
-        >
+        <div className={clsx(
+          "px-1 py-2 rounded text-black border flex items-center gap-2",
+          quizTime < 60 ? "bg-red-300 border-red-500 animate-pulse" : "bg-blue-300 border-blue-500"
+        )}>
           <p>Time Left</p>
-          <div className="bg-black text-white px-1 font-bold rounded-[.25em]">
-            {Math.floor(quizTime / 3600).toString().padStart(2, "0")}
+          <div className="bg-black text-white px-1 font-bold rounded">
+            {String(Math.floor(quizTime / 3600)).padStart(2, "0")}
           </div>
-          <div className="bg-black text-white px-1 font-bold rounded-[.25em]">
-            {Math.floor((quizTime % 3600) / 60).toString().padStart(2, "0")}
+          <div className="bg-black text-white px-1 font-bold rounded">
+            {String(Math.floor((quizTime % 3600) / 60)).padStart(2, "0")}
           </div>
-          <div className="bg-black text-white px-1 font-bold rounded-[.25em]">
-            {(quizTime % 60).toString().padStart(2, "0")}
+          <div className="bg-black text-white px-1 font-bold rounded">
+            {String(quizTime % 60).padStart(2, "0")}
           </div>
         </div>
       </Transition>

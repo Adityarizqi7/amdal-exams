@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setNumberQuestion } from "../../../store/quiz/quizSlice";
+import { setNumberQuestion, setAnswerQuestion } from "../../../store/quiz/quizSlice";
 import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
@@ -10,20 +10,38 @@ const CardFooter = () => {
   const navigate = useNavigate();
   const currentIndex = useSelector((state) => state.quiz.numberQuestion);
   const list = useSelector((state) => state.quiz.listQuestion);
-  const total = useSelector((state) => state.quiz.listQuestion?.length);
+  const active = useSelector((state) => state.quiz.activeQuestion);
+  const answer = useSelector((state) => state.quiz.answerQuestion);
+
   const [isOpen, setIsOpen] = useState(false);
 
-  if (!list) return null;
+  if (!list?.length || !active) return null;
+
+  const total = list.length;
+
+  const simpanJawabanEssay = () => {
+    if (
+      active.question.type === "essay" &&
+      typeof answer?.[active.question.id] !== "string"
+    ) {
+      const content = window.tinymce?.activeEditor?.getContent?.() || "";
+      dispatch(setAnswerQuestion({ [active.question.id]: content }));
+    }
+  };
 
   const handleNext = () => {
+    simpanJawabanEssay();
+
     if (currentIndex + 1 < total) {
       dispatch(setNumberQuestion(currentIndex + 1));
     } else {
-      setIsOpen(true); // ⬅️ tampilkan modal jika soal terakhir
+      setIsOpen(true); // terakhir → konfirmasi
     }
   };
 
   const handleBack = () => {
+    simpanJawabanEssay();
+
     if (currentIndex > 0) {
       dispatch(setNumberQuestion(currentIndex - 1));
     }
@@ -95,7 +113,7 @@ const CardFooter = () => {
                 </button>
                 <button
                   onClick={confirmFinish}
-                  className="px-4 py-2 rounded-md text-sm bg-green-base hover:bg-blue-700 text-white font-semibold"
+                  className="px-4 py-2 rounded-md text-sm bg-green-base hover:bg-green-700 text-white font-semibold"
                 >
                   Ya, Akhiri
                 </button>
