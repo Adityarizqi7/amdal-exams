@@ -4,6 +4,7 @@ import Home from '../pages/Home'
 
 // Authentication
 import Login from '../pages/Authentication/Login'
+import LoginAdmin from '../pages/Authentication/Login'
 
 // Quiz
 import Ready from '../pages/Quiz/Ready'
@@ -15,6 +16,7 @@ export default function Router() {
         <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/admin/signin' element={<Login />} />
             <Route path='quiz' element={<QuizLayout />}>
                 <Route index element={<Ready />}/>
             </Route>

@@ -2,12 +2,15 @@ import { useState } from "react";
 import CommonLayout from "../../layouts/CommonLayout";
 
 import klh from '../../assets/images/klh-half-gray.png'
-import { authApi } from "../../store/auth/authApi";
+// import { authApi } from "../../store/auth/authApi";
+import { useLocation } from "react-router-dom";
 
 export default function Login() {
 
+    const location = useLocation()
+
     const [formData, setFormData] = useState({
-        email: '',
+        username: '',
         password: '',
     });
     
@@ -16,7 +19,7 @@ export default function Login() {
 
     const validate = (fields = formData) => {
         const newErrors = {};
-        if (!fields.email) newErrors.email = 'Kolom Email harus diisi!';
+        if (!fields.username) newErrors.username = 'Kolom Username harus diisi!';
         if (!fields.password) newErrors.password = 'Kolom Password harus diisi!';
         return newErrors;
     };
@@ -52,7 +55,7 @@ export default function Login() {
         }, {}));
 
         if (Object.keys(validationErrors).length === 0) {
-            authApi.endpoints
+            // Logicnya disi
         }
     };
 
@@ -72,7 +75,7 @@ export default function Login() {
                     </section>
                     <section className="form-login-card lg:w-[50%] w-full px-6 pt-[4rem] pb-[3rem] space-y-4">
                         <div className="greeting-login space-y-2">
-                            <h1 className="font-bold montserrat text-[1.5rem]">Hai, Selamat Datang!</h1>
+                            <h1 className="font-bold montserrat text-[1.5rem]">Hai{location.pathname === '/admin/signin' && ' Admin'}, Selamat Datang!</h1>
                             <h4 className="font-normal montserrat text-[14px]">Silahkan masuk dengan Akun Anda.</h4>
                         </div>
                         <div className="form-wrapper montserrat space-y-5">
@@ -82,9 +85,9 @@ export default function Login() {
                                 </svg>
                                 <label className="inline-block mb-1">Email <span className="text-red-500">*</span></label>
                                 <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
+                                    type="text"
+                                    name="username"
+                                    value={formData.username}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     style={{
@@ -93,13 +96,13 @@ export default function Login() {
                                         paddingRight: '0.5rem',
                                         paddingTop: '0.7rem',
                                         paddingBottom: '0.7rem',
-                                        border: touched.email && errors.email ? '1px solid red' : '1px solid #ccc',
+                                        border: touched.username && errors.username ? '1px solid red' : '1px solid #ccc',
                                         borderRadius: '6px',
                                         marginTop: '0.25rem',
                                     }}
-                                    placeholder="email@gmail.com"
+                                    placeholder="Masukkan username anda"
                                 />
-                                {touched.email && errors.email && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.email}</div>}
+                                {touched.username && errors.username && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.username}</div>}
                             </div>
 
                             <div className="form-input relative">
@@ -143,7 +146,7 @@ export default function Login() {
                                 {touched.password && errors.password && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.password}</div>}
                             </div>
                         </div>
-                        <button type="submit" className={`${formData.email === '' || formData.password === '' || errors.password || errors.email ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-2 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer`}>
+                        <button type="submit" className={`${formData.username === '' || formData.password === '' || errors.password || errors.username ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-2 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer`}>
                             Masuk
                         </button>
                     </section>
