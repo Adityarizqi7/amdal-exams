@@ -28,6 +28,7 @@ export const authApi = createApi({
         })
     }),
 });
+
 export const {
     useLoginMutation,
     useWhoamiQuery

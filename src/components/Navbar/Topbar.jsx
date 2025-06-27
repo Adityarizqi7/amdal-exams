@@ -1,7 +1,7 @@
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { useNavigate, NavLink } from 'react-router-dom'
 import React, { useCallback, useEffect, useState } from 'react'
+import { useNavigate, NavLink, useLocation } from 'react-router-dom'
 
 import klh from '../../assets/images/klh.png'
 import amdalnet from '../../assets/images/amdalnet.png'
@@ -9,20 +9,10 @@ import amdalnet from '../../assets/images/amdalnet.png'
 
 export default function Topbar() {
 
-    // const location = useLocation()
+    const location = useLocation()
     const navigate = useNavigate();
 
     const [isScrolled, setIsScrolled] = useState(false);
-
-    // const checkPathPersonal = useCallback(() => {
-    //     if (
-    //         location.pathname === '/overview' ||
-    //         location.pathname === '/portfolio' ||
-    //         location.pathname === '/people'
-    //     )
-    //         return 'text-white'
-    //     return 'text-gray-300'
-    // }, [location])
 
     const changeColor = useCallback(() => {
         setIsScrolled(window.scrollY > 0);
@@ -37,7 +27,7 @@ export default function Topbar() {
 
     return (
         <header
-            className={`${isScrolled ? 'bg-white border-b border-gray-100' : 'bg-transparent border-0 border-gray-100'} transition-colors  sticky top-0 z-[999] w-full md:px-[7.5rem] px-4`}
+            className={`${location.pathname === '/' ? isScrolled ? 'bg-white border-b border-gray-100' : 'bg-transparent border-0 border-gray-100' : 'bg-white border-b border-gray-100'} transition-colors  sticky top-0 z-[999] w-full md:px-[7.5rem] px-4`}
         >
             {/* Dekstop Menu Navbar */}
             <Menu>
