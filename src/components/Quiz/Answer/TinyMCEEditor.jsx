@@ -1,12 +1,14 @@
+// src/components/Answer/TinyMCEEditor.jsx
 import { Editor } from "@tinymce/tinymce-react";
-import { useEffect, useRef } from "react";
+import { useRef, useEffect } from "react";
+import useDebouncedCallback from "../../../hook/useDebounceCallback";
 
 const TinyMCEEditor = ({ value = "", onChange }) => {
   const editorRef = useRef(null);
-  const lastValue = useRef(value); // Track value
+  const lastValue = useRef(value);
+  const debouncedChange = useDebouncedCallback(onChange, 2000);
 
   useEffect(() => {
-    // Jika editor sudah ready & value berubah, update konten
     if (
       editorRef.current &&
       value !== lastValue.current &&
@@ -22,7 +24,7 @@ const TinyMCEEditor = ({ value = "", onChange }) => {
       apiKey="vunlkd82s6nb9dectc0s0m0ygv69372bvjy3x8jdzhhggc3x"
       onInit={(evt, editor) => {
         editorRef.current = editor;
-        editor.setContent(value || ""); // Set pertama kali
+        editor.setContent(value || "");
       }}
       init={{
         height: 300,
@@ -38,7 +40,7 @@ const TinyMCEEditor = ({ value = "", onChange }) => {
           "bullist numlist outdent indent | removeformat",
       }}
       onEditorChange={(content) => {
-        onChange(content); // update redux
+        debouncedChange(content); // simpan ke redux (delay)
         lastValue.current = content;
       }}
     />
