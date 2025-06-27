@@ -1,13 +1,20 @@
-import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { useSelector } from "react-redux"
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, NavLink, useLocation } from 'react-router-dom'
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
+import {
+    ChevronDownIcon,
+    TrashIcon,
+  } from '@heroicons/react/16/solid'
 
 import klh from '../../assets/images/klh.png'
 import amdalnet from '../../assets/images/amdalnet.png'
 // import DarkBtn from '@/components/button/DarkBtn'
 
 export default function Topbar() {
+
+    const userLog = useSelector((state) => state.user)
+    console.log(userLog, 'hahaha')
 
     const location = useLocation()
     const navigate = useNavigate();
@@ -61,16 +68,40 @@ export default function Topbar() {
                         </div>
                     </div>
                     <div className='lg:block hidden'>
-                        <div className='flex items-center gap-4'>
-                            <button onClick={() => {
-                                navigate('/login')
-                            }} className='bg-green-base rounded-[10px] border-0 py-3 px-8 text-white hover:bg-green-base/80 cursor-pointer'>
-                                Masuk
-                            </button>
-                            {/* <button className='border border-green-base rounded-[10px] py-3 px-8 text-green-base bg-green-base/10 hover:bg-green-base/20 cursor-pointer'>
-                                Daftar
-                            </button> */}
-                        </div>
+                    {
+                        userLog.name ? 
+                            <Menu>
+                                <MenuButton className="inline-flex items-center gap-2 rounded-md bg-gray-800 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-700 data-open:bg-gray-700">
+                                    Akun
+                                    <ChevronDownIcon className="size-4 fill-white/60" />
+                                </MenuButton>
+
+                                <MenuItems
+                                    transition
+                                    anchor="bottom end"
+                                    className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+                                >
+                                    <MenuItem>
+                                        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                                        <TrashIcon className="size-4 fill-white/30" />
+                                        Delete
+                                        <kbd className="ml-auto hidden font-sans text-xs text-white/50 group-data-focus:inline">⌘D</kbd>
+                                        </button>
+                                    </MenuItem>
+                                </MenuItems>
+                            </Menu>
+                        :
+                            <div className='flex items-center gap-4'>
+                                <button onClick={() => {
+                                    navigate('/login')
+                                }} className='bg-green-base rounded-[10px] border-0 py-3 px-8 text-white hover:bg-green-base/80 cursor-pointer'>
+                                    Masuk
+                                </button>
+                                {/* <button className='border border-green-base rounded-[10px] py-3 px-8 text-green-base bg-green-base/10 hover:bg-green-base/20 cursor-pointer'>
+                                    Daftar
+                                </button> */}
+                            </div>
+                    }
                     </div>
                     <div
                         className="-mr-2 flex lg:hidden lg:gap-0 gap-2 rounded-full py-[0.75rem] px-4"

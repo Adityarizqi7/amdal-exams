@@ -1,12 +1,12 @@
 import { useState } from "react";
-import CommonLayout from "../../layouts/CommonLayout";
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import CommonLayout from "../../layouts/CommonLayout";
 import klh from '../../assets/images/klh-half-gray.png'
 // import { authApi } from "../../store/auth/authApi";
-import { useLocation, useNavigate } from "react-router-dom";
 import { getToken, setToken } from "../../utils/Auth";
 import { setUserDetails } from "../../store/user/userSlice";
-import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../../store/auth/authApi";
 
 export default function Login() {
@@ -20,6 +20,7 @@ export default function Login() {
         password: '',
     });
     
+    const [loading, setLoading] = useState(false)
     const [touched, setTouched] = useState({});
     const [errors, setErrors] = useState({});
 
@@ -62,18 +63,25 @@ export default function Login() {
 
         if (Object.keys(validationErrors).length === 0) {
             try {
+                setLoading(true)
                 const response = await login(formData);
     
                 const { data, error } = response; // Explicitly destructure
     
                 if (error) {
-                    throw new Error("Username atau password salah");
+                    setLoading(false)
+                    throw new Error("Email atau password salah");
                 }
                 setToken(data.access_token);
                 dispatch(setUserDetails(data.user));
+
                 if (await getToken()) {
+                    if (location.pathname === '/admin/signin') {
+                        navigate("/dashboard/exam/create")
+                    } else {
+                        navigate("/quiz")
+                    }
                     // navigate("/dashboard"); // Ensure navigation only on success
-                    navigate("/quiz")
                     // window.location.href = "/dashboard"
                 } else {
                     throw new Error("Error when login");
@@ -85,7 +93,9 @@ export default function Login() {
     };
 
     return (
-        <CommonLayout>
+        <CommonLayout
+            title='Masuk - Seleksi Tenaga Teknis Operasional Amdalnet 2025'
+        >
             <div className="login-component md:px-[7.5rem] px-8 md:py-[5rem] sm:py-[2rem] py-7 bg-green-base/5">
                 <form id="form_wrapper" onSubmit={handleSubmit} encType="multipart/form-data" className="form-login-container mx-auto shadow-own flex md:w-[75%] rounded-[14px] bg-white">
                     <section className="image-form w-[50%] lg:inline hidden">
@@ -121,11 +131,11 @@ export default function Login() {
                                         paddingRight: '0.5rem',
                                         paddingTop: '0.7rem',
                                         paddingBottom: '0.7rem',
-                                        border: touched.username && errors.username ? '1px solid red' : '1px solid #ccc',
+                                        border: touched.email && errors.email ? '1px solid red' : '1px solid #ccc',
                                         borderRadius: '6px',
                                         marginTop: '0.25rem',
                                     }}
-                                    placeholder="Masukkan username anda"
+                                    placeholder="Masukkan email anda"
                                 />
                                 {touched.email && errors.email && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.email}</div>}
                             </div>
@@ -155,14 +165,14 @@ export default function Login() {
                                 />
                                 {
                                     passwordType === "password" ?
-                                        <button onClick={changePasswordType} className="visibility-button outline-0 cursor-pointer absolute top-[45px] right-3">
+                                        <button type="button" onClick={changePasswordType} className="visibility-button outline-0 cursor-pointer absolute top-[45px] right-3">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                             </svg>
                                         </button>
                                     :
-                                        <button onClick={changePasswordType} className="visibility-button outline-0 cursor-pointer absolute top-[45px] right-2">
+                                        <button type="button" onClick={changePasswordType} className="visibility-button outline-0 cursor-pointer absolute top-[45px] right-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
                                             </svg>
@@ -171,8 +181,11 @@ export default function Login() {
                                 {touched.password && errors.password && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.password}</div>}
                             </div>
                         </div>
-                        <button type="submit" className={`${formData.username === '' || formData.password === '' || errors.password || errors.username ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-2 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer`}>
-                            Masuk
+                        <button type="submit" className={`${formData.email === '' || formData.password === '' || errors.password || errors.email || loading ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-2 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer`}>
+                           {
+                                loading ? 'Memuat...' :
+                                `Masuk ${location.pathname === '/admin/login' ? ' Sebagai Admin' : ''}`
+                           }
                         </button>
                     </section>
                 </form>

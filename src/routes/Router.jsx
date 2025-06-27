@@ -3,7 +3,9 @@ import Home from "../pages/Home";
 
 // Authentication
 import Login from '../pages/Authentication/Login'
-import LoginAdmin from '../pages/Authentication/Login'
+
+// Dashboard
+import CreateExam from '../pages/Dashboard/CreateExam'
 
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'

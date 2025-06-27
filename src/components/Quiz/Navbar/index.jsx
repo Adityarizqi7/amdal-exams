@@ -6,7 +6,7 @@ const QuizNavbar = () => {
   const userLog = useSelector(state => state.user)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 py-4 z-10 bg-white shadow">
+    <nav className="fixed top-0 left-0 right-0 py-4 z-10 bg-white shadow montserrat">
       <div className="container mx-auto flex justify-between items-center px-4">
         <div><span>{ userLog.name }</span> - <span>Programmer</span></div>
         <div className="flex items-center gap-2">
