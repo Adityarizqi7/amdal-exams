@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import CardQuiz from "../../components/Quiz/Card";
-import { setInfoQuestion, setListQuestion } from "../../store/quiz/quizSlice";
+import { setInfoQuestion, setListQuestion, setNumberQuestion } from "../../store/quiz/quizSlice";
+import { useEffect } from "react";
 
 const dataQuiz = {
     header: {
@@ -133,8 +134,13 @@ const dataQuiz = {
 
 const Ready = () => {
     const dispatch = useDispatch()
-    dispatch(setInfoQuestion(dataQuiz.header))
-    dispatch(setListQuestion(dataQuiz.body))
+
+    useEffect(() => {
+        dispatch(setInfoQuestion(dataQuiz.header));
+        dispatch(setListQuestion(dataQuiz.body));
+        dispatch(setNumberQuestion(0));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return <CardQuiz />;
 };

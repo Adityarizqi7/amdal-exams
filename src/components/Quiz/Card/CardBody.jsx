@@ -1,45 +1,56 @@
-import { Checkbox } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/16/solid";
+// src/components/Quiz/Card/CardBody.jsx
 import { useEffect, useState } from "react";
-import clsx from "clsx";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import ChoiceOption from "../Answer/ChoiceOption";
+import TinyMCEEditor from "../Answer/TinyMCEEditor";
 import { setAnswerQuestion } from "../../../store/quiz/quizSlice";
 
 const CardBody = () => {
   const dispatch = useDispatch();
   const activeQuestion = useSelector((state) => state.quiz.activeQuestion);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
-  const answerQuestion = useSelector((state) => state.quiz.answerQuestion);
-
+  const storedAnswer = useSelector((state) => state.quiz.answerQuestion?.[activeQuestion?.question?.id]);
+  console.log(activeQuestion)
   const [listChoice, setListChoice] = useState([]);
+  const [essayAnswer, setEssayAnswer] = useState(storedAnswer || "");
 
   useEffect(() => {
-    if (activeQuestion?.choice) {
-      const storedAnswerId = answerQuestion?.[activeQuestion.question.id];
-      const newList = activeQuestion.choice.map((el) => ({
-        ...el,
-        selected: el.id === storedAnswerId,
-      }));
-      setListChoice(newList);
+    if (activeQuestion?.question.type === "choice" || activeQuestion?.question.type === "multiple_choice") {
+      setListChoice(
+        activeQuestion.choice?.map((el) => ({
+          ...el,
+          selected: Array.isArray(storedAnswer)
+            ? storedAnswer.includes(el.id)
+            : storedAnswer === el.id,
+        }))
+      );
+    } else if (activeQuestion?.type === "essay") {
+      setEssayAnswer(storedAnswer || "");
     }
-  }, [activeQuestion, answerQuestion]);
+  }, [activeQuestion, storedAnswer]);
 
-  const handleChange = (index) => {
-    const updated = listChoice.map((el, i) => ({
-      ...el,
-      selected: i === index ? !el.selected : false,
-    }));
-
+  const handleChangeChoice = (index) => {
+    const updated = listChoice.map((el, i) => {
+      if (activeQuestion.question.type === "choice") {
+        return { ...el, selected: i === index };
+      } else {
+        return i === index ? { ...el, selected: !el.selected } : el;
+      }
+    });
     setListChoice(updated);
 
-    const selected = updated.find((el) => el.selected);
-    if (selected) {
-      dispatch(
-        setAnswerQuestion({
-          [activeQuestion.question.id]: selected.id,
-        })
-      );
-    }
+    const selectedIds = updated.filter((c) => c.selected).map((c) => c.id);
+    dispatch(
+      setAnswerQuestion({
+        [activeQuestion.question.id]:
+          activeQuestion.question.type === "choice" ? selectedIds[0] : selectedIds,
+      })
+    );
+  };
+
+  const handleEssayChange = (content) => {
+    setEssayAnswer(content);
+    dispatch(setAnswerQuestion({ [activeQuestion.question.id]: content }));
   };
 
   if (!activeQuestion) return null;
@@ -51,30 +62,11 @@ const CardBody = () => {
         {startQuiz && "."} {activeQuestion.question.title}
       </p>
 
-      <div className={clsx("grid grid-cols-1 gap-4", startQuiz && "mt-5")}>
-        {listChoice.map((el, index) => (
-          <div
-            key={index}
-            className={clsx(
-              "p-3 flex items-center gap-4 cursor-pointer border rounded-md transition-all",
-              el.selected
-                ? "bg-green-100 border-green-400"
-                : "bg-blue-50 border-blue-200"
-            )}
-            onClick={() => handleChange(index)}
-          >
-            <Checkbox checked={el.selected} className="group size-6 rounded-md p-1 bg-white">
-              <CheckIcon
-                className={clsx(
-                  "size-4 fill-black transition-opacity",
-                  el.selected ? "opacity-100" : "opacity-0"
-                )}
-              />
-            </Checkbox>
-            <span>{el.text}</span>
-          </div>
-        ))}
-      </div>
+      {activeQuestion.question.type === "choice" || activeQuestion.question.type === "multiple_choice" ? (
+        <ChoiceOption listChoice={listChoice} onChange={handleChangeChoice} />
+      ) : activeQuestion.question.type === "essay" ? (
+        <TinyMCEEditor value={essayAnswer} onChange={handleEssayChange} />
+      ) : null}
     </div>
   );
 };
