@@ -32,6 +32,11 @@ export default function Router() {
                         <Login />
                     </ProtectedRoute>
                     } />
+                <Route path='/dashboard/exam/create' element={
+                    <PrivateRoute>
+                        <CreateExam/>
+                    </PrivateRoute>
+                    } />
                 <Route path='quiz' element={
                     <PrivateRoute>
                         <QuizLayout />

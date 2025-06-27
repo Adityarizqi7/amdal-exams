@@ -10,7 +10,7 @@ const ProtectedRoute = ({children}) => {
     useEffect(() => {
         if (user.id && user.email) {
             if(user.role == 'admin'){
-              navigate('/dashboard')
+              navigate('/dashboard/exam/create')
             } else {
               navigate('/quiz')
             }

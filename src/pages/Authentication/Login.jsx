@@ -96,9 +96,9 @@ export default function Login() {
                     }).then((result) => {
                         if (result.dismiss === Swal.DismissReason.timer) {
                             if (location.pathname === '/admin/signin') {
-                                navigate("/dashboard/exam/create",{ replace: true })
+                                navigate("/dashboard/exam/create")
                             } else {
-                                navigate("/quiz",{ replace: true })
+                                navigate("/quiz")
                             }
                         }
                     }) 
