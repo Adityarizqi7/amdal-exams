@@ -20,23 +20,19 @@ const quizSlice = createSlice({
     setNumberQuestion: (state, action) => {
       const number = action.payload;
 
-      // Pastikan listQuestion sudah ada
-      if (!state.listQuestion || number < 0 || number >= state.listQuestion.length || state.finishQuiz) return;
+      // Validasi index dan list
+      if (!state.listQuestion || number < 0 || number >= state.listQuestion.length) return;
 
       state.numberQuestion = number;
       state.activeQuestion = state.listQuestion[number];
 
       // Jika mulai quiz
-      if (number >= 0 && !state.startQuiz) {
+      if (!state.startQuiz) {
         state.startQuiz = true;
       }
 
-      // Jika soal terakhir
-      if (number === state.listQuestion.length - 1) {
-        state.finishQuiz = true;
-      } else {
-        state.finishQuiz = false;
-      }
+      // ❌ Jangan set finishQuiz otomatis di sini
+      // finishQuiz hanya dikontrol saat waktu habis atau user klik selesai
     },
     setAnswerQuestion: (state, action) => {
       state.answerQuestion = {
@@ -53,7 +49,7 @@ const quizSlice = createSlice({
     setFinishQuiz: (state) => {
       state.finishQuiz = true;
     },
-    clearQuiz: () => initialValue, 
+    clearQuiz: () => initialValue,
   },
 });
 
@@ -62,6 +58,7 @@ export const {
   setNumberQuestion,
   setAnswerQuestion,
   setInfoQuestion,
+  setStartQuiz,
   setFinishQuiz,
   clearQuiz,
 } = quizSlice.actions;
