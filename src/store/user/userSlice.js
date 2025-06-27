@@ -7,6 +7,9 @@ const initialValue = {
     email_verified_at: null,
     role: null,
     is_active: false,
+    batch: null,
+    start_time: null,
+    end_time: null,
 };
 
 const userSlice = createSlice({

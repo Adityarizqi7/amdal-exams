@@ -4,76 +4,195 @@ import {
   IdentificationIcon,
   PlayCircleIcon,
   ExclamationTriangleIcon,
+  ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
-import { useState, Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { useState, Fragment, useEffect } from "react";
+import { Dialog, Transition, Listbox } from "@headlessui/react";
+import { useLazyGetExamQuery, useLazyGetListQuestionQuery, useStartExamBeMutation } from "../../store/exam/examApi";
+import { setActiveExam, setListExam } from "../../store/exam/examSlice";
+import { useDispatch, useSelector } from "react-redux";
+import LoadData from "../../components/Quiz/Loading/LoadData";
+import { setListQuestion } from "../../store/quiz/quizSlice";
 
 const Info = () => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
 
-  const assessment = {
-    name: "Asesmen Kompetensi Programmer",
-    session: "Sesi 1",
-    time: "27 Juni 2025, 09:00 - 11:00 WIB",
-    user: {
-      name: "Budi Santoso",
-      email: "budi@example.com",
-      role: "Peserta",
-    },
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedExam, setSelectedExam] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [apiGetExams] = useLazyGetExamQuery();
+  const [apiGetQuestions] = useLazyGetListQuestionQuery();
+  const [apiStartExam] = useStartExamBeMutation()
+
+  const userLog = useSelector((state) => state.user);
+  const listExam = useSelector((state) => state.exam.listExams);
+  const activeExam = useSelector((state) => state.exam.activeExam);
+  // const listQuestion = useSelector((state) => state.quiz.listQuestion);
+
+  const getExam = async () => {
+    const dataExam = await apiGetExams();
+    if (dataExam.data.success) {
+      dispatch(setListExam(dataExam.data.data));
+    }
   };
+
+  const getQuestion = async (exam_id) => {
+    const dataQuestion = await apiGetQuestions(exam_id)
+    if (dataQuestion.data.success) {
+      dispatch(setListQuestion(dataQuestion.data.data));
+    }
+  }
+
+  const handleChangeExam = (val) => {
+    setSelectedExam(val)
+    dispatch(setActiveExam(val))
+  }
 
   const handleConfirm = () => {
     setIsOpen(false);
+    getQuestion(activeExam.id)
+    // apiStartExam({
+    //   exam_id: activeExam.id
+    // })
     navigate("/quiz/ready");
   };
 
+  useEffect(() => {
+    getExam();
+    if(activeExam){
+      getQuestion(activeExam.id)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeExam]);
+
+  useEffect(() => {
+    if (userLog?.email) {
+      setLoading(false);
+    }
+  }, [userLog?.email]);
+
+  const selectedData = listExam?.find((e) => e.id === selectedExam);
+
+  if (loading) {
+    return (
+      <LoadData/>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center px-4 montserrat">
-      <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-full max-w-md">
+      <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-[30em] max-w-md">
         <h2 className="text-lg font-bold text-green-base mb-4">Informasi Asesmen</h2>
 
-        <div className="text-sm text-gray-800 space-y-2">
-          <div>
-            <span className="font-semibold">Nama Asesmen:</span> {assessment.name}
-          </div>
-          <div>
-            <span className="font-semibold">Waktu:</span> {assessment.time}
-          </div>
-          <div>
-            <span className="font-semibold">Sesi:</span> {assessment.session}
-          </div>
-
-          <hr className="my-3" />
-
+        <div className="text-sm text-gray-800 space-y-2 mb-4">
           <div className="font-semibold">Data Peserta:</div>
           <div className="flex items-center gap-2">
             <UserIcon className="w-4 h-4 text-gray-600" />
-            {assessment.user.name}
+            {userLog?.name || "-"}
           </div>
           <div className="flex items-center gap-2">
             <EnvelopeIcon className="w-4 h-4 text-gray-600" />
-            {assessment.user.email}
+            {userLog?.email || "-"}
           </div>
           <div className="flex items-center gap-2">
             <IdentificationIcon className="w-4 h-4 text-gray-600" />
-            {assessment.user.role}
+            {userLog?.role || "-"}
           </div>
+          <div className="flex items-center gap-2">
+            <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
+            Sesi: {userLog?.batch || "-"}
+          </div>
+          <div className="flex items-center gap-2">
+            <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
+            Waktu:{" "}
+            {userLog?.start_time && userLog?.end_time
+              ? `${new Date(userLog.start_time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })} - ${new Date(userLog.end_time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}`
+              : "-"}
+          </div>
+        </div>
+
+        {/* Select Exam */}
+        <div className="space-y-2 text-sm">
+          <label className="font-semibold flex items-center gap-1">
+            <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
+            Pilih Asesmen
+          </label>
+          <Listbox value={selectedExam} onChange={(e) => handleChangeExam(e)}>
+            <div className="relative">
+              <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-green-base focus:border-green-base text-sm">
+                <span className="block truncate">
+                  {selectedExam
+                    ? selectedData?.title || "Asesmen Tidak Ditemukan"
+                    : "-- Pilih Asesmen --"}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronUpDownIcon className="h-4 w-4 text-gray-400" />
+                </span>
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none">
+                {listExam?.map((exam) => (
+                  <Listbox.Option
+                    key={exam.id}
+                    value={exam.id}
+                    className={({ active }) =>
+                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                        active ? "bg-green-100 text-green-900" : "text-gray-900"
+                      }`
+                    }
+                  >
+                    {({ selected }) => (
+                      <>
+                        <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
+                          {exam.title}
+                        </span>
+                        {selected && (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+                            <CheckIcon className="h-4 w-4" />
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
+
+          {/* Detail jumlah soal dan waktu */}
+          {selectedData && (
+            <div className="mt-3 text-sm text-gray-700 space-y-1 border-t pt-3">
+              <div>
+                <span className="font-semibold">Jumlah Soal:</span> {selectedData.questions_count || 0}
+              </div>
+              <div>
+                <span className="font-semibold">Durasi:</span> {selectedData.duration} menit
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tombol Aksi */}
         <div className="mt-6 flex justify-between items-center">
-          <button
+          {/* <button
             onClick={() => navigate("/quiz/simulation")}
             className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all"
           >
             🧪 Simulasi
-          </button>
+          </button> */}
 
           <button
             onClick={() => setIsOpen(true)}
-            className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all"
+            disabled={!selectedExam}
+            className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
           >
             <PlayCircleIcon className="w-5 h-5" />
             Mulai Asesmen
@@ -111,13 +230,13 @@ const Info = () => {
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 rounded-md text-sm bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  className="cursor-pointer px-4 py-2 rounded-md text-sm bg-gray-100 hover:bg-gray-200 text-gray-700"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="px-4 py-2 rounded-md text-sm bg-green-base text-white font-medium"
+                  className="cursor-pointer px-4 py-2 rounded-md text-sm bg-green-base text-white font-medium"
                 >
                   Ya, Mulai
                 </button>

@@ -9,13 +9,17 @@ const QuizSideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
+  const activeExam = useSelector((state) => state.exam.activeExam);
   const listQuestion = useSelector((state) => state.quiz.listQuestion);
   const answerQuestion = useSelector((state) => state.quiz.answerQuestion);
+  const startQuiz = useSelector((state) => state.quiz.startQuiz);
 
   const handleSelect = (index) => {
+    if (!listQuestion || !listQuestion[index]) return;
     dispatch(setNumberQuestion(index));
     setIsOpen(false);
   };
+
 
   return (
     <div className="fixed inset-0 z-10 flex justify-end pointer-events-none">
@@ -43,14 +47,14 @@ const QuizSideBar = () => {
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <p className="text-xl font-bold text-center">Quiz Programmer</p>
-
+        <p className="text-xl font-bold text-center">{ activeExam?.title }</p>
+        { startQuiz && (
         <div className="my-8 grid grid-cols-3 grid-rows-auto gap-4 overflow-auto max-h-[80svh] px-2">
           {listQuestion?.map((q, i) => {
-            const isAnswered = !!answerQuestion?.[q.question.id];
+            const isAnswered = !!answerQuestion?.[q.id];
             return (
               <div
-                key={q.question.id}
+                key={q.id}
                 onClick={() => handleSelect(i)}
                 className={clsx(
                   "cursor-pointer size-20 flex items-center justify-center font-bold border rounded-md transition",
@@ -64,6 +68,7 @@ const QuizSideBar = () => {
             );
           })}
         </div>
+        ) }
 
         {/* Toggle Button */}
         <div

@@ -2,49 +2,53 @@ import { Fragment, useEffect, useState } from "react"
 import CardBody from "./CardBody"
 import CardFooter from "./CardFooter"
 import CardHeader from "./CardHeader"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setFinishQuiz } from "../../../store/quiz/quizSlice"
 import { Dialog, Transition } from "@headlessui/react"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { useNavigate } from "react-router-dom"
+import LoadData from "../Loading/LoadData"
 
 const CardQuiz = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  // const finishQuiz = useSelector(state => state.quiz.finishQuiz) 
   const [timeOut, setTimeOut] = useState(false)
-  const [showTimeoutDialog, setShowTimeoutDialog] = useState(false);
+  const [showTimeoutDialog, setShowTimeoutDialog] = useState(false)
+
+  const listQuestion = useSelector((state) => state.quiz.listQuestion)
+  const activeQuestion = useSelector((state) => state.quiz.activeQuestion)
 
   useEffect(() => {
-    setTimeOut(false);
+    setTimeOut(false)
     if (timeOut) {
-      setShowTimeoutDialog(true);
+      setShowTimeoutDialog(true)
     }
-  }, [timeOut]);
+  }, [timeOut])
 
   const handleTimeoutConfirm = () => {
-    dispatch(setFinishQuiz(true));
-    navigate('/quiz/finish')
-  };
+    dispatch(setFinishQuiz(true))
+    navigate("/quiz/finish")
+  }
+
+  const isLoading = !listQuestion?.length || !activeQuestion?.id
 
   return (
     <>
-    <div className="shadow-xl bg-[white] rounded-[.5em] w-[40em] max-w-[100%]">
-      { !showTimeoutDialog && (
-        <>
-          <CardHeader setTimeOut={setTimeOut}/>
-          <CardBody />
-          <CardFooter />
-        </>
-      ) }
-    </div>
-    <Transition appear show={showTimeoutDialog} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => {}}
-        >
+      <div className="">
+        {isLoading ? (
+          <LoadData />
+        ) : !showTimeoutDialog ? (
+          <div className="shadow-xl bg-[white] rounded-[.5em] w-[40em] max-w-[100%]">
+            <CardHeader setTimeOut={setTimeOut} />
+            <CardBody />
+            <CardFooter />
+          </div>
+        ) : null}
+      </div>
+
+      <Transition appear show={showTimeoutDialog} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={() => {}}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

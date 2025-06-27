@@ -12,7 +12,7 @@ export default function App() {
     useEffect(() => {
         const fetchUser = async () => {
             if (data) {
-                dispatch(setUserDetails(data));
+                dispatch(setUserDetails(data.data));
             } else {
                 clearAuth();
             }

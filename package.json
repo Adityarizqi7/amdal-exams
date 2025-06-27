@@ -17,6 +17,7 @@
     "@tinymce/tinymce-react": "^6.2.1",
     "axios": "^1.10.0",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

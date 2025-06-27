@@ -1,13 +1,9 @@
-import { useSelector } from "react-redux"
 import CommonLayout from "../layouts/CommonLayout"
 
 import '../styles/library/Marquee.css'
 import klh from '../../src/assets/images/klh-half-gray.png'
 
 const Home = () => {
-  const userLog = useSelector((state) => state.user)
-  console.log(userLog)
-
   return (
     <CommonLayout
       title='Beranda - Seleksi Tenaga Teknis Operasional Amdalnet 2025'

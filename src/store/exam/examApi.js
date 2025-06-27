@@ -11,8 +11,33 @@ export const examApi = createApi({
                 url: "exams/all",
                 method: "GET",
             }),
-            transformResponse: (response) => response,
-            providesTags: ["Exam"],
+            transformResponse(response) {
+                return response;
+
+            },
+            invalidatesTags:["Exam"],
+        }),
+        getListQuestion: builder.query({
+            query: (exam_id) => ({
+                url: `/questions/list/${exam_id}`,
+                method: "GET",
+            }),
+            transformResponse(response) {
+                return response;
+
+            },
+            invalidatesTags:["Exam"],
+        }),
+        startExamBe: builder.mutation({
+            query: ({ exam_id }) =>({
+                url: "/exam-submissions/start",
+                method: "POST",
+                body: { exam_id },
+            }),
+            transformResponse(response) {
+                return response;
+            },
+            invalidatesTags:["Exam"],
         }),
         create: builder.mutation({
             query: ({ title, description, image, duration }) =>({
@@ -24,11 +49,13 @@ export const examApi = createApi({
                 return response;
 
             },
-            invalidatesTags:["Auth"],
-        }),
+            invalidatesTags:["Exam"],
+        })
     }),
 });
+
 export const {
-    useCreateMutation,
-    useLazyGetExamQuery
+    useLazyGetExamQuery,
+    useLazyGetListQuestionQuery,
+    useStartExamBeMutation
 } = examApi;

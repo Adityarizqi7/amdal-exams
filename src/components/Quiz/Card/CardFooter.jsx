@@ -14,6 +14,7 @@ const CardFooter = () => {
   const answer = useSelector((state) => state.quiz.answerQuestion);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [unansweredWarning, setUnansweredWarning] = useState(false);
 
   if (!list?.length || !active) return null;
 
@@ -21,11 +22,11 @@ const CardFooter = () => {
 
   const simpanJawabanEssay = () => {
     if (
-      active.question.type === "essay" &&
-      typeof answer?.[active.question.id] !== "string"
+      active.question_type === "essay" &&
+      typeof answer?.[active.id] !== "string"
     ) {
       const content = window.tinymce?.activeEditor?.getContent?.() || "";
-      dispatch(setAnswerQuestion({ [active.question.id]: content }));
+      dispatch(setAnswerQuestion({ [active.id]: content }));
     }
   };
 
@@ -35,21 +36,24 @@ const CardFooter = () => {
     if (currentIndex + 1 < total) {
       dispatch(setNumberQuestion(currentIndex + 1));
     } else {
-      setIsOpen(true); // terakhir → konfirmasi
+      const isAllAnswered = list.every((q) => !!answer?.[q.id]);
+      setUnansweredWarning(!isAllAnswered);
+      setIsOpen(true);
     }
   };
 
   const handleBack = () => {
     simpanJawabanEssay();
-
     if (currentIndex > 0) {
       dispatch(setNumberQuestion(currentIndex - 1));
     }
   };
 
   const confirmFinish = () => {
-    setIsOpen(false);
-    navigate("/quiz/finish");
+    if (!unansweredWarning) {
+      setIsOpen(false);
+      navigate("/quiz/finish");
+    }
   };
 
   return (
@@ -101,7 +105,9 @@ const CardFooter = () => {
                 </Dialog.Title>
               </div>
               <Dialog.Description className="text-sm text-gray-600">
-                Apakah kamu yakin ingin mengakhiri ujian sekarang? Pastikan semua soal sudah dijawab.
+                {unansweredWarning
+                  ? "Masih ada soal yang belum dijawab. Harap selesaikan semua soal terlebih dahulu."
+                  : "Apakah kamu yakin ingin mengakhiri ujian sekarang?"}
               </Dialog.Description>
 
               <div className="flex justify-end gap-2 pt-2">
@@ -113,7 +119,12 @@ const CardFooter = () => {
                 </button>
                 <button
                   onClick={confirmFinish}
-                  className="px-4 py-2 rounded-md text-sm bg-green-base hover:bg-green-700 text-white font-semibold"
+                  disabled={unansweredWarning}
+                  className={`px-4 py-2 rounded-md text-sm text-white font-semibold ${
+                    unansweredWarning
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-green-base hover:bg-green-700"
+                  }`}
                 >
                   Ya, Akhiri
                 </button>

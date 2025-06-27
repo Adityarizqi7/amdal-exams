@@ -20,7 +20,7 @@ const ChoiceOption = ({ listChoice, onChange }) => {
             readOnly
             className="size-4"
           />
-          <span>{el.text}</span>
+          <span>{el.option_text}</span>
         </div>
       ))}
     </div>

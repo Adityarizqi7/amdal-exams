@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -24,6 +24,10 @@ export default function Login() {
     const [loading, setLoading] = useState(false)
     const [touched, setTouched] = useState({});
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        console.log(formData.email === '' || formData.password === '' || errors.password || errors.email || loading)
+    },[formData.email,  formData.password, errors.password, errors.email,  loading])
 
     const validate = (fields = formData) => {
         const newErrors = {};
@@ -73,8 +77,9 @@ export default function Login() {
                     setLoading(false)
                     throw new Error("Email atau password salah");
                 }
+
                 setToken(data.data.access_token);
-                dispatch(setUserDetails(data.user));
+                dispatch(setUserDetails(data.data.user));
 
                 if (await getToken()) {
                     setLoading(false);
