@@ -1,29 +1,72 @@
-import { useSelector } from "react-redux"
+import Swal from "sweetalert2"
+import { useSelector, useDispatch } from "react-redux"
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, NavLink, useLocation } from 'react-router-dom'
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
 import {
     ChevronDownIcon,
-    TrashIcon,
+    ArrowRightStartOnRectangleIcon,
   } from '@heroicons/react/16/solid'
 
 import klh from '../../assets/images/klh.png'
 import amdalnet from '../../assets/images/amdalnet.png'
-// import DarkBtn from '@/components/button/DarkBtn'
+import { useLazyLogoutQuery } from "../../store/auth/authApi"
+import { Logout } from "../../utils/Auth"
 
 export default function Topbar() {
 
+    const [logout] = useLazyLogoutQuery();
+
+    const dispatch = useDispatch()
+    
     const userLog = useSelector((state) => state.user)
     console.log(userLog, 'hahaha')
 
     const location = useLocation()
     const navigate = useNavigate();
 
+    const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-
+    const [loadingLogout, setLoadingLogout] = useState(false);
+    
     const changeColor = useCallback(() => {
         setIsScrolled(window.scrollY > 0);
     }, []);
+
+    function formatShortName(name) {
+        const parts = name.trim().split(/\s+/);
+        if (parts.length === 0) return '';
+        return parts[0] + (parts.length > 1 ? ' ' + parts.slice(1).map(w => w[0]).join('') : '');
+    }
+
+    const toggleAccount = () => {
+        setIsOpen(!isOpen);
+    }
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+
+        try {
+            setLoadingLogout(true)
+            const response = await logout();
+    
+            const { error } = response;
+
+            if (error) {
+                setLoadingLogout(false)
+                throw new Error("Gagal Logout.");
+            }
+            console.log(location.pathname)
+            dispatch(Logout());
+            if (location.pathname.includes('dashboard')) {
+                navigate("/admin/signin",{ replace: true })
+            }
+            navigate("/login",{ replace: true })
+        } catch (error) {
+            setLoadingLogout(false)
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         window.addEventListener('scroll', changeColor);
@@ -69,27 +112,28 @@ export default function Topbar() {
                     </div>
                     <div className='lg:block hidden'>
                     {
+                        !userLog.name ?
+                            <h3>Memuat..</h3>
+                        : 
                         userLog.name ? 
-                            <Menu>
-                                <MenuButton className="inline-flex items-center gap-2 rounded-md bg-gray-800 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-700 data-open:bg-gray-700">
-                                    Akun
+                            <div className="account-popup relative">
+                                <button onClick={toggleAccount} type="button" className="cursor-pointer inline-flex items-center gap-2 rounded-md bg-green-base hover:bg-green-base/80 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10">
+                                    {formatShortName(userLog.name)}
                                     <ChevronDownIcon className="size-4 fill-white/60" />
-                                </MenuButton>
-
-                                <MenuItems
-                                    transition
-                                    anchor="bottom end"
-                                    className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
-                                >
-                                    <MenuItem>
-                                        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
-                                        <TrashIcon className="size-4 fill-white/30" />
-                                        Delete
-                                        <kbd className="ml-auto hidden font-sans text-xs text-white/50 group-data-focus:inline">⌘D</kbd>
+                                </button>
+                                {
+                                    isOpen ? 
+                                    <div className="wrapper-account absolute bg-white shadow-own top-[3.5rem] right-[0rem] w-52 origin-top-right rounded-[8px] border border-white/5 text-sm/6 transition duration-100 ease-out [--anchor-gap:--spacing(1)] p-2">
+                                        <button type="button" onClick={handleLogout} className={`${loadingLogout ? 'opacity-50 pointer-events-none' : ''} menu-item p-2 w-full rounded-[6px] hover:bg-gray-100 text-red-500 cursor-pointer flex items-center gap-2`}>
+                                            <ArrowRightStartOnRectangleIcon className="size-5 fill-red-500" />
+                                            <span className="font-semibold">
+                                                {loadingLogout ? 'Memuat...' : 'Keluar'}
+                                            </span>
                                         </button>
-                                    </MenuItem>
-                                </MenuItems>
-                            </Menu>
+                                    </div>
+                                    : false
+                                }
+                            </div>
                         :
                             <div className='flex items-center gap-4'>
                                 <button onClick={() => {
@@ -157,13 +201,21 @@ export default function Topbar() {
                         className='montserrat lg:hidden rounded-[1.15rem] bg-white overflow-y-auto h-auto'
                         id='mobile-menu'
                     >
-                        <div className='space-y-1 p-5'>
+                        <div className='space-y-1 p-2'>
                             <Menu.Item>
                                 <ItemNav
                                     title={'Beranda'}
                                     path={'/'}
-                                    classItemNav='block py-4 bg-gray-100'
+                                    classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                 />
+                            </Menu.Item>
+                            <Menu.Item>
+                                <button type="button" onClick={handleLogout} className={`${loadingLogout ? 'opacity-50 pointer-events-none' : ''} menu-item flex items-center gap-2 text-red-500 py-4 px-4 w-full rounded-[6px]`}>
+                                    <ArrowRightStartOnRectangleIcon className="size-5 fill-red-500" />
+                                    <span className="font-semibold">
+                                        {loadingLogout ? 'Memuat...' : 'Keluar'}
+                                    </span>
+                                </button>
                             </Menu.Item>
                         </div>
                     </Menu.Items>
@@ -238,12 +290,16 @@ const ItemDropdownNav = React.memo(({ title, path }) => {
         </Menu.Item>
     )
 })
-const ItemNav = React.memo(({ title, path }) => {
+const ItemNav = React.memo(({ title, path, classItemNav }) => {
     return (
         <NavLink
             to={path}
             className={({ isActive }) =>
-                isActive ? "text-green-base font-semibold text-[1.1rem]" : "bg-white text-black"
+                `${classItemNav} ${
+                isActive
+                    ? "text-green-base font-semibold"
+                    : "bg-white text-black"
+                }`
             }
         >
             {title}

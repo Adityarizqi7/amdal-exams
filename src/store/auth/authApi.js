@@ -18,6 +18,13 @@ export const authApi = createApi({
             },
             invalidatesTags:["Auth"],
         }),
+        logout: builder.query({
+            query: () =>({
+                url: "logout",
+                method: "GET",
+            }),
+            transformResponse: (response) => response
+        }),
         me: builder.query({
             query: () => ({
                 url: "me",
@@ -31,5 +38,6 @@ export const authApi = createApi({
 
 export const {
     useLoginMutation,
+    useLazyLogoutQuery,
     useMeQuery
 } = authApi;

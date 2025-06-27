@@ -1,3 +1,4 @@
+import Swal from "sweetalert2"
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -76,11 +77,31 @@ export default function Login() {
                 dispatch(setUserDetails(data.user));
 
                 if (await getToken()) {
-                    if (location.pathname === '/admin/signin') {
-                        navigate("/dashboard/exam/create")
-                    } else {
-                        navigate("/quiz")
-                    }
+                    let timerInterval
+                    Swal.fire({
+                        timer: 1000,
+                        icon: 'success',
+                        showConfirmButton: false,
+                        title: 'Berhasil Masuk',
+                        text: 'Tunggu sebentar',
+                        customClass: {
+                            container: 'montserrat'
+                        },
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            if (location.pathname === '/admin/signin') {
+                                navigate("/dashboard/exam/create",{ replace: true })
+                            } else {
+                                navigate("/quiz",{ replace: true })
+                            }
+                        }
+                    }) 
                     // navigate("/dashboard"); // Ensure navigation only on success
                     // window.location.href = "/dashboard"
                 } else {

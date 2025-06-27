@@ -5,7 +5,7 @@ const CreateExam = () => {
         <CommonLayout
             title='Buat Tipe Soal - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="create-exam-component">
+            <div className="create-exam-component h-dvh">
 
             </div>
         </CommonLayout>
