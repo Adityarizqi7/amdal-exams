@@ -68,15 +68,16 @@ export default function Login() {
                 const response = await login(formData);
     
                 const { data, error } = response; // Explicitly destructure
-    
+
                 if (error) {
                     setLoading(false)
                     throw new Error("Email atau password salah");
                 }
-                setToken(data.access_token);
+                setToken(data.data.access_token);
                 dispatch(setUserDetails(data.user));
 
                 if (await getToken()) {
+                    setLoading(false);
                     let timerInterval
                     Swal.fire({
                         timer: 1000,
@@ -202,7 +203,7 @@ export default function Login() {
                                 {touched.password && errors.password && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.password}</div>}
                             </div>
                         </div>
-                        <button type="submit" className={`${formData.email === '' || formData.password === '' || errors.password || errors.email || loading ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-2 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer`}>
+                        <button type="submit" className={`${formData.email === '' || formData.password === '' || errors.password || errors.email || loading ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-2 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer transition-colors`}>
                            {
                                 loading ? 'Memuat...' :
                                 `Masuk ${location.pathname === '/admin/login' ? ' Sebagai Admin' : ''}`

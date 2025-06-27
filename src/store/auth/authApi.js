@@ -14,7 +14,6 @@ export const authApi = createApi({
             }),
             transformResponse(response) {
                 return response;
-
             },
             invalidatesTags:["Auth"],
         }),

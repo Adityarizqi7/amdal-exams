@@ -1,17 +1,17 @@
 import Swal from "sweetalert2"
 import { useSelector, useDispatch } from "react-redux"
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, NavLink, useLocation } from 'react-router-dom'
 import { Menu, Transition } from '@headlessui/react'
 import {
     ChevronDownIcon,
     ArrowRightStartOnRectangleIcon,
-  } from '@heroicons/react/16/solid'
+} from '@heroicons/react/16/solid'
 
+import { Logout } from "../../utils/Auth"
 import klh from '../../assets/images/klh.png'
 import amdalnet from '../../assets/images/amdalnet.png'
 import { useLazyLogoutQuery } from "../../store/auth/authApi"
-import { Logout } from "../../utils/Auth"
 
 export default function Topbar() {
 
@@ -20,7 +20,8 @@ export default function Topbar() {
     const dispatch = useDispatch()
     
     const userLog = useSelector((state) => state.user)
-    console.log(userLog, 'hahaha')
+
+    const dropdownAccountRef = useRef(null);
 
     const location = useLocation()
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ export default function Topbar() {
         setIsOpen(!isOpen);
     }
 
-    const handleLogout = async (e) => {
+    const handleLogout = useCallback( async (e) => {
         e.preventDefault();
 
         try {
@@ -56,22 +57,27 @@ export default function Topbar() {
                 setLoadingLogout(false)
                 throw new Error("Gagal Logout.");
             }
-            console.log(location.pathname)
+            window.location.reload();
             dispatch(Logout());
-            if (location.pathname.includes('dashboard')) {
-                navigate("/admin/signin",{ replace: true })
-            }
-            navigate("/login",{ replace: true })
         } catch (error) {
             setLoadingLogout(false)
             console.log(error)
         }
-    }
+    }, [dispatch, logout]);
 
     useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownAccountRef.current && !dropdownAccountRef.current.contains(event.target)) {
+              setIsOpen(false);
+            }
+        }
+      
+        document.addEventListener("mousedown", handleClickOutside);
         window.addEventListener('scroll', changeColor);
+
         return () => {
-          window.removeEventListener('scroll', changeColor);
+            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener('scroll', changeColor);
         };
     }, [changeColor]);
 
@@ -102,28 +108,29 @@ export default function Topbar() {
                     </div>
                     <div className='hidden items-center lg:block'>
                         <div
-                            className="flex items-center"
+                            className="flex items-center gap-8"
                         >
                             <ItemDropdownNav
                                 title={'Beranda'}
                                 path={'/'}
                             />
+                            <ItemDropdownNav
+                                title={'Tipe Ujian'}
+                                path={'/dashboard/exams'}
+                            />
                         </div>
                     </div>
                     <div className='lg:block hidden'>
                     {
-                        !userLog.name ?
-                            <h3>Memuat..</h3>
-                        : 
                         userLog.name ? 
-                            <div className="account-popup relative">
+                            <div ref={dropdownAccountRef} className="account-popup relative">
                                 <button onClick={toggleAccount} type="button" className="cursor-pointer inline-flex items-center gap-2 rounded-md bg-green-base hover:bg-green-base/80 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10">
                                     {formatShortName(userLog.name)}
                                     <ChevronDownIcon className="size-4 fill-white/60" />
                                 </button>
                                 {
                                     isOpen ? 
-                                    <div className="wrapper-account absolute bg-white shadow-own top-[3.5rem] right-[0rem] w-52 origin-top-right rounded-[8px] border border-white/5 text-sm/6 transition duration-100 ease-out [--anchor-gap:--spacing(1)] p-2">
+                                    <div className="wrapper-account absolute bg-white shadow-own top-[3.25rem] right-[0rem] w-52 origin-top-right rounded-[8px] border border-white/5 text-sm/6 transition duration-100 ease-out [--anchor-gap:--spacing(1)] p-2">
                                         <button type="button" onClick={handleLogout} className={`${loadingLogout ? 'opacity-50 pointer-events-none' : ''} menu-item p-2 w-full rounded-[6px] hover:bg-gray-100 text-red-500 cursor-pointer flex items-center gap-2`}>
                                             <ArrowRightStartOnRectangleIcon className="size-5 fill-red-500" />
                                             <span className="font-semibold">
@@ -209,14 +216,27 @@ export default function Topbar() {
                                     classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                 />
                             </Menu.Item>
-                            <Menu.Item>
-                                <button type="button" onClick={handleLogout} className={`${loadingLogout ? 'opacity-50 pointer-events-none' : ''} menu-item flex items-center gap-2 text-red-500 py-4 px-4 w-full rounded-[6px]`}>
-                                    <ArrowRightStartOnRectangleIcon className="size-5 fill-red-500" />
-                                    <span className="font-semibold">
-                                        {loadingLogout ? 'Memuat...' : 'Keluar'}
-                                    </span>
-                                </button>
-                            </Menu.Item>
+                            {
+                                userLog.email ?
+                                    <>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Tipe Soal'}
+                                                path={'/dashboard/exams'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <button type="button" onClick={handleLogout} className={`${loadingLogout ? 'opacity-50 pointer-events-none' : ''} menu-item flex items-center gap-2 text-red-500 py-4 px-4 w-full rounded-[6px]`}>
+                                                <ArrowRightStartOnRectangleIcon className="size-5 fill-red-500" />
+                                                <span className="font-semibold">
+                                                    {loadingLogout ? 'Memuat...' : 'Keluar'}
+                                                </span>
+                                            </button>
+                                        </Menu.Item>
+                                    </>
+                                : false
+                            }
                         </div>
                     </Menu.Items>
                 </Transition>
@@ -274,11 +294,12 @@ const WrapperItemsDropdownNav = React.memo(
         )
     }
 )
-const ItemDropdownNav = React.memo(({ title, path }) => {
+const ItemDropdownNav = React.memo(({ title, path, onClick }) => {
     return (
         <Menu.Item>
             {() => (
                 <NavLink
+                    onClick={onClick}
                     className={({ isActive }) =>
                         isActive ? "text-green-base font-semibold text-[1.1rem]" : "bg-white text-black"
                     }

@@ -6,11 +6,11 @@ const ProtectedRoute = ({children}) => {
   const user = useSelector((state)=> state.user)
 
     const navigate = useNavigate(); 
-    
+
     useEffect(() => {
-        if (user.id && user.email) {
+        if (user.data.id && user.data.email) {
             if(user.role == 'admin'){
-              navigate('/dashboard/exam/create')
+              navigate('/dashboard/exams')
             } else {
               navigate('/quiz')
             }

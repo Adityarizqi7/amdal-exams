@@ -4,6 +4,7 @@ import userSlice from "./user/userSlice";
 import inetSlice from "./inet/inetSlice";
 import quizSlice from "./quiz/quizSlice";
 import { userApi } from "./user/userApi";
+import { examApi } from "./exam/examApi";
 import { authApi } from "./auth/authApi";
 
 const reducer = combineReducers({
@@ -12,6 +13,7 @@ const reducer = combineReducers({
     quiz: quizSlice,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [examApi.reducerPath]: examApi.reducer,
 
 });
 
@@ -21,6 +23,7 @@ const store = configureStore({
         getDefaultMiddleware().concat(
             authApi.middleware,
             userApi.middleware,
+            examApi.middleware,
         ),
 });
 

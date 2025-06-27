@@ -5,7 +5,13 @@ import Home from "../pages/Home";
 import Login from '../pages/Authentication/Login'
 
 // Dashboard
-import CreateExam from '../pages/Dashboard/CreateExam'
+import EditExam from '../pages/Dashboard/Exam/EditExam'
+import ListExam from '../pages/Dashboard/Exam/ListExam'
+import CreateExam from '../pages/Dashboard/Exam/CreateExam'
+
+// import EditQuestion from '../pages/Dashboard/Question/EditQuestion'
+import ListQuestion from '../pages/Dashboard/Question/ListQuestion'
+// import CreateQuestion from '../pages/Dashboard/Question/CreateQuestion'
 
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'
@@ -32,11 +38,28 @@ export default function Router() {
                         <Login />
                     </ProtectedRoute>
                     } />
+
+                {/* Exams */}
                 <Route path='/dashboard/exam/create' element={
                     <PrivateRoute>
                         <CreateExam/>
                     </PrivateRoute>
                     } />
+                <Route path='/dashboard/exams' element={
+                    <PrivateRoute>
+                        <ListExam/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/exam/:id' element={
+                    <PrivateRoute>
+                        <EditExam/>
+                    </PrivateRoute>
+                    } />
+
+                {/* Question */}
+                
+
+
                 <Route path='quiz' element={
                     <PrivateRoute>
                         <QuizLayout />
