@@ -1,4 +1,3 @@
-// src/components/Quiz/Card/CardBody.jsx
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ChoiceOption from "../Answer/ChoiceOption";
@@ -9,25 +8,32 @@ const CardBody = () => {
   const dispatch = useDispatch();
   const activeQuestion = useSelector((state) => state.quiz.activeQuestion);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
-  const storedAnswer = useSelector((state) => state.quiz.answerQuestion?.[activeQuestion?.question?.id]);
-  console.log(activeQuestion)
+  const storedAnswer = useSelector(
+    (state) => state.quiz.answerQuestion?.[activeQuestion?.question?.id]
+  );
+
   const [listChoice, setListChoice] = useState([]);
-  const [essayAnswer, setEssayAnswer] = useState(storedAnswer || "");
+  const [essayAnswer, setEssayAnswer] = useState("");
 
   useEffect(() => {
-    if (activeQuestion?.question.type === "choice" || activeQuestion?.question.type === "multiple_choice") {
+    if (!activeQuestion) return;
+
+    const { question, choice } = activeQuestion;
+
+    if (question.type === "choice" || question.type === "multiple_choice") {
       setListChoice(
-        activeQuestion.choice?.map((el) => ({
+        choice?.map((el) => ({
           ...el,
           selected: Array.isArray(storedAnswer)
             ? storedAnswer.includes(el.id)
             : storedAnswer === el.id,
         }))
       );
-    } else if (activeQuestion?.type === "essay") {
+    } else if (question.type === "essay") {
       setEssayAnswer(storedAnswer || "");
     }
-  }, [activeQuestion, storedAnswer]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeQuestion?.question.id]); // refresh on question change
 
   const handleChangeChoice = (index) => {
     const updated = listChoice.map((el, i) => {
@@ -43,7 +49,9 @@ const CardBody = () => {
     dispatch(
       setAnswerQuestion({
         [activeQuestion.question.id]:
-          activeQuestion.question.type === "choice" ? selectedIds[0] : selectedIds,
+          activeQuestion.question.type === "choice"
+            ? selectedIds[0]
+            : selectedIds,
       })
     );
   };
@@ -57,12 +65,13 @@ const CardBody = () => {
 
   return (
     <div className="px-4 py-8">
-      <p className="font-bold text-xl">
+      <p className="font-bold text-xl mb-5">
         {activeQuestion.question.number}
         {startQuiz && "."} {activeQuestion.question.title}
       </p>
 
-      {activeQuestion.question.type === "choice" || activeQuestion.question.type === "multiple_choice" ? (
+      {activeQuestion.question.type === "choice" ||
+      activeQuestion.question.type === "multiple_choice" ? (
         <ChoiceOption listChoice={listChoice} onChange={handleChangeChoice} />
       ) : activeQuestion.question.type === "essay" ? (
         <TinyMCEEditor value={essayAnswer} onChange={handleEssayChange} />

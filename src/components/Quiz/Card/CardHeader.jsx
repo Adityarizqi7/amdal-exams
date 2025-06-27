@@ -1,38 +1,43 @@
-// src/components/Quiz/Card/CardHeader.jsx
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const CardHeader = ({ setForcedNext }) => {
+const CardHeader = ({ setTimeOut }) => {
   const infoQuiz = useSelector((state) => state.quiz.infoQuiz);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
   const [quizTime, setQuizTime] = useState(0);
 
-  // Set initial time once infoQuiz is available
+  // Sinkronkan quizTime dengan infoQuiz saat quiz dimulai
   useEffect(() => {
-    if (infoQuiz?.time) {
-      setQuizTime(infoQuiz.time); // convert from minutes to seconds
+    if (startQuiz && infoQuiz?.time) {
+      setQuizTime(infoQuiz.time);
     }
-  }, [infoQuiz]);
+  }, [startQuiz, infoQuiz?.time]);
 
-  // Countdown effect
+  // Timer countdown
   useEffect(() => {
-    if (quizTime <= 0 || !startQuiz) return;
+    if (!startQuiz || quizTime <= 0) return;
 
-    const countDownTimer = setInterval(() => {
+    const timer = setInterval(() => {
       setQuizTime((prev) => {
         if (prev <= 1) {
-          clearInterval(countDownTimer);
-          setForcedNext(true);
+          clearInterval(timer);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(countDownTimer);
-  }, [quizTime, setForcedNext, startQuiz]);
+    return () => clearInterval(timer);
+  }, [startQuiz, quizTime]);
+
+  // Trigger timeout secara aman
+  useEffect(() => {
+    if (quizTime === 0 && startQuiz) {
+      setTimeOut(true);
+    }
+  }, [quizTime, startQuiz, setTimeOut]);
 
   if (!infoQuiz) return null;
 
@@ -42,7 +47,7 @@ const CardHeader = ({ setForcedNext }) => {
       style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
     >
       <p className="font-bold">{infoQuiz.title}</p>
-      <Transition show={Boolean(quizTime)}>
+      <Transition show={Boolean(infoQuiz.time)}>
         <div
           className={clsx(
             "px-1 py-2 rounded-[.25em] text-black border flex items-center gap-2",

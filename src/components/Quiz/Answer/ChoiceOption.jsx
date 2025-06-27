@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 const ChoiceOption = ({ listChoice, onChange }) => {
   return (
-    <div className="grid grid-cols-1 gap-4 mt-5">
+    <div className="grid grid-cols-1 gap-4">
       {listChoice?.map((el, index) => (
         <div
           key={index}
