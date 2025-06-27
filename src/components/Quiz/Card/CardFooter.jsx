@@ -52,7 +52,7 @@ const CardFooter = () => {
         )}
 
         <button
-          className="bg-blue-500 px-4 py-2 rounded font-bold text-white"
+          className="bg-green-base px-4 py-2 rounded font-bold text-white"
           onClick={handleNext}
         >
           {currentIndex + 1 === total ? "Selesai" : "Next Question"}
@@ -95,7 +95,7 @@ const CardFooter = () => {
                 </button>
                 <button
                   onClick={confirmFinish}
-                  className="px-4 py-2 rounded-md text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                  className="px-4 py-2 rounded-md text-sm bg-green-base hover:bg-blue-700 text-white font-semibold"
                 >
                   Ya, Akhiri
                 </button>
