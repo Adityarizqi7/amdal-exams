@@ -253,7 +253,7 @@ const EditExam = () => {
                             <button type="button" onClick={handleSubmit} className={`${formData.title === '' || formData.description === '' || formData.duration === '' || errors.description || errors.title  || errors.title || loadingSubmit ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-6 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer transition-colors`}>
                             {
                                     loadingSubmit ? 'Memuat...' :
-                                    `Simpan Tipe Ujian`
+                                    `Simpan Perubahan Tipe Ujian`
                             }
                             </button>
                         </section>

@@ -60,7 +60,7 @@ const CreateExam = () => {
 
             if (error) {
                 setLoadingSubmit(false)
-                throw new Error("Email atau password salah");
+                throw new Error("Terdapat inputan yang masih salah.");
             }
 
             setLoadingSubmit(false);
@@ -165,7 +165,7 @@ const CreateExam = () => {
                                 {touched.duration && errors.duration && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.duration}</div>}
                             </div>
                         </div>
-                        <button type="button" onClick={handleSubmit} className={`${formData.title === '' || formData.description === '' || formData.duration === '' || errors.description || errors.title  || errors.title || loadingSubmit ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-6 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer transition-colors`}>
+                        <button type="button" onClick={handleSubmit} className={`${formData.title === '' || formData.description === '' || formData.duration === '' || errors.description || errors.duration  || errors.title || loadingSubmit ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-6 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer transition-colors`}>
                            {
                                 loadingSubmit ? 'Memuat...' :
                                 `Simpan Tipe Ujian`

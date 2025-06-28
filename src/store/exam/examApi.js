@@ -57,5 +57,6 @@ export const examApi = createApi({
 export const {
     useLazyGetExamQuery,
     useLazyGetListQuestionQuery,
-    useStartExamBeMutation
+    useStartExamBeMutation,
+    useCreateMutation
 } = examApi;

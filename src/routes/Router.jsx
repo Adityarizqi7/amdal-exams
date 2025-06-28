@@ -9,9 +9,10 @@ import EditExam from '../pages/Dashboard/Exam/EditExam'
 import ListExam from '../pages/Dashboard/Exam/ListExam'
 import CreateExam from '../pages/Dashboard/Exam/CreateExam'
 
-// import EditQuestion from '../pages/Dashboard/Question/EditQuestion'
+import PreviewQuestion from '../pages/Dashboard/Question/PreviewQuestion'
 import ListQuestion from '../pages/Dashboard/Question/ListQuestion'
-// import CreateQuestion from '../pages/Dashboard/Question/CreateQuestion'
+import CreateQuestion from '../pages/Dashboard/Question/CreateQuestion'
+import EditQuestion from "../pages/Dashboard/Question/EditQuestion";
 
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'
@@ -57,7 +58,26 @@ export default function Router() {
                     } />
 
                 {/* Question */}
-                
+                <Route path='/dashboard/questions' element={
+                    <PrivateRoute>
+                        <ListQuestion/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/question/create' element={
+                    <PrivateRoute>
+                        <CreateQuestion/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/question/:id/edit' element={
+                    <PrivateRoute>
+                        <EditQuestion/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/question/:id/preview' element={
+                    <PrivateRoute>
+                        <PreviewQuestion/>
+                    </PrivateRoute>
+                    } />
 
 
                 <Route path='quiz' element={

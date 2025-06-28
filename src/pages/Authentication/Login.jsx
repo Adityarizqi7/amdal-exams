@@ -102,7 +102,7 @@ export default function Login() {
                     }).then((result) => {
                         if (result.dismiss === Swal.DismissReason.timer) {
                             if (location.pathname === '/admin/signin') {
-                                navigate("/dashboard/exam/create")
+                                navigate("/dashboard/exams")
                             } else {
                                 navigate("/quiz")
                             }

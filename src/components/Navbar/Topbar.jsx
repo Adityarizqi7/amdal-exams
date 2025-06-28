@@ -118,6 +118,10 @@ export default function Topbar() {
                                 title={'Tipe Ujian'}
                                 path={'/dashboard/exams'}
                             />
+                            <ItemDropdownNav
+                                title={'Pertanyaan'}
+                                path={'/dashboard/questions'}
+                            />
                         </div>
                     </div>
                     <div className='lg:block hidden'>
@@ -218,11 +222,18 @@ export default function Topbar() {
                             </Menu.Item>
                             {
                                 userLog.email ?
-                                    <>
+                                    <div className="space-y-2">
                                         <Menu.Item>
                                             <ItemNav
                                                 title={'Tipe Soal'}
                                                 path={'/dashboard/exams'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Pertanyaan'}
+                                                path={'/dashboard/questions'}
                                                 classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                             />
                                         </Menu.Item>
@@ -234,7 +245,7 @@ export default function Topbar() {
                                                 </span>
                                             </button>
                                         </Menu.Item>
-                                    </>
+                                    </div>
                                 : false
                             }
                         </div>

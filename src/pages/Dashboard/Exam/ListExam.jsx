@@ -69,39 +69,40 @@ const ListExam = () => {
             setLoadingExam(true);
             
             const token = await getToken();
-            axios.delete(`${CONST.BASE_URL_API}exams/${el.id}`, {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }})
-              .then(() => {
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Berhasil',
-                  text: 'Tipe Ujian berhasil dihapus!',
-                  customClass: {
-                    container: 'montserrat'
-                  }
-                });
-                
-                getAllExam();
-              })
-              .catch((error) => {
-                console.error(error);
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Gagal Menghapus',
-                  text: 'Terjadi kesalahan saat menghapus data.',
-                  customClass: {
-                    container: 'montserrat'
-                  }
-                });
-              })
-              .finally(() => {
-                setLoadingExam(false);
-              });
+            if (token) {
+                axios.delete(`${CONST.BASE_URL_API}exams/${el.id}`, {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                    }})
+                  .then(() => {
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Berhasil',
+                      text: 'Tipe Ujian berhasil dihapus!',
+                      customClass: {
+                        container: 'montserrat'
+                      }
+                    })
+                    navigate('/dashboard/exams')
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Gagal Menghapus',
+                      text: 'Terjadi kesalahan saat menghapus data.',
+                      customClass: {
+                        container: 'montserrat'
+                      }
+                    });
+                  })
+                  .finally(() => {
+                    setLoadingExam(false);
+                  });
+            }
         }
         });
-    }, [getAllExam])
+    }, [navigate])
 
     const handlePageChange = (page) => {
         if (page < 1 || page > pagination.last_page) return;
@@ -157,7 +158,7 @@ const ListExam = () => {
                                     exams?.length < 1 ?
                                     (
                                         <tr className="bg-white border-b border-gray-300">
-                                            <td colSpan={6} className="px-6 py-4 text-[1.25rem]">
+                                            <td colSpan={5} className="px-6 py-4 text-[1.25rem]">
                                                 Data Tipe Ujian masih kosong, segera tambahkan.
                                             </td>
                                         </tr>
@@ -210,9 +211,9 @@ const ListExam = () => {
 
                         </div>
 
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination justify-end'>
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination justify-end montserrat'>
                             <button
-                                className='cursor-pointer'
+                                className={`cursor-pointer ${pagination.current_page === pagination.last_page ? 'pointer-events-none opacity-50' : ''}`}
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}
                             >
@@ -232,7 +233,7 @@ const ListExam = () => {
                             ))}
 
                             <button
-                                className='cursor-pointer'
+                                className={`cursor-pointer ${pagination.current_page === pagination.last_page ? 'pointer-events-none opacity-50' : ''}`}
                                 onClick={() => handlePageChange(pagination.current_page + 1)}
                                 disabled={pagination.current_page === pagination.last_page}
                             >
