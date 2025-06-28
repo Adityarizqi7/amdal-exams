@@ -15,6 +15,7 @@ import { setActiveExam, setListExam } from "../../store/exam/examSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadData from "../../components/Quiz/Loading/LoadData";
 import { setListQuestion } from "../../store/quiz/quizSlice";
+// import { setStartTime } from "../../store/user/userSlice";
 
 const Info = () => {
   const navigate = useNavigate();
@@ -27,76 +28,100 @@ const Info = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isBeforeTime, setIsBeforeTime] = useState(false);
+  const [isAfterTime, setIsAfterTime] = useState(false);
+  const [timeWarning, setTimeWarning] = useState(false);
+
   const [apiGetExams] = useLazyGetExamQuery();
   const [apiGetQuestions] = useLazyGetListQuestionQuery();
-  const [apiStartExam] = useStartExamBeMutation()
-
-  // const listQuestion = useSelector((state) => state.quiz.listQuestion);
+  const [apiStartExam] = useStartExamBeMutation();
 
   const getExam = async () => {
     const dataExam = await apiGetExams();
-    if (dataExam.data.success) {
-        if (userLog?.exam_id) {
-          setSelectedExam(userLog.exam_id);
-          dispatch(setActiveExam(userLog.exam_id));
-        }
-        dispatch(setListExam(dataExam.data.data));
+    if (dataExam?.data?.success) {
+      if (userLog?.exam_id) {
+        setSelectedExam(userLog.exam_id);
+        dispatch(setActiveExam(userLog.exam_id));
+      }
+      dispatch(setListExam(dataExam.data.data));
     }
   };
 
   const getQuestion = async (exam_id) => {
-    const dataQuestion = await apiGetQuestions(exam_id)
+    const dataQuestion = await apiGetQuestions(exam_id);
     if (dataQuestion.data.success) {
       dispatch(setListQuestion(dataQuestion.data.data));
     }
-  }
+  };
 
   const handleChangeExam = (val) => {
-    if(userLog.exam_id) return false
-    setSelectedExam(val)
-    dispatch(setActiveExam(val))
-  }
+    if (userLog.exam_id) return false;
+    setSelectedExam(val);
+    dispatch(setActiveExam(val));
+  };
 
   const handleConfirm = () => {
     setIsOpen(false);
-    getQuestion(activeExam.id)
-    if(!userLog.start_exam){
-      apiStartExam({
-        exam_id: activeExam.id
-      })
+    getQuestion(activeExam.id);
+    if (!userLog.start_exam) {
+      apiStartExam({ exam_id: activeExam.id });
     }
-    navigate("/quiz/ready");
+    if(!isAfterTime && !isBeforeTime){
+      // dispatch(setStartTime(new Date().toISOString()));
+      navigate("/quiz/ready");
+    }
   };
 
   useEffect(() => {
-    getExam();
-    if(activeExam){
-      if(userLog.start_exam && userLog.exam_id){
-        handleConfirm()
-      }
-      getQuestion(activeExam.id)
+    if(!listExam?.length){
+      getExam();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeExam, userLog]);
+    if (activeExam && userLog) {
+      if (userLog.start_exam && userLog.exam_id) {
+        if (userLog.submitted_at) {
+          navigate("/quiz/finish");
+        } else {
+          handleConfirm();
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeExam]);
 
   useEffect(() => {
     if (userLog?.email) {
       setLoading(false);
+      setSelectedExam(userLog.exam_id);
+      dispatch(setActiveExam(userLog.exam_id))
+
+      const now = new Date();
+      const start = new Date(userLog.batch_start_time);
+      const end = new Date(userLog.batch_end_time);
+
+      setIsBeforeTime(now < start);
+      setIsAfterTime(now > end);
+      setTimeWarning(now < start || now > end);
     }
-  }, [userLog?.email]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLog]);
 
   const selectedData = listExam?.find((e) => e.id === selectedExam);
 
   if (loading) {
-    return (
-      <LoadData/>
-    );
+    return <LoadData />;
   }
 
   return (
     <div className="flex items-center justify-center px-4 montserrat">
       <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-[30em] max-w-md">
         <h2 className="text-lg font-bold text-green-base mb-4">Informasi Asesmen</h2>
+
+        {timeWarning && (
+          <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md mb-4 text-sm flex items-center gap-2">
+            <ExclamationTriangleIcon className="w-5 h-5" />
+            Saat ini berada di luar rentang waktu pengerjaan asesmen.
+          </div>
+        )}
 
         <div className="text-sm text-gray-800 space-y-2 mb-4">
           <div className="font-semibold">Data Peserta:</div>
@@ -137,7 +162,10 @@ const Info = () => {
             <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
             Pilih Asesmen
           </label>
-          <Listbox value={selectedExam} onChange={(e) => handleChangeExam(e)} disabled={userLog.exam_id}>
+          {timeWarning && !userLog.exam_id ? (
+            <p className="text-red-600">Anda Belum Memilih Asessment</p>
+          ) : (
+          <Listbox value={selectedExam} onChange={handleChangeExam} disabled={userLog.exam_id}>
             <div className="relative">
               <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-green-base focus:border-green-base text-sm">
                 <span className="block truncate">
@@ -177,8 +205,8 @@ const Info = () => {
               </Listbox.Options>
             </div>
           </Listbox>
+          )}
 
-          {/* Detail jumlah soal dan waktu */}
           {selectedData && (
             <div className="mt-3 text-sm text-gray-700 space-y-1 border-t pt-3">
               <div>
@@ -192,22 +220,29 @@ const Info = () => {
         </div>
 
         {/* Tombol Aksi */}
-        <div className="mt-6 flex justify-between items-center">
-          {/* <button
-            onClick={() => navigate("/quiz/simulation")}
-            className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all"
-          >
-            🧪 Simulasi
-          </button> */}
-
-          <button
-            onClick={() => setIsOpen(true)}
-            disabled={!selectedExam}
-            className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
-          >
-            <PlayCircleIcon className="w-5 h-5" />
-            { userLog.start_exam ? "Lanjutkan" : "Mulai Asesmen" }
-          </button>
+        <div className="mt-6">
+          {isAfterTime || userLog.submitted_at ? (
+            <button
+              onClick={() => navigate("/quiz/finish")}
+              className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all"
+            >
+              <ClipboardDocumentListIcon className="w-5 h-5" />
+              Lihat Hasil Asesmen
+            </button>
+          ) : isBeforeTime ? (
+            <div className="text-center text-sm text-red-600 font-semibold">
+              ⏳ Waktu asesmen belum dimulai. Silakan kembali lagi nanti.
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsOpen(true)}
+              disabled={!selectedExam}
+              className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
+            >
+              <PlayCircleIcon className="w-5 h-5" />
+              {userLog.start_exam ? "Lanjutkan" : "Mulai Asesmen"}
+            </button>
+          )}
         </div>
       </div>
 

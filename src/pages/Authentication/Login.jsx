@@ -7,7 +7,7 @@ import CommonLayout from "../../layouts/CommonLayout";
 import klh from '../../assets/images/klh-half-gray.png'
 // import { authApi } from "../../store/auth/authApi";
 import { getToken, setToken } from "../../utils/Auth";
-import { setUserDetails } from "../../store/user/userSlice";
+import { logout, setUserDetails } from "../../store/user/userSlice";
 import { useLoginMutation } from "../../store/auth/authApi";
 
 export default function Login() {
@@ -68,6 +68,7 @@ export default function Login() {
 
         if (Object.keys(validationErrors).length === 0) {
             try {
+                dispatch(logout())
                 setLoading(true)
                 const response = await login(formData);
     

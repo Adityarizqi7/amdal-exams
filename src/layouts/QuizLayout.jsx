@@ -15,11 +15,9 @@ const QuizLayout = () => {
 
     // ✅ Setup listener untuk perubahan koneksi
     const handleOnline = () => {
-      console.log("online");
       dispatch(setOnline(true));
     };
     const handleOffline = () => {
-      console.log("offline");
       dispatch(setOnline(false));
     };
 

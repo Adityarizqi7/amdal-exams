@@ -5,6 +5,7 @@ import { useSaveAnswerMutation } from "../../../store/answer/answerApi";
 import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { useEndExamBeMutation } from "../../../store/exam/examApi";
 
 const CardFooter = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const CardFooter = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [unansweredWarning, setUnansweredWarning] = useState(false);
   const [saveAnswer] = useSaveAnswerMutation();
+  const [endExam] = useEndExamBeMutation();
 
   if (!list?.length || !active) return null;
 
@@ -29,30 +31,16 @@ const CardFooter = () => {
     const currentAnswer = answer?.find(el => el.question_id === questionId);
 
     if (questionType === "essay") {
-      // const content = window.tinymce?.activeEditor?.getContent?.() || "";
-
-      // dispatch(changeAnswerQuestion({
-      //   question_id: questionId,
-      //   selected_option_id: null,
-      //   answer_text: content,
-      // }));
-
-      // await saveAnswer({
-      //   question_id: questionId,
-      //   selected_option_id: null,
-      //   answer_text: content,
-      // });
-
       dispatch(changeAnswerQuestion({
         question_id: questionId,
         selected_option_id: null,
-        answer_text: currentAnswer.answer_text,
+        answer_text: currentAnswer?.answer_text,
       }));
 
       await saveAnswer({
         question_id: questionId,
         selected_option_id: null,
-        answer_text: currentAnswer.answer_text,
+        answer_text: currentAnswer?.answer_text,
       });
     } else {
       const selectedOptionId = currentAnswer?.selected_option_id;
@@ -76,7 +64,7 @@ const CardFooter = () => {
       const isAllAnswered = list.every((q) =>
         answer.some((ans) =>
           ans.question_id === q.id &&
-          (ans.selected_option_id !== null || (ans.answer_text && ans.answer_text.trim() !== ""))
+          (ans.selected_option_id !== null || (ans?.answer_text && ans?.answer_text.trim() !== ""))
         )
       );
 
@@ -92,8 +80,9 @@ const CardFooter = () => {
     }
   };
 
-  const confirmFinish = () => {
+  const confirmFinish = async () => {
     if (!unansweredWarning) {
+      await endExam()
       setIsOpen(false);
       navigate("/quiz/finish");
     }
@@ -108,7 +97,7 @@ const CardFooter = () => {
         {currentIndex > 0 ? (
           <button
             onClick={handleBack}
-            className="bg-gray-300 px-4 py-2 rounded font-bold text-black"
+            className="cursor-pointer bg-gray-300 px-4 py-2 rounded font-bold text-black"
           >
             Kembali
           </button>
@@ -117,7 +106,7 @@ const CardFooter = () => {
         )}
 
         <button
-          className="bg-green-base px-4 py-2 rounded font-bold text-white"
+          className="cursor-pointer bg-green-base px-4 py-2 rounded font-bold text-white"
           onClick={handleNext}
         >
           {currentIndex + 1 === total ? "Selesai" : "Next Question"}
