@@ -1,14 +1,14 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customBaseQuery } from "../../utils/customFetch";
 
-export const questionApi = createApi({
-    reducerPath: "questionApi",
+export const answersApi = createApi({
+    reducerPath: "answersApi",
     baseQuery: customBaseQuery,
-    tagTypes: ["Question"],
+    tagTypes: ["Answers"],
     endpoints: (builder) => ({
-        getQuestion: builder.query({
+        getAnswers: builder.query({
             query: (search) => ({
-                url: "questions",
+                url: "options",
                 method: "GET",
                 params: { search },
             }),
@@ -16,36 +16,36 @@ export const questionApi = createApi({
                 return response;
 
             },
-            invalidatesTags:["Question"],
+            invalidatesTags:["Answers"],
         }),
         getDetail: builder.query({
             query: (id) => ({
-                url: `/questions/${id}`,
+                url: `/options/${id}`,
                 method: "GET",
             }),
             transformResponse(response) {
                 return response;
 
             },
-            invalidatesTags:["Question"],
+            invalidatesTags:["Answers"],
         }),
         create: builder.mutation({
-            query: ({ exam_id, question_text, image, order, question_type, weight }) =>({
-                url: "questions",
+            query: ({ question_id, option_text, is_correct }) =>({
+                url: "options",
                 method: "POST",
-                body: { exam_id, question_text, image, order, question_type, weight },
+                body: { question_id, option_text, is_correct },
             }),
             transformResponse(response) {
                 return response;
 
             },
-            invalidatesTags:["Question"],
+            invalidatesTags:["Answers"],
         })
     }),
 });
 
 export const {
     useLazyGetDetailQuery,
-    useLazyGetQuestionQuery,
+    useLazyGetAnswersQuery,
     useCreateMutation
-} = questionApi;
+} = answersApi;

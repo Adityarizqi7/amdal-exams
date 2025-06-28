@@ -67,7 +67,7 @@ const EditQuestion = () => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal Mengambil data',
-                        text: 'Terjadi kesalahan saat mengambi; data.',
+                        text: 'Terjadi kesalahan saat mengambi data.',
                         customClass: {
                             container: 'montserrat'
                         }
@@ -176,7 +176,7 @@ const EditQuestion = () => {
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
-                            text: 'Perubahan Peratnyaan berhasil disimpan!',
+                            text: 'Perubahan Pertanyaan berhasil disimpan!',
                             customClass: {
                             container: 'montserrat'
                             }
@@ -222,7 +222,7 @@ const EditQuestion = () => {
     
     return (
         <CommonLayout
-            title={`Ubah Tipe '${detailQuest.question_text}' - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025`}
+            title={`Ubah Pertanyaan '${detailQuest.question_text}' - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025`}
         >
             <div className="create-question-component md:px-[7.5rem] px-4 pb-12 montserrat">
                 <NavLink to='/dashboard/questions' className="go-back flex items-center gap-2 hover:opacity-80 cursor-pointer mt-[2rem]">
@@ -258,7 +258,7 @@ const EditQuestion = () => {
                                         }}
                                         />
                                         <ComboboxButton className="group absolute top-[37px] right-0 px-2.5">
-                                            <ChevronDownIcon className="size-8 fill-white/60 group-data-hover:fill-black" />
+                                            <ChevronDownIcon className="size-8 fill-black" />
                                         </ComboboxButton>
                                         <ComboboxOptions
                                             anchor="bottom"

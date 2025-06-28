@@ -53,7 +53,7 @@ const EditExam = () => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal Mengambil data',
-                        text: 'Terjadi kesalahan saat mengambi; data.',
+                        text: 'Terjadi kesalahan saat mengambil data.',
                         customClass: {
                             container: 'montserrat'
                         }

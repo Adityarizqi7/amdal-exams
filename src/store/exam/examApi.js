@@ -7,10 +7,11 @@ export const examApi = createApi({
     tagTypes: ["Exam"],
     endpoints: (builder) => ({
         getExam: builder.query({
-            query: () => ({
-                url: "exams/all",
+            query: (search) => ({
+                url: `exams/all`,
                 method: "GET",
-            }),
+                params: { search },
+            }),              
             transformResponse(response) {
                 return response;
 

@@ -7,58 +7,57 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import CONST from '../../../utils/Constant';
 import { getToken } from '../../../utils/Auth';
 import CommonLayout from "../../../layouts/CommonLayout"
-import { useLazyGetQuestionQuery } from "../../../store/question/questionApi";
 import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
+import { useLazyGetAnswersQuery } from '../../../store/answers/answersApi';
 
-const ListQuestion = () => {
+const ListAnswers = () => {
     
     const navigate = useNavigate()
 
-    const [pagination, setPagination] = useState({
-        current_page: 1,
-        last_page: 1,
-    });
-
+    // const [pagination, setPagination] = useState({
+    //     current_page: 1,
+    //     last_page: 1,
+    // });
     const inputRef = useRef()
     const [search, setSearch] = useState('')
     const [focusInput, setFocusInput] = useState(false)
-    const [getQuestion] = useLazyGetQuestionQuery();
-    const [questions, setQuestions] = useState([]);
-    const [loadingQuestion, setLoadingQuestion] = useState(false);
+    const [getAnswers] = useLazyGetAnswersQuery();
+    const [answers, setAnswers] = useState([]);
+    const [loadingAnswer, setLoadingAnswer] = useState(false);
 
-    const getAllQuestion = useCallback( async (search) => {
+    const getAllAnswer = useCallback( async (search) => {
         try {
-            setLoadingQuestion(true)
+            setLoadingAnswer(true)
 
-            const response = await getQuestion(search);
+            const response = await getAnswers(search);
             const { data, error } = response;
 
-            setQuestions(data?.data?.data);
-            setPagination({
-                current_page: data.data.current_page,
-                last_page: data.data.last_page,
-                total: data.data.total,
-                per_page: data.data.per_page,
-            });
+            setAnswers(data?.data);
+            // setPagination({
+            //     current_page: data.data.current_page,
+            //     last_page: data.data.last_page,
+            //     total: data.data.total,
+            //     per_page: data.data.per_page,
+            // });
 
             if (error) {
-                setLoadingQuestion(false)
+                setLoadingAnswer(false)
                 throw new Error("Gagal Mengambail data.");
             }
-            setLoadingQuestion(false)
+            setLoadingAnswer(false)
             
         } catch (error) {
-            setLoadingQuestion(false)
+            setLoadingAnswer(false)
             console.log(error)
         }
-    }, [getQuestion])
+    }, [getAnswers])
 
-    const deleteQuestion = useCallback((event, el) => {
+    const deleteAsnwer = useCallback((event, el) => {
         event.preventDefault();
       
         Swal.fire({
           title: 'Apakah kamu yakin?',
-          text: "Data Pertanyaan ini akan dihapus secara permanen!",
+          text: "Data Opsi Jawaban ini akan dihapus secara permanen!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#d33',
@@ -70,10 +69,10 @@ const ListQuestion = () => {
           }
         }).then( async (result) => {
           if (result.isConfirmed) {
-            setLoadingQuestion(true);
+            setLoadingAnswer(true);
             
             const token = await getToken();
-            axios.delete(`${CONST.BASE_URL_API}questions/${el.id}`, {
+            axios.delete(`${CONST.BASE_URL_API}options/${el.id}`, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }})
@@ -81,12 +80,12 @@ const ListQuestion = () => {
                 Swal.fire({
                   icon: 'success',
                   title: 'Berhasil',
-                  text: 'Pertanyaan berhasil dihapus!',
+                  text: 'Opsi Jawaban berhasil dihapus!',
                   customClass: {
                     container: 'montserrat'
                   }
                 }).then(() => {
-                    getAllQuestion();
+                    getAllAnswer();
                 })
                 
               })
@@ -102,26 +101,26 @@ const ListQuestion = () => {
                 });
               })
               .finally(() => {
-                setLoadingQuestion(false);
+                setLoadingAnswer(false);
               });
         }
         });
-    }, [getAllQuestion])
+    }, [getAllAnswer])
 
-    const handlePageChange = (page) => {
-        if (page < 1 || page > pagination.last_page) return;
-        getAllQuestion(page);
-    };
+    // const handlePageChange = (page) => {
+    //     if (page < 1 || page > pagination.last_page) return;
+    //     getAllAnswer(page);
+    // };
 
     const handleChange = useCallback(e => setSearch(e.target.value), [])
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            getAllQuestion(e.target.value);
+            getAllAnswer(e.target.value);
         }
-    }, [getAllQuestion]);
+    }, [getAllAnswer]);
     const deleteText = useCallback(() => setSearch(''), [])
-    
+
     const handleFocusInput = useCallback(
         event => {
             if ((event.ctrlKey || event.metaKey) && event.code === 'KeyK') {
@@ -135,23 +134,23 @@ const ListQuestion = () => {
     )
 
     useEffect(() => {
-        getAllQuestion()
+        getAllAnswer()
 
         document.addEventListener('keydown', handleFocusInput)
 
         return () => {
             document.removeEventListener('keydown', handleFocusInput)
         }
-    }, [getAllQuestion, handleFocusInput])
+    }, [getAllAnswer, handleFocusInput])
 
     return (
         <CommonLayout
-            title='Daftar Pertanyaan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
+            title='Daftar Opsi Jawaban - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-questions-component md:px-[7.5rem] px-4 pb-8">
+            <div className="list-answers-component md:px-[7.5rem] px-4 pb-8">
                 {
-                    loadingQuestion ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Pertanyaan...</h1>
+                    loadingAnswer ?
+                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Opsi Jawaban...</h1>
                     :
                     <div className='mt-[2rem]'>
                         <div className='flex max-xs:flex-col items-center justify-between gap-5'>
@@ -166,7 +165,7 @@ const ListQuestion = () => {
                                                 ? 'border-b-[rgb(72, 96, 228)]'
                                                 : false
                                         } text-black w-full bg-transparent pl-[10px] pr-[3.75rem] py-[0.75rem] border border-gray-500 rounded-[8px] font-normal`}
-                                        placeholder='Cari Pertanyaan...'
+                                        placeholder='Cari Opsi Jawaban...'
                                         onChange={handleChange}
                                         onKeyDown={handleKeyDown}
                                         ref={inputRef}
@@ -202,14 +201,14 @@ const ListQuestion = () => {
                                     }
                                 </div>
                             </div>
-                            <NavLink to='/dashboard/question/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                            <NavLink to='/dashboard/answers/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
-                                <span>Tambah Pertanyaan</span>
+                                <span>Tambah Opsi Jawaban</span>
                             </NavLink>
                         </div>
-                        <div className="all-questions-table mt-8 overflow-x-auto">
+                        <div className="all-answers-table mt-8 overflow-x-auto">
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
                                 <thead className="text-white uppercase bg-green-base montserrat">
                                     <tr>
@@ -220,17 +219,11 @@ const ListQuestion = () => {
                                             Pertanyaan
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Urutan Soal
+                                            Opsi Jawaban
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Jenis
+                                            Benar/Salah
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            Bobot
-                                        </th>
-                                        {/* <th scope="col" className="px-6 py-3">
-                                            Jumlah Pertanyaan
-                                        </th> */}
                                         <th scope="col" className="px-6 py-3">
                                             Aksi
                                         </th>
@@ -238,16 +231,16 @@ const ListQuestion = () => {
                                 </thead>
                                 <tbody className="montserrat">
                                 {
-                                    questions?.length < 1 ?
+                                    answers?.length < 1 ?
                                     (
                                         <tr className="bg-white border-b border-gray-300">
-                                            <td colSpan={6} className="px-6 py-4 text-[1.25rem]">
-                                                Data Pertanyaan masih kosong, segera tambahkan.
+                                            <td colSpan={4} className="px-6 py-4 text-[1.25rem]">
+                                                Data Opsi Jawaban masih kosong, segera tambahkan.
                                             </td>
                                         </tr>
                                     )  
                                     :
-                                    questions
+                                    answers
                                     ?.map( (e, i) => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
@@ -257,28 +250,16 @@ const ListQuestion = () => {
                                                 <td className="px-6 py-4 text-left">
                                                     {e?.question_text}
                                                 </td>
-                                                <td className="px-6 py-4">
-                                                    {e?.order}
+                                                <td className="px-6 py-4 text-left">
+                                                    {e?.option_text}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {e?.question_type === 'essay' ? 'Essay' : 'Pilihan Ganda'}
-                                                </td>
-                                                <td className="px-6 py-4 ">
-                                                    {e?.weight}
+                                                    {e?.is_correct ? 'Benar' : 'Salah'}
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex justify-center items-center gap-2">
                                                         <button onClick={() => {
-                                                            navigate(`/dashboard/question/${e.id}/preview`)
-                                                        }} id='preview-icon' className='cursor-pointer'>
-                                                            <EyeIcon className="w-6 h-6 text-gray-700" />
-                                                        </button>
-                                                        <Tooltip anchorSelect="#preview-icon">
-                                                            Tinjau
-                                                        </Tooltip>
-
-                                                        <button onClick={() => {
-                                                            navigate(`/dashboard/question/${e.id}/edit`)
+                                                            navigate(`/dashboard/answers/${e.id}/edit`)
                                                         }} id='edit-icon' className='cursor-pointer'>
                                                             <PencilSquareIcon className="w-6 h-6 text-blue-600" />
                                                         </button>
@@ -286,7 +267,7 @@ const ListQuestion = () => {
                                                             Ubah
                                                         </Tooltip>
 
-                                                        <button id='trash-icon' onClick={(el) => deleteQuestion(el, e)} className="cursor-pointer">
+                                                        <button id='trash-icon' onClick={(el) => deleteAsnwer(el, e)} className="cursor-pointer">
                                                             <TrashIcon className="w-5 h-5 text-red-500" />
                                                         </button>
                                                         <Tooltip anchorSelect="#trash-icon">
@@ -302,7 +283,7 @@ const ListQuestion = () => {
                             </table>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end'>
+                        {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                             <button
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}
@@ -330,7 +311,7 @@ const ListQuestion = () => {
                             >
                                 Next
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 }
             </div>
@@ -338,4 +319,4 @@ const ListQuestion = () => {
     )
 }
 
-export default ListQuestion
+export default ListAnswers

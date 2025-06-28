@@ -211,7 +211,7 @@ export default function Login() {
                         <button type="submit" className={`${formData.email === '' || formData.password === '' || errors.password || errors.email || loading ? 'pointer-events-none opacity-50' : ''} bg-green-base montserrat mt-2 w-full text-[1rem] font-semibold rounded-[10px] border-0 py-2.5 px-8 text-white hover:bg-green-base/80 cursor-pointer transition-colors`}>
                            {
                                 loading ? 'Memuat...' :
-                                `Masuk ${location.pathname === '/admin/login' ? ' Sebagai Admin' : ''}`
+                                `Masuk ${location.pathname === '/admin/signin' ? ' Sebagai Admin' : ''}`
                            }
                         </button>
                     </section>

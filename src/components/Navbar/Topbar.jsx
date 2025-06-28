@@ -114,14 +114,24 @@ export default function Topbar() {
                                 title={'Beranda'}
                                 path={'/'}
                             />
-                            <ItemDropdownNav
-                                title={'Tipe Ujian'}
-                                path={'/dashboard/exams'}
-                            />
-                            <ItemDropdownNav
-                                title={'Pertanyaan'}
-                                path={'/dashboard/questions'}
-                            />
+                            {
+                                userLog?.role === 'admin' ?
+                                <>
+                                    <ItemDropdownNav
+                                        title={'Tipe Ujian'}
+                                        path={'/dashboard/exams'}
+                                    />
+                                    <ItemDropdownNav
+                                        title={'Pertanyaan'}
+                                        path={'/dashboard/questions'}
+                                    />
+                                    <ItemDropdownNav
+                                        title={'Jawaban'}
+                                        path={'/dashboard/answers'}
+                                    />
+                                </>
+                                : false
+                            }
                         </div>
                     </div>
                     <div className='lg:block hidden'>
@@ -221,7 +231,7 @@ export default function Topbar() {
                                 />
                             </Menu.Item>
                             {
-                                userLog.email ?
+                                userLog.role && userLog.role === 'admin' ?
                                     <div className="space-y-2">
                                         <Menu.Item>
                                             <ItemNav
@@ -234,6 +244,13 @@ export default function Topbar() {
                                             <ItemNav
                                                 title={'Pertanyaan'}
                                                 path={'/dashboard/questions'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Jawaban'}
+                                                path={'/dashboard/answers'}
                                                 classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                             />
                                         </Menu.Item>

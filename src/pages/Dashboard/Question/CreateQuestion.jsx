@@ -56,7 +56,6 @@ const CreateQuestion = () => {
                     title: item.title
                 }));
                 
-                setSelectedExam(newItems[0])
                 setExams((prev) => (page === 1 ? newItems : [...prev, ...newItems]));
                 setHasMore(page < response.data.data.last_page);
             }
@@ -186,8 +185,13 @@ const CreateQuestion = () => {
                                         setPage(1);
                                     }}
                                     />
+                                    {
+                                        selectedExam ?
+                                            <h4 className="absolute top-[45px] left-3">Pilih Pertanyaan</h4> 
+                                        : false
+                                    }
                                     <ComboboxButton className="group absolute top-[37px] right-0 px-2.5">
-                                        <ChevronDownIcon className="size-8 fill-white/60 group-data-hover:fill-black" />
+                                        <ChevronDownIcon className="size-8 fill-black" />
                                     </ComboboxButton>
                                     <ComboboxOptions
                                         anchor="bottom"
@@ -272,7 +276,7 @@ const CreateQuestion = () => {
                                         <option value="multiple_choice">Pilihan Ganda</option>
                                         <option value="essay">Essay</option>
                                         <option value="" disabled hidden>
-                                            Pilih Tipe
+                                            Pilih Jenis
                                         </option>
                                     </Select>
                                     <ChevronDownIcon

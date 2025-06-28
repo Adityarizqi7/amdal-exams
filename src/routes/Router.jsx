@@ -14,6 +14,11 @@ import ListQuestion from '../pages/Dashboard/Question/ListQuestion'
 import CreateQuestion from '../pages/Dashboard/Question/CreateQuestion'
 import EditQuestion from "../pages/Dashboard/Question/EditQuestion";
 
+// import PreviewQuestion from '../pages/Dashboard/Question/PreviewQuestion'
+import ListAnswers from '../pages/Dashboard/Answers/ListAnswers'
+import CreateAnswers from "../pages/Dashboard/Answers/CreateAnswers";
+import EditAnswers from "../pages/Dashboard/Answers/EditAnswers";
+
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'
 import Ready from '../pages/Quiz/Ready'
@@ -79,6 +84,22 @@ export default function Router() {
                     </PrivateRoute>
                     } />
 
+                {/* Answers */}
+                <Route path='/dashboard/answers' element={
+                    <PrivateRoute>
+                        <ListAnswers/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/answers/create' element={
+                    <PrivateRoute>
+                        <CreateAnswers/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/answers/:id/edit' element={
+                    <PrivateRoute>
+                        <EditAnswers/>
+                    </PrivateRoute>
+                    } />
 
                 <Route path='quiz' element={
                     <PrivateRoute>
