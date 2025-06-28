@@ -1,12 +1,10 @@
-import React from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
-// import Footer from '@/components/Footer'
-// import TopBar from '@/components/navbar/Topbar'
-import BtnToTop from '@/components/button/BtnToTop'
+import Footer from '../components/Footer/Footer'
+import TopBar from '../components/Navbar/Topbar'
 
-const AuthenticationLayout = ({
-    title = '@adityarizqiardhana - Me Site',
+const CommonLayout = ({
+    title = 'Seleksi Tenaga Teknis Operasional Amdalnet 2025',
     children = '',
 }) => {
     return (
@@ -34,13 +32,15 @@ const AuthenticationLayout = ({
                 ></link>
             </Helmet>
 
-            {/* <TopBar /> */}
-            {children}
-            {/* <Footer /> */}
+            <main>
+                <TopBar />
+                {children}
+                <Footer />
+            </main>
 
-            <BtnToTop />
+            {/* <BtnToTop /> */}
         </HelmetProvider>
     )
 }
 
-export default AuthenticationLayout
+export default CommonLayout
