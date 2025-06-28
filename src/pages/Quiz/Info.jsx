@@ -14,7 +14,7 @@ import { useLazyGetExamQuery, useLazyGetListQuestionQuery, useStartExamBeMutatio
 import { setActiveExam, setListExam } from "../../store/exam/examSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadData from "../../components/Quiz/Loading/LoadData";
-import { setListQuestion } from "../../store/quiz/quizSlice";
+import { setListQuestion, setStartQuiz } from "../../store/quiz/quizSlice";
 // import { setStartTime } from "../../store/user/userSlice";
 
 const Info = () => {
@@ -24,6 +24,7 @@ const Info = () => {
   const userLog = useSelector((state) => state.user);
   const listExam = useSelector((state) => state.exam.listExams);
   const activeExam = useSelector((state) => state.exam.activeExam);
+  const startQuiz = useSelector((state) => state.quiz.startQuiz);
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
@@ -64,10 +65,19 @@ const Info = () => {
     setIsOpen(false);
     getQuestion(activeExam.id);
     if (!userLog.start_exam) {
-      apiStartExam({ exam_id: activeExam.id });
+      apiStartExam({ exam_id: activeExam.id }).then(res => {
+        if(res.data.success){
+          dispatch(setStartQuiz(true))
+        }
+      })
+      // .finally(() => {
+      //   navigate("/quiz/ready");
+      // })
+      // return
     }
     if(!isAfterTime && !isBeforeTime){
-      // dispatch(setStartTime(new Date().toISOString()));
+      // dispatch(setStartTime(userLog.start_exam  || (new Date().toISOString()) ));
+      dispatch(setStartQuiz(true))
       navigate("/quiz/ready");
     }
   };
@@ -104,6 +114,11 @@ const Info = () => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLog]);
+
+  useEffect(() => {
+    if(startQuiz) navigate('/quiz/ready')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startQuiz])
 
   const selectedData = listExam?.find((e) => e.id === selectedExam);
 
@@ -213,7 +228,7 @@ const Info = () => {
                 <span className="font-semibold">Jumlah Soal:</span> {selectedData.questions_count || 0}
               </div>
               <div>
-                <span className="font-semibold">Durasi:</span> {selectedData.duration} menit
+                <span className="font-semibold">Durasi:</span> Sesuai Waktu Sesi
               </div>
             </div>
           )}

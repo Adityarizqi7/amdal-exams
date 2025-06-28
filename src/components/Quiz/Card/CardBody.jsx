@@ -75,6 +75,7 @@ const CardBody = () => {
             storedAnswer?.answer_text ? "border-green-base" : "border-blue-300"
           )}
           onChange={(e) => {
+            if(!e.target.value) return
             dispatch(
               changeAnswerQuestion({
                 question_id: activeQuestion.id,
