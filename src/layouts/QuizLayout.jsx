@@ -15,11 +15,9 @@ const QuizLayout = () => {
 
     // ✅ Setup listener untuk perubahan koneksi
     const handleOnline = () => {
-      console.log("online");
       dispatch(setOnline(true));
     };
     const handleOffline = () => {
-      console.log("offline");
       dispatch(setOnline(false));
     };
 
@@ -57,13 +55,13 @@ const QuizLayout = () => {
       </HelmetProvider>
 
       {/* Layout: Navbar, Sidebar, Content */}
-      <>
+      <div className="montserrat">
         <QuizNavbar />
         <QuizSideBar />
         <div className="relative w-[100svw] min-h-[100svh] bg-green-base flex justify-center items-center">
           <Outlet />
         </div>
-      </>
+      </div>
     </>
   );
 };

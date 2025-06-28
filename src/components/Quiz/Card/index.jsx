@@ -3,11 +3,12 @@ import CardBody from "./CardBody"
 import CardFooter from "./CardFooter"
 import CardHeader from "./CardHeader"
 import { useDispatch, useSelector } from "react-redux"
-import { setFinishQuiz } from "../../../store/quiz/quizSlice"
+import { setAnswerQuestion, setFinishQuiz } from "../../../store/quiz/quizSlice"
 import { Dialog, Transition } from "@headlessui/react"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { useNavigate } from "react-router-dom"
 import LoadData from "../Loading/LoadData"
+import { useLazyGetAnswerQuery } from "../../../store/answer/answerApi"
 
 const CardQuiz = () => {
   const dispatch = useDispatch()
@@ -18,6 +19,9 @@ const CardQuiz = () => {
 
   const listQuestion = useSelector((state) => state.quiz.listQuestion)
   const activeQuestion = useSelector((state) => state.quiz.activeQuestion)
+  const userLog = useSelector((state) => state.user)
+
+  const [apiGetAnswer] = useLazyGetAnswerQuery()
 
   useEffect(() => {
     setTimeOut(false)
@@ -25,6 +29,19 @@ const CardQuiz = () => {
       setShowTimeoutDialog(true)
     }
   }, [timeOut])
+
+  useEffect(() => {
+    if(userLog.exam_id && userLog.start_exam){
+      apiGetAnswer().then(res => {
+        if(res.isSuccess && res.data?.success){
+          dispatch(setAnswerQuestion(res.data.data))
+        }
+    }).catch(err => {
+      console.log(err)
+    })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLog])
 
   const handleTimeoutConfirm = () => {
     dispatch(setFinishQuiz(true))

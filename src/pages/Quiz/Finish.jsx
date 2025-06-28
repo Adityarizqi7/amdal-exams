@@ -1,48 +1,44 @@
-// import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useLazyMyExamQuery } from "../../../src/store/exam/examApi";
+import LoadData from "../../components/Quiz/Loading/LoadData";
 
 const Finish = () => {
-  // const answer = useSelector((state) => state.quiz.answerQuestion);
-  // const list = useSelector((state) => state.quiz.listQuestion);
+  const userLog = useSelector((state) => state.user);
+  const [fetchExam, { data: hasilExam, isLoading }] = useLazyMyExamQuery();
+  const [score, setScore] = useState(null);
 
-  // const getAnswerText = (item) => {
-  //   const userAnswer = answer?.[item.id];
+  useEffect(() => {
+    if (userLog?.id) {
+      fetchExam(); // panggil hanya sekali setelah user tersedia
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLog]);
 
-  //   if (!userAnswer) return <span className="italic text-gray-400">Belum dijawab</span>;
+  useEffect(() => {
+    if (hasilExam?.data?.[0]?.score !== undefined || hasilExam?.success) {
+      setScore(hasilExam?.data?.[0]?.score || 0);
+    }
+  }, [hasilExam]);
 
-  //   // Essay langsung ditampilkan
-  //   if (item.question_type === "essay") {
-  //     return <span>{userAnswer}</span>;
-  //   }
-
-  //   // Single choice
-  //   if (item.question_type === "choice") {
-  //     const choice = item.options.find((c) => c.id === userAnswer);
-  //     return <span>{choice?.text || <i className="text-gray-400">Tidak ditemukan</i>}</span>;
-  //   }
-
-  //   // Multiple choice
-  //   if (item.question_type === "multiple_choice") {
-  //     // Pastikan userAnswer adalah array
-  //     if (!Array.isArray(userAnswer)) {
-  //       return <span className="italic text-red-500">Format jawaban salah</span>;
-  //     }
-
-  //     const choices = item.options
-  //       .filter((c) => userAnswer.includes(c.id))
-  //       .map((c) => c.text);
-
-  //     return choices.length > 0
-  //       ? <span>{choices.join(", ")}</span>
-  //       : <span className="italic text-gray-400">Belum dijawab</span>;
-  //   }
-
-  //   return <span className="italic text-gray-400">Belum dijawab</span>;
-  // };
+  if (isLoading || score === null) {
+    return (
+      <LoadData/>
+    );
+  }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-xl w-full text-center">
-      <h2 className="text-2xl font-bold mb-4 text-green-600">Quiz Selesai 🎉</h2>
-      <p className="text-gray-700 mb-6">Terima kasih telah menyelesaikan quiz.</p>
+    <div className="bg-white p-8 rounded-lg shadow-lg max-w-xl w-full mx-auto text-center border border-green-200">
+      <h2 className="text-3xl font-bold mb-4 text-green-600">🎉 Asessment Selesai!</h2>
+      <p className="text-gray-700 mb-6">
+        Terima kasih telah menyelesaikan Asessment.<br/> Hasil Anda sebagai berikut:
+      </p>
+
+      <div className="bg-green-50 border border-green-300 text-green-700 rounded-lg py-4 px-6 text-xl font-semibold mb-6">
+        Skor Anda: <span className="text-green-900 text-3xl">{score}</span>
+      </div>
+
+      <p className="text-sm text-gray-500">Semoga hasil ini membawa manfaat bagi pengembangan Anda!</p>
     </div>
   );
 };

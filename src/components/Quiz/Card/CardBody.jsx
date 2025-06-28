@@ -2,58 +2,48 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ChoiceOption from "../Answer/ChoiceOption";
 import TinyMCEEditor from "../Answer/TinyMCEEditor";
-import { setAnswerQuestion } from "../../../store/quiz/quizSlice";
+import { changeAnswerQuestion } from "../../../store/quiz/quizSlice";
+import clsx from "clsx";
 
 const CardBody = () => {
   const dispatch = useDispatch();
   const activeQuestion = useSelector((state) => state.quiz.activeQuestion);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
-  const storedAnswer = useSelector(
-    (state) => state.quiz.answerQuestion?.[activeQuestion?.id]
+  const storedAnswer = useSelector((state) =>
+    state.quiz.answerQuestion?.find((el) => el.question_id === activeQuestion?.id)
   );
 
   const [listChoice, setListChoice] = useState([]);
-
   useEffect(() => {
     if (!activeQuestion) return;
-    console.log(activeQuestion)
 
-    if (activeQuestion.question_type === "choice" || activeQuestion.question_type === "multiple_choice") {
+    if (activeQuestion.question_type === "multiple_choice") {
       setListChoice(
         activeQuestion.options?.map((el) => ({
           ...el,
-          selected: Array.isArray(storedAnswer)
-            ? storedAnswer.includes(el.id)
-            : storedAnswer === el.id,
+          selected: storedAnswer?.selected_option_id === el.id,
         }))
       );
-    } 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeQuestion?.id]); // refresh on question change
+    }
+  }, [activeQuestion, storedAnswer]);
 
-  const handleChangeChoice = (index) => {
-    const updated = listChoice.map((el, i) => {
-      if (activeQuestion.question_type === "choice") {
-        return { ...el, selected: i === index };
-      } else {
-        return i === index ? { ...el, selected: !el.selected } : el;
-      }
-    });
+  const handleChangeChoice = (option_id) => {
+    const updated = listChoice.map((el) => ({
+      ...el,
+      selected: el.id === option_id,
+    }));
     setListChoice(updated);
 
-    const selectedIds = updated.filter((c) => c.selected).map((c) => c.id);
     dispatch(
-      setAnswerQuestion({
-        [activeQuestion.id]:
-          activeQuestion.question_type === "choice"
-            ? selectedIds[0]
-            : selectedIds,
+      changeAnswerQuestion({
+        question_id: activeQuestion.id,
+        selected_option_id: option_id,
+        answer_text: null,
       })
     );
   };
 
   if (!activeQuestion) return null;
-
   return (
     <div className="px-4 py-8">
       <p className="font-bold text-xl mb-5">
@@ -61,18 +51,38 @@ const CardBody = () => {
         {startQuiz && "."} {activeQuestion.question_text}
       </p>
 
-      {activeQuestion.question_type === "choice" ||
-      activeQuestion.question_type === "multiple_choice" ? (
+      {activeQuestion.question_type === "multiple_choice" ? (
         <ChoiceOption listChoice={listChoice} onChange={handleChangeChoice} />
       ) : activeQuestion.question_type === "essay" ? (
-        <TinyMCEEditor 
-        // value={essayAnswer} 
-        value={storedAnswer || ""} 
-        onChange={(val) => {
-          console.log(val)
-          dispatch(setAnswerQuestion({ [activeQuestion.id]: val }))
-        }} 
-        key={`${activeQuestion.id}-${storedAnswer ?? ""}`}  />
+        // <TinyMCEEditor
+        //   value={storedAnswer?.answer_text || ""}
+          // onChange={(val) => {
+          //   dispatch(
+          //     changeAnswerQuestion({
+          //       question_id: activeQuestion.id,
+          //       selected_option_id: null,
+          //       answer_text: val,
+          //     })
+          //   );
+          // }}
+        //   key={`${activeQuestion.id}`}
+        // />
+        <textarea 
+          key={`${activeQuestion.id}`} 
+          value={storedAnswer?.answer_text}
+          placeholder="Masukkan Jawaban disini"
+          className={clsx("w-full min-w-full max-w-full min-h-[10em] focus:outline-green-base border rounded-[.5em] p-2",
+            storedAnswer?.answer_text ? "border-green-base" : "border-blue-300"
+          )}
+          onChange={(e) => {
+            dispatch(
+              changeAnswerQuestion({
+                question_id: activeQuestion.id,
+                selected_option_id: null,
+                answer_text: e.target.value,
+              })
+            );
+          }}></textarea>
       ) : null}
     </div>
   );
