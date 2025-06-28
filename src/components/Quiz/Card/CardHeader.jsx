@@ -2,9 +2,7 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { getTimeStart, setExamActive, setExamAUser, setTimeStart } from "../../../utils/Exam";
-import dayjs from "../../../utils/dayjsConfig"
-import Cookies from "js-cookie"
+import dayjs from "../../../utils/dayjsConfig";
 
 const CardHeader = ({ setTimeOut }) => {
   const activeExam = useSelector((state) => state.exam.activeExam);
@@ -15,30 +13,13 @@ const CardHeader = ({ setTimeOut }) => {
   const timeRef = useRef(0);
   const intervalRef = useRef(null);
 
-  // Inisialisasi waktu saat quiz mulai
   useEffect(() => {
-    if (startQuiz && activeExam?.duration && userLog) {
-      let start = userLog.start_exam;
+    if (startQuiz && userLog?.batch_start_time && userLog?.batch_end_time) {
+      const now = dayjs().tz("Asia/Jakarta");
+      const endTime = dayjs(userLog.batch_end_time).tz("Asia/Jakarta");
+      const diff = endTime.diff(now, 'second');
 
-      if(activeExam.id == Cookies.get('exam-active') && userLog.id == Cookies.get('exam-user') && !start){
-        start = getTimeStart() || Cookies.get('exam-start')
-      }
-      if(Cookies.get('exam-user') == null){
-        setExamAUser(userLog.id)
-      }
-
-      if (!start) {
-        const now = dayjs().tz("Asia/Jakarta").toISOString();
-        setExamAUser(userLog.id)
-        setExamActive(activeExam.id)
-        setTimeStart(now);
-        start = now;
-      }
-
-      const endTime = dayjs(start).add(activeExam.duration, 'minute');
-      const diff = endTime.diff(dayjs(), 'second');
-
-      if (diff <= 0) {
+      if (now && endTime && diff <= 0) {
         setQuizTime(0);
         setTimeOut(true);
       } else {
@@ -46,10 +27,8 @@ const CardHeader = ({ setTimeOut }) => {
         timeRef.current = diff;
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startQuiz, activeExam?.duration, userLog]);
+  }, [startQuiz, userLog?.batch_start_time, userLog?.batch_end_time, setTimeOut]);
 
-  // Jalankan timer countdown
   useEffect(() => {
     if (!startQuiz || intervalRef.current) return;
 
@@ -58,23 +37,23 @@ const CardHeader = ({ setTimeOut }) => {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
         setQuizTime(0);
-        setTimeOut(true); // Trigger timeout
+        setTimeOut(true);
       } else {
         timeRef.current -= 1;
         setQuizTime(timeRef.current);
       }
     }, 1000);
 
-    return () => clearInterval(intervalRef.current); // Cleanup
+    return () => clearInterval(intervalRef.current);
   }, [startQuiz, setTimeOut]);
 
   if (!activeExam) return null;
 
   return (
     <div className="py-4 px-6 flex justify-between items-center"
-				style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
+      style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
       <p className="font-bold">{activeExam.title}</p>
-      <Transition show={Boolean(activeExam.duration)}>
+      <Transition show={Boolean(quizTime)}>
         <div className={clsx(
           "px-1 py-2 rounded text-black border flex items-center gap-2",
           quizTime < 60 ? "bg-red-300 border-red-500 animate-pulse" : "bg-blue-300 border-blue-500"
