@@ -8,6 +8,7 @@ import { userApi } from "./user/userApi";
 import { examApi } from "./exam/examApi";
 import { authApi } from "./auth/authApi";
 import { questionApi } from "./question/questionApi";
+import { answerApi } from "./answer/answerApi";
 
 const reducer = combineReducers({
     user: userSlice,
@@ -18,6 +19,7 @@ const reducer = combineReducers({
     [userApi.reducerPath]: userApi.reducer,
     [examApi.reducerPath]: examApi.reducer,
     [questionApi.reducerPath]: questionApi.reducer,
+    [answerApi.reducerPath]: answerApi.reducer,
 });
 
 const store = configureStore({
@@ -28,6 +30,7 @@ const store = configureStore({
             userApi.middleware,
             examApi.middleware,
             questionApi.middleware,
+            answerApi.middleware,
         ),
 });
 

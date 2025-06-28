@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setNumberQuestion, setAnswerQuestion } from "../../../store/quiz/quizSlice";
+import { setNumberQuestion, changeAnswerQuestion } from "../../../store/quiz/quizSlice";
+import { useSaveAnswerMutation } from "../../../store/answer/answerApi";
 import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
@@ -15,35 +16,77 @@ const CardFooter = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [unansweredWarning, setUnansweredWarning] = useState(false);
+  const [saveAnswer] = useSaveAnswerMutation();
 
   if (!list?.length || !active) return null;
 
   const total = list.length;
 
-  const simpanJawabanEssay = () => {
-    if (
-      active.question_type === "essay" &&
-      typeof answer?.[active.id] !== "string"
-    ) {
-      const content = window.tinymce?.activeEditor?.getContent?.() || "";
-      dispatch(setAnswerQuestion({ [active.id]: content }));
+  const simpanJawaban = async () => {
+    const questionId = active.id;
+    const questionType = active.question_type;
+
+    const currentAnswer = answer?.find(el => el.question_id === questionId);
+
+    if (questionType === "essay") {
+      // const content = window.tinymce?.activeEditor?.getContent?.() || "";
+
+      // dispatch(changeAnswerQuestion({
+      //   question_id: questionId,
+      //   selected_option_id: null,
+      //   answer_text: content,
+      // }));
+
+      // await saveAnswer({
+      //   question_id: questionId,
+      //   selected_option_id: null,
+      //   answer_text: content,
+      // });
+
+      dispatch(changeAnswerQuestion({
+        question_id: questionId,
+        selected_option_id: null,
+        answer_text: currentAnswer.answer_text,
+      }));
+
+      await saveAnswer({
+        question_id: questionId,
+        selected_option_id: null,
+        answer_text: currentAnswer.answer_text,
+      });
+    } else {
+      const selectedOptionId = currentAnswer?.selected_option_id;
+
+      if (selectedOptionId) {
+        await saveAnswer({
+          question_id: questionId,
+          selected_option_id: selectedOptionId,
+          answer_text: null,
+        });
+      }
     }
   };
 
-  const handleNext = () => {
-    simpanJawabanEssay();
+  const handleNext = async () => {
+    await simpanJawaban();
 
     if (currentIndex + 1 < total) {
       dispatch(setNumberQuestion(currentIndex + 1));
     } else {
-      const isAllAnswered = list.every((q) => !!answer?.[q.id]);
+      const isAllAnswered = list.every((q) =>
+        answer.some((ans) =>
+          ans.question_id === q.id &&
+          (ans.selected_option_id !== null || (ans.answer_text && ans.answer_text.trim() !== ""))
+        )
+      );
+
       setUnansweredWarning(!isAllAnswered);
       setIsOpen(true);
     }
   };
 
-  const handleBack = () => {
-    simpanJawabanEssay();
+  const handleBack = async () => {
+    await simpanJawaban();
     if (currentIndex > 0) {
       dispatch(setNumberQuestion(currentIndex - 1));
     }
