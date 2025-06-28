@@ -13,6 +13,7 @@ export const userApi = createApi({
             }),
             transformResponse: (response) => response,
             providesTags: ["User"],
+            refetchOnMountOrArgChange: true,
         })
     }),
 });

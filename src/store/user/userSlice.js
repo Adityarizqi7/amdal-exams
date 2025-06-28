@@ -10,6 +10,9 @@ const initialValue = {
     batch: null,
     start_time: null,
     end_time: null,
+    exam_id: null,
+    start_exam: null,
+    submited_at: null
 };
 
 const userSlice = createSlice({
@@ -19,10 +22,13 @@ const userSlice = createSlice({
         setUserDetails: (state, action) => {
             return { ...state, ...action.payload };
         },
+        setStartTime: (state, action) => {
+            state.start_time = action.payload;
+        },
         logout: () => initialValue,
     },
 });
 
-export const { setUserDetails, logout } = userSlice.actions;
+export const { setUserDetails, setStartTime, logout } = userSlice.actions;
 
 export default userSlice.reducer;

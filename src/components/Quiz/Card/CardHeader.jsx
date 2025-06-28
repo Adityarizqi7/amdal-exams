@@ -23,14 +23,12 @@ const CardHeader = ({ setTimeOut }) => {
       if(activeExam.id == Cookies.get('exam-active') && userLog.id == Cookies.get('exam-user') && !start){
         start = getTimeStart() || Cookies.get('exam-start')
       }
-      console.log(start)
       if(Cookies.get('exam-user') == null){
         setExamAUser(userLog.id)
       }
 
       if (!start) {
         const now = dayjs().tz("Asia/Jakarta").toISOString();
-        console.log(now)
         setExamAUser(userLog.id)
         setExamActive(activeExam.id)
         setTimeStart(now);

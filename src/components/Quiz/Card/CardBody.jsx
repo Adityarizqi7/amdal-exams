@@ -14,7 +14,6 @@ const CardBody = () => {
   );
 
   const [listChoice, setListChoice] = useState([]);
-  console.log(storedAnswer, "stored answer")
   useEffect(() => {
     if (!activeQuestion) return;
 
@@ -45,7 +44,6 @@ const CardBody = () => {
   };
 
   if (!activeQuestion) return null;
-  console.log("Editor value:", storedAnswer?.answer_text);
   return (
     <div className="px-4 py-8">
       <p className="font-bold text-xl mb-5">

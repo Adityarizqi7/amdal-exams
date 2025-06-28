@@ -39,6 +39,26 @@ export const examApi = createApi({
             },
             invalidatesTags:["Exam"],
         }),
+        endExamBe: builder.mutation({
+            query: () =>({
+                url: "/exam-submissions/submit",
+                method: "POST",
+            }),
+            transformResponse(response) {
+                return response;
+            },
+            invalidatesTags:["Exam"],
+        }),
+        myExam: builder.query({
+            query: () =>({
+                url: "/my-submissions",
+                method: "GET",
+            }),
+            transformResponse(response) {
+                return response;
+            },
+            invalidatesTags:["Exam"],
+        }),
         create: builder.mutation({
             query: ({ title, description, image, duration }) =>({
                 url: "exams",
@@ -58,5 +78,7 @@ export const {
     useLazyGetExamQuery,
     useLazyGetListQuestionQuery,
     useStartExamBeMutation,
+    useEndExamBeMutation,
+    useLazyMyExamQuery,
     useCreateMutation
 } = examApi;

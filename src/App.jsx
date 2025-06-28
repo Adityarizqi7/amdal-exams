@@ -9,7 +9,9 @@ import { clearAuth } from "./utils/Auth";
 export default function App() {
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const { isLoading, data } = useMeQuery();
+    const { isLoading, data } = useMeQuery(undefined, {
+        refetchOnMountOrArgChange: true,
+    });
     useEffect(() => {
         const fetchUser = async () => {
             if (data) {

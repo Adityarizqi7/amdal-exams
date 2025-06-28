@@ -82,13 +82,15 @@ const QuizSideBar = () => {
           <button
             onClick={() => {
               // Tambahkan fungsi logout di sini, contoh:
-              apiLogout().then(() => {
-                clearAuth();
-                dispatch(logout())
-                navigate('/login');
-              })
+              apiLogout().finally(() => {
+                clearAuth();                // hapus token di localStorage
+                dispatch(logout());         // reset redux state user
+                setTimeout(() => {
+                  navigate('/login');       // beri jeda 1 tick agar tidak race
+                }, 0);
+              });
             }}
-            className="w-full bg-red-100 text-red-600 font-bold py-2 rounded hover:bg-red-200 transition"
+            className="cursor-pointer w-full bg-red-100 text-red-600 font-bold py-2 rounded hover:bg-red-200 transition"
           >
             Log Out
           </button>
