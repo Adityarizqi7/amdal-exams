@@ -5,7 +5,7 @@ const initialValue = {
   numberQuestion: 0,
   activeQuestion: null,
   infoQuiz: null,
-  answerQuestion: null,
+  answerQuestion: [],
   startQuiz: false,
   finishQuiz: false,
 };
@@ -30,15 +30,21 @@ const quizSlice = createSlice({
       if (!state.startQuiz) {
         state.startQuiz = true;
       }
-
-      // ❌ Jangan set finishQuiz otomatis di sini
-      // finishQuiz hanya dikontrol saat waktu habis atau user klik selesai
     },
     setAnswerQuestion: (state, action) => {
-      state.answerQuestion = {
-        ...state.answerQuestion,
-        ...action.payload,
-      };
+      state.answerQuestion = action.payload
+    },
+    changeAnswerQuestion: (state, action) => {
+      const { question_id, selected_option_id, answer_text } = action.payload;
+      const index = state.answerQuestion.findIndex(
+        (el) => el.question_id === question_id
+      );
+
+      if (index !== -1) {
+        state.answerQuestion[index] = { ...state.answerQuestion[index], selected_option_id: selected_option_id, answer_text };
+      } else {
+        state.answerQuestion.push({ question:{ id:question_id }, question_id, selected_option_id: selected_option_id, answer_text });
+      }
     },
     setInfoQuestion: (state, action) => {
       state.infoQuiz = action.payload;
@@ -57,6 +63,7 @@ export const {
   setListQuestion,
   setNumberQuestion,
   setAnswerQuestion,
+  changeAnswerQuestion,
   setInfoQuestion,
   setStartQuiz,
   setFinishQuiz,

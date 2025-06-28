@@ -57,13 +57,13 @@ const QuizLayout = () => {
       </HelmetProvider>
 
       {/* Layout: Navbar, Sidebar, Content */}
-      <>
+      <div className="montserrat">
         <QuizNavbar />
         <QuizSideBar />
         <div className="relative w-[100svw] min-h-[100svh] bg-green-base flex justify-center items-center">
           <Outlet />
         </div>
-      </>
+      </div>
     </>
   );
 };

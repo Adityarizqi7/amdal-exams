@@ -20,6 +20,10 @@ const Info = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const userLog = useSelector((state) => state.user);
+  const listExam = useSelector((state) => state.exam.listExams);
+  const activeExam = useSelector((state) => state.exam.activeExam);
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,15 +31,16 @@ const Info = () => {
   const [apiGetQuestions] = useLazyGetListQuestionQuery();
   const [apiStartExam] = useStartExamBeMutation()
 
-  const userLog = useSelector((state) => state.user);
-  const listExam = useSelector((state) => state.exam.listExams);
-  const activeExam = useSelector((state) => state.exam.activeExam);
   // const listQuestion = useSelector((state) => state.quiz.listQuestion);
 
   const getExam = async () => {
     const dataExam = await apiGetExams();
     if (dataExam.data.success) {
-      dispatch(setListExam(dataExam.data.data));
+        if (userLog?.exam_id) {
+          setSelectedExam(userLog.exam_id);
+          dispatch(setActiveExam(userLog.exam_id));
+        }
+        dispatch(setListExam(dataExam.data.data));
     }
   };
 
@@ -47,6 +52,7 @@ const Info = () => {
   }
 
   const handleChangeExam = (val) => {
+    if(userLog.exam_id) return false
     setSelectedExam(val)
     dispatch(setActiveExam(val))
   }
@@ -54,19 +60,24 @@ const Info = () => {
   const handleConfirm = () => {
     setIsOpen(false);
     getQuestion(activeExam.id)
-    // apiStartExam({
-    //   exam_id: activeExam.id
-    // })
+    if(!userLog.start_exam){
+      apiStartExam({
+        exam_id: activeExam.id
+      })
+    }
     navigate("/quiz/ready");
   };
 
   useEffect(() => {
     getExam();
     if(activeExam){
+      if(userLog.start_exam && userLog.exam_id){
+        handleConfirm()
+      }
       getQuestion(activeExam.id)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeExam]);
+  }, [activeExam, userLog]);
 
   useEffect(() => {
     if (userLog?.email) {
@@ -108,11 +119,11 @@ const Info = () => {
           <div className="flex items-center gap-2">
             <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
             Waktu:{" "}
-            {userLog?.start_time && userLog?.end_time
-              ? `${new Date(userLog.start_time).toLocaleTimeString([], {
+            {userLog?.batch_start_time && userLog?.batch_end_time
+              ? `${new Date(userLog.batch_start_time).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
-                })} - ${new Date(userLog.end_time).toLocaleTimeString([], {
+                })} - ${new Date(userLog.batch_end_time).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}`
@@ -126,7 +137,7 @@ const Info = () => {
             <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
             Pilih Asesmen
           </label>
-          <Listbox value={selectedExam} onChange={(e) => handleChangeExam(e)}>
+          <Listbox value={selectedExam} onChange={(e) => handleChangeExam(e)} disabled={userLog.exam_id}>
             <div className="relative">
               <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-green-base focus:border-green-base text-sm">
                 <span className="block truncate">
@@ -195,7 +206,7 @@ const Info = () => {
             className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
           >
             <PlayCircleIcon className="w-5 h-5" />
-            Mulai Asesmen
+            { userLog.start_exam ? "Lanjutkan" : "Mulai Asesmen" }
           </button>
         </div>
       </div>

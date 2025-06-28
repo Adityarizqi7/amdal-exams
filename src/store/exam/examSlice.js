@@ -13,7 +13,7 @@ const examSlice = createSlice({
             state.listExams = action.payload;
         },
         setActiveExam:(state, action) => {
-            state.activeExam = state.listExams.find((el) => el.id === action.payload);
+            state.activeExam = state.listExams?.find((el) => el.id === action.payload);
         },
         clear: () => initialValue,
     },

@@ -2,13 +2,14 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { getTimeStart, setTimeStart } from "../../../utils/Exam";
-import dayjs from "dayjs";
+import { getTimeStart, setExamActive, setExamAUser, setTimeStart } from "../../../utils/Exam";
+import dayjs from "../../../utils/dayjsConfig"
 import Cookies from "js-cookie"
 
 const CardHeader = ({ setTimeOut }) => {
   const activeExam = useSelector((state) => state.exam.activeExam);
   const startQuiz = useSelector((state) => state.quiz.startQuiz);
+  const userLog = useSelector((state) => state.user);
 
   const [quizTime, setQuizTime] = useState(0);
   const timeRef = useRef(0);
@@ -16,10 +17,22 @@ const CardHeader = ({ setTimeOut }) => {
 
   // Inisialisasi waktu saat quiz mulai
   useEffect(() => {
-    if (startQuiz && activeExam?.duration) {
-      let start = getTimeStart() || Cookies.get('exam-start');
+    if (startQuiz && activeExam?.duration && userLog) {
+      let start = userLog.start_exam;
+
+      if(activeExam.id == Cookies.get('exam-active') && userLog.id == Cookies.get('exam-user') && !start){
+        start = getTimeStart() || Cookies.get('exam-start')
+      }
+      console.log(start)
+      if(Cookies.get('exam-user') == null){
+        setExamAUser(userLog.id)
+      }
+
       if (!start) {
-        const now = dayjs().toISOString();
+        const now = dayjs().tz("Asia/Jakarta").toISOString();
+        console.log(now)
+        setExamAUser(userLog.id)
+        setExamActive(activeExam.id)
         setTimeStart(now);
         start = now;
       }
@@ -36,7 +49,7 @@ const CardHeader = ({ setTimeOut }) => {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startQuiz, activeExam?.duration]);
+  }, [startQuiz, activeExam?.duration, userLog]);
 
   // Jalankan timer countdown
   useEffect(() => {
