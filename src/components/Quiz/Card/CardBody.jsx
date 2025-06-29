@@ -4,6 +4,8 @@ import ChoiceOption from "../Answer/ChoiceOption";
 import TinyMCEEditor from "../Answer/TinyMCEEditor";
 import { changeAnswerQuestion } from "../../../store/quiz/quizSlice";
 import clsx from "clsx";
+import { useSaveAnswerMutation } from "../../../store/answer/answerApi";
+import { useRef } from "react";
 
 const CardBody = () => {
   const dispatch = useDispatch();
@@ -13,6 +15,9 @@ const CardBody = () => {
     state.quiz.answerQuestion?.find((el) => el.question_id === activeQuestion?.id)
   );
 
+  const [saveAnswer] = useSaveAnswerMutation();
+
+  const debounceRef = useRef(null);
   const [listChoice, setListChoice] = useState([]);
   useEffect(() => {
     if (!activeQuestion) return;
@@ -34,13 +39,14 @@ const CardBody = () => {
     }));
     setListChoice(updated);
 
-    dispatch(
-      changeAnswerQuestion({
-        question_id: activeQuestion.id,
-        selected_option_id: option_id,
-        answer_text: null,
-      })
-    );
+    const payload = {
+      question_id: activeQuestion.id,
+      selected_option_id: option_id,
+      answer_text: null,
+    };
+
+    dispatch(changeAnswerQuestion(payload));
+    saveAnswer(payload); // non-blocking
   };
 
   if (!activeQuestion) return null;
@@ -75,14 +81,25 @@ const CardBody = () => {
             storedAnswer?.answer_text ? "border-green-base" : "border-blue-300"
           )}
           onChange={(e) => {
-            if(!e.target.value) return
-            dispatch(
-              changeAnswerQuestion({
-                question_id: activeQuestion.id,
-                selected_option_id: null,
-                answer_text: e.target.value,
-              })
-            );
+            const value = e.target.value;
+
+            const payload = {
+              question_id: activeQuestion.id,
+              selected_option_id: null,
+              answer_text: value,
+            };
+
+            dispatch(changeAnswerQuestion(payload));
+
+            // Clear previous timeout if exists
+            if (debounceRef.current) {
+              clearTimeout(debounceRef.current);
+            }
+
+            // Set new debounce timeout
+            debounceRef.current = setTimeout(() => {
+              saveAnswer(payload);
+            }, 1000); // 500ms debounce
           }}></textarea>
       ) : null}
     </div>

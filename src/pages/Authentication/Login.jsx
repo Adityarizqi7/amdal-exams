@@ -1,6 +1,6 @@
 import Swal from "sweetalert2"
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CommonLayout from "../../layouts/CommonLayout";
@@ -11,6 +11,8 @@ import { logout, setUserDetails } from "../../store/user/userSlice";
 import { useLoginMutation } from "../../store/auth/authApi";
 
 export default function Login() {
+    const userLog = useSelector(state => state.user)
+
     const [login] = useLoginMutation();
     const location = useLocation()
     const dispatch = useDispatch()
@@ -26,8 +28,11 @@ export default function Login() {
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        console.log(formData.email === '' || formData.password === '' || errors.password || errors.email || loading)
-    },[formData.email,  formData.password, errors.password, errors.email,  loading])
+        if(userLog?.role == 'user'){
+            navigate('/quiz')
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[formData.email,  formData.password, errors.password, errors.email,  loading, userLog])
 
     const validate = (fields = formData) => {
         const newErrors = {};
@@ -106,6 +111,7 @@ export default function Login() {
                                 navigate("/dashboard/exams")
                             } else {
                                 navigate("/quiz")
+                                window.location.reload()
                             }
                         }
                     }) 
