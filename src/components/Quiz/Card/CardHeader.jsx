@@ -51,12 +51,12 @@ const CardHeader = ({ setTimeOut }) => {
   if (!activeExam) return null;
 
   return (
-    <div className="py-4 px-6 flex justify-between items-center"
+    <div className="py-4 px-6 flex flex-wrap justify-between items-center"
       style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
       <p className="font-bold">{activeExam.title}</p>
       <Transition show={Boolean(quizTime)}>
         <div className={clsx(
-          "px-1 py-2 rounded text-black border flex items-center gap-2",
+          "px-1 py-2 rounded text-black border flex items-center gap-2 ml-auto",
           quizTime < 60 ? "bg-red-300 border-red-500 animate-pulse" : "bg-blue-300 border-blue-500"
         )}>
           <p>Time Left</p>
