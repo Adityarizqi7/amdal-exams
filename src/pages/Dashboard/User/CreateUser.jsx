@@ -29,7 +29,7 @@ const CreateUser = () => {
 
     const validate = (fields = formData) => {
         const newErrors = {};
-        if (!fields.name) newErrors.name = 'Kolom Judul Pertanyaan harus diisi!';
+        if (!fields.name) newErrors.name = 'Kolom Nama harus diisi!';
         if (!fields.email) newErrors.email = 'Kolom Urutan harus diisi!';
         if (!fields.password) {
             newErrors.password = 'Kolom Password harus diisi!';
@@ -146,7 +146,7 @@ const CreateUser = () => {
                                         borderRadius: '6px',
                                         marginTop: '0.25rem',
                                     }}
-                                    placeholder="Masukkan judul pertanyaan"
+                                    placeholder="Masukkan nama"
                                 />
                                 {touched.name && errors.name && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.name}</div>}
                             </div>
@@ -166,7 +166,7 @@ const CreateUser = () => {
                                         borderRadius: '6px',
                                         marginTop: '0.25rem',
                                     }}
-                                    placeholder="Masukkan urutan pertanyaan"
+                                    placeholder="Masukkan email"
                                 />
                                 {touched.email && errors.email && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.email}</div>}
                             </div>

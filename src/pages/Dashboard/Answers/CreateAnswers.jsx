@@ -213,8 +213,8 @@ const CreateAnswers = () => {
                     console.error(error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal Menghapus',
-                        text: 'Terjadi kesalahan saat menghapus data.',
+                        title: 'Gagal Menyimpan',
+                        text: 'Terjadi kesalahan saat menyimpan data.',
                         customClass: {
                             container: 'montserrat'
                         }
@@ -252,6 +252,9 @@ const CreateAnswers = () => {
                 icon: 'error',
                 title: 'Gagal',
                 text: 'Terjadi kesalahan saat menyimpan Opsi Jawaban',
+                customClass: {
+                    container: 'montserrat'
+                }
             });
         } finally {
             setLoadingSubmit(false);

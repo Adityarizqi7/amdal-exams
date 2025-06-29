@@ -60,10 +60,19 @@ const CreateExam = () => {
 
             if (error) {
                 setLoadingSubmit(false)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Menyimpan data',
+                    text: 'Terjadi kesalahan saat menyimpan data.',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                });
                 throw new Error("Terdapat inputan yang masih salah.");
             }
 
             setLoadingSubmit(false);
+            
             let timerInterval;
             Swal.fire({
                 timer: 1000,

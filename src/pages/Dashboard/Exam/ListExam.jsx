@@ -43,6 +43,14 @@ const ListExam = () => {
 
             if (error) {
                 setLoadingExam(false)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Mengambil',
+                    text: 'Terjadi kesalahan saat mengambil data.',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                });
                 throw new Error("Gagal Mengambail data.");
             }
             setLoadingExam(false)
@@ -50,6 +58,14 @@ const ListExam = () => {
         } catch (error) {
             setLoadingExam(false)
             console.log(error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Mengambil',
+                text: 'Terjadi kesalahan saat mengambil data.',
+                customClass: {
+                container: 'montserrat'
+                }
+            });
         }
     }, [all])
 
@@ -75,34 +91,34 @@ const ListExam = () => {
             const token = await getToken();
             if (token) {
                 axios.delete(`${CONST.BASE_URL_API}exams/${el.id}`, {
-                    headers: {
-                      Authorization: `Bearer ${token}`
-                    }})
-                  .then(() => {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }})
+                .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Tipe Ujian berhasil dihapus!',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                })
+                getAllExam();
+                })
+                .catch((error) => {
+                console.error(error);
                     Swal.fire({
-                      icon: 'success',
-                      title: 'Berhasil',
-                      text: 'Tipe Ujian berhasil dihapus!',
-                      customClass: {
-                        container: 'montserrat'
-                      }
-                    })
-                    getAllExam();
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Gagal Menghapus',
-                      text: 'Terjadi kesalahan saat menghapus data.',
-                      customClass: {
-                        container: 'montserrat'
-                      }
+                        icon: 'error',
+                        title: 'Gagal Menghapus',
+                        text: 'Terjadi kesalahan saat menghapus data.',
+                        customClass: {
+                            container: 'montserrat'
+                        }
                     });
-                  })
-                  .finally(() => {
+                })
+                .finally(() => {
                     setLoadingExam(false);
-                  });
+                });
             }
         }
         });

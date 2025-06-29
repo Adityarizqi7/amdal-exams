@@ -42,6 +42,14 @@ const ListAnswers = () => {
 
             if (error) {
                 setLoadingAnswer(false)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal mengambil data',
+                    text: 'Terjadi kesalahan saat mengambil data.',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                });
                 throw new Error("Gagal Mengambail data.");
             }
             setLoadingAnswer(false)

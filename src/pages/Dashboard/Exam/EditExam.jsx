@@ -155,7 +155,7 @@ const EditExam = () => {
                         });
                     })
                     .finally(() => {
-                    setLoadingSubmit(false);
+                        setLoadingSubmit(false);
                     });
                 }
             }
