@@ -3,8 +3,8 @@ import 'dayjs/locale/id'
 // import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Tooltip } from 'react-tooltip'
-import { Select } from '@headlessui/react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { Select, CloseButton, Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../../utils/Constant';
@@ -44,6 +44,16 @@ const SetBatch = () => {
     const [formData, setFormData] = useState({
         exam_batch: ''
     });
+
+    let [isOpen, setIsOpenDialogSetSesi] = useState(false)
+
+    function open() {
+        setIsOpenDialogSetSesi(true)
+    }
+
+    function close() {
+        setIsOpenDialogSetSesi(false)
+    }
 
     const handleChangeSelectBatch = (e) => {
         const { name, value } = e.target;
@@ -122,9 +132,9 @@ const SetBatch = () => {
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            getAllUserNotSubmitted(formData.exam_batch, e.target.value);
+            // getAllUserNotSubmitted(formData.exam_batch, e.target.value);
         }
-    }, [getAllUserNotSubmitted, formData]);
+    }, []);
     const deleteText = useCallback(() => setSearch(''), [])
 
     const handleFocusInput = useCallback(
@@ -241,7 +251,7 @@ const SetBatch = () => {
                                 }
                                 </span>
                                 </button>
-                                <button onClick={(e) => saveSetBatch(e, formData.exam_batch)} type='button' className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} bg-gray-800 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-gray-800/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2`}>
+                                <button onClick={open} type='button' className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} bg-gray-800 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-gray-800/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#000000" className="size-6 fill-white">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
                                         </svg>
@@ -331,7 +341,7 @@ const SetBatch = () => {
                                 {
                                     batch.map((el) => {
                                         return (
-                                            <option value={el.id}>
+                                            <option key={el?.id} value={el.id}>
                                                 {el?.name}
                                             </option>
                                         )
@@ -370,10 +380,7 @@ const SetBatch = () => {
                                             Email
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Status Submit Ujian
-                                        </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            Tanggal Submit Ujian
+                                            Status Ujian
                                         </th>
                                     </tr>
                                 </thead>
@@ -382,13 +389,34 @@ const SetBatch = () => {
                                     user?.length < 1 ?
                                     (
                                         <tr className="bg-white border-b border-gray-300">
-                                            <td colSpan={6} className="px-6 py-4 text-[1.25rem]">
+                                            <td colSpan={5} className="px-6 py-4 text-[1.25rem]">
                                                 Tidak ada peserta.
                                             </td>
                                         </tr>
                                     )  
                                     :
                                     user
+                                        ?.filter(value => {
+                                        if (search === '') return value
+                                        if (
+                                            value.name
+                                                ?.toLowerCase()
+                                                .includes(
+                                                    search
+                                                        ?.toLowerCase()
+                                                        .trim()
+                                                )
+                                        || value.email
+                                                ?.toLowerCase()
+                                                .includes(
+                                                    search
+                                                        ?.toLowerCase()
+                                                        .trim()
+                                                )
+                                        ) {
+                                            return value
+                                        }
+                                    })
                                     ?.map( (e, i) => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
@@ -411,13 +439,11 @@ const SetBatch = () => {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                 {
-                                                    !e.submitted_at ? 'Belum submit ujian' : 'Sudah submit ujian'
+                                                    !e.submitted_at &&
+                                                        <div className='tag bg-gray-300/80 text-gray-700 p-2 text-sm w-max rounded-[10px] font-medium'>
+                                                            Belum Submit Ujian
+                                                        </div>
                                                 }
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    {
-                                                        !e.submitted_at ? '-' : dayjs(e.submitted_at).format('DD MMMM YYYY HH:mm')
-                                                    }
                                                 </td>
                                                 {/* <td className="px-6 py-4">
                                                     <div className="flex justify-center items-center gap-2">
@@ -439,6 +465,33 @@ const SetBatch = () => {
                             </table>
                     }
                     </div>
+
+                    <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
+                        <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black/40">
+                        <div className="flex min-h-full items-center justify-center p-4 montserrat">
+                            <DialogPanel
+                            transition
+                            className="w-full max-w-lg rounded-xl bg-white p-6 duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0 shadow-own"
+                            >
+                            <DialogTitle as="h3" className="text-lg/7 font-medium text-gray-800">
+                                Pemberitahuan Set Sesi Ujian
+                            </DialogTitle>
+                            <p className="mt-2 text-md/6 text-gray-500">
+                                <h3 className='text-[]'>Total User yang akan di Set: <span className='font-semibold'> {user?.length} Peserta</span></h3>
+                            </p>
+                            <div className="mt-4 space-x-4">
+                                <Button
+                                    className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-green-base px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-green-700 data-open:bg-green-700 cursor-pointer`}
+                                    onClick={saveSetBatch}
+                                >
+                                 Simpan
+                                </Button>
+                                <CloseButton onClick={onclose} className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-red-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-red-600 data-open:bg-red-600 cursor-pointer`}>Batal Simpan</CloseButton>
+                            </div>
+                            </DialogPanel>
+                        </div>
+                        </div>
+                    </Dialog>
 
                     {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                         <button

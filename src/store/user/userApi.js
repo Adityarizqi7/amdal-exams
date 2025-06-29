@@ -14,9 +14,20 @@ export const userApi = createApi({
             transformResponse: (response) => response,
             providesTags: ["User"],
             refetchOnMountOrArgChange: true,
+        }),
+        getUser: builder.query({
+            query: (search) => ({
+                url: "users",
+                method: "GET",
+                params: { search }
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["User"],
+            refetchOnMountOrArgChange: true,
         })
     }),
 });
 export const {
+    useLazyGetUserQuery,
     useLazyGetExamQuery
 } = userApi;
