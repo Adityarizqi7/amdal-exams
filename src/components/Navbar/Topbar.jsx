@@ -129,6 +129,10 @@ export default function Topbar() {
                                         title={'Sesi'}
                                         path={'/dashboard/batches'}
                                     />
+                                    <ItemDropdownNav
+                                        title={'Pengguna'}
+                                        path={'/dashboard/users'}
+                                    />
                                 </>
                                 : false
                             }
@@ -258,6 +262,13 @@ export default function Topbar() {
                                             <ItemNav
                                                 title={'Sesi'}
                                                 path={'/dashboard/batches'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Pengguna'}
+                                                path={'/dashboard/users'}
                                                 classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                             />
                                         </Menu.Item>

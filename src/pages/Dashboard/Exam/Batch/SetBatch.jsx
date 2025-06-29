@@ -439,7 +439,10 @@ const SetBatch = () => {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                 {
-                                                    !e.submitted_at ? 'Belum submit ujian' : 'Sudah submit ujian'
+                                                    !e.submitted_at &&
+                                                        <div className='tag bg-gray-300/80 text-gray-700 p-2 text-sm w-max rounded-[10px] font-medium'>
+                                                            Belum Submit Ujian
+                                                        </div>
                                                 }
                                                 </td>
                                                 {/* <td className="px-6 py-4">
