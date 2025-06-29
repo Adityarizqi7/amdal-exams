@@ -24,10 +24,23 @@ export const userApi = createApi({
             transformResponse: (response) => response,
             providesTags: ["User"],
             refetchOnMountOrArgChange: true,
+        }),
+        create: builder.mutation({
+            query: ({ name, email, role, is_active, password }) =>({
+                url: "users",
+                method: "POST",
+                body: { name, email, role, is_active, password },
+            }),
+            transformResponse(response) {
+                return response;
+
+            },
+            invalidatesTags:["Exam"],
         })
     }),
 });
 export const {
     useLazyGetUserQuery,
-    useLazyGetExamQuery
+    useLazyGetExamQuery,
+    useCreateMutation
 } = userApi;

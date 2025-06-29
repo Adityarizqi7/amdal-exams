@@ -462,7 +462,7 @@ const CreateAnswers = () => {
                                                         </Switch>
                                                         <span className="font-medium">{option.isCorrect ? 'Benar' : 'Salah'}</span>
                                                     </div>
-                                            </div>
+                                                </div>
                                             </div>
                                         ))
                                     }

@@ -24,6 +24,7 @@ import CreateAnswers from "../pages/Dashboard/Answers/CreateAnswers";
 import EditAnswers from "../pages/Dashboard/Answers/EditAnswers";
 
 import ListUser from '../pages/Dashboard/User/ListUser'
+import CreateUser from "../pages/Dashboard/User/CreateUser";
 
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'
@@ -133,6 +134,11 @@ export default function Router() {
                 <Route path='/dashboard/users' element={
                     <PrivateRoute>
                         <ListUser/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/user/create' element={
+                    <PrivateRoute>
+                        <CreateUser/>
                     </PrivateRoute>
                     } />
                 
