@@ -14,16 +14,16 @@ import ListQuestion from '../pages/Dashboard/Question/ListQuestion'
 import CreateQuestion from '../pages/Dashboard/Question/CreateQuestion'
 import EditQuestion from "../pages/Dashboard/Question/EditQuestion";
 
-// import PreviewQuestion from '../pages/Dashboard/Question/PreviewQuestion'
 import SetBatch from '../pages/Dashboard/Exam/Batch/SetBatch'
 import ListExamBatch from '../pages/Dashboard/Exam/Batch/ListExamBatch'
 import CreateBatch from '../pages/Dashboard/Exam/Batch/CreateBatch'
 import EditBatch from "../pages/Dashboard/Exam/Batch/EditBatch";
 
-// import PreviewQuestion from '../pages/Dashboard/Question/PreviewQuestion'
 import ListAnswers from '../pages/Dashboard/Answers/ListAnswers'
 import CreateAnswers from "../pages/Dashboard/Answers/CreateAnswers";
 import EditAnswers from "../pages/Dashboard/Answers/EditAnswers";
+
+import ListUser from '../pages/Dashboard/User/ListUser'
 
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'
@@ -128,17 +128,15 @@ export default function Router() {
                         <SetBatch/>
                     </PrivateRoute>
                     } />
-                {/* <Route path='/dashboard/answers/create' element={
+                
+                {/* Users */}
+                <Route path='/dashboard/users' element={
                     <PrivateRoute>
-                        <CreateAnswers/>
+                        <ListUser/>
                     </PrivateRoute>
                     } />
-                <Route path='/dashboard/answers/:id/edit' element={
-                    <PrivateRoute>
-                        <EditAnswers/>
-                    </PrivateRoute>
-                    } /> */}
-
+                
+                {/* Quiz */}
                 <Route path='quiz' element={
                     <PrivateRoute>
                         <QuizLayout />

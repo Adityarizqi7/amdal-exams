@@ -51,13 +51,13 @@ export default function Topbar() {
 
         setLoadingLogout(true)
         apiLogout().finally(() => {
-            window.location.reload()
             setLoadingLogout(false)
             clearAuth();                // hapus token di localStorage
             dispatch(logout());         // reset redux state user
             setTimeout(() => {
                 navigate('/login');       // beri jeda 1 tick agar tidak race
             }, 0);
+            window.location.reload()
         })
     };
 
@@ -102,7 +102,7 @@ export default function Topbar() {
                             className='w-[11rem]'
                         />
                     </div>
-                    <div className='hidden items-center lg:block'>
+                    <div className='hidden items-center xl:block'>
                         <div
                             className="flex items-center gap-8"
                         >
@@ -129,12 +129,16 @@ export default function Topbar() {
                                         title={'Sesi'}
                                         path={'/dashboard/batches'}
                                     />
+                                    <ItemDropdownNav
+                                        title={'Pengguna'}
+                                        path={'/dashboard/users'}
+                                    />
                                 </>
                                 : false
                             }
                         </div>
                     </div>
-                    <div className='lg:block hidden'>
+                    <div className='xl:block hidden'>
                     {
                         userLog.name ? 
                             <div ref={dropdownAccountRef} className="account-popup relative">
@@ -169,7 +173,7 @@ export default function Topbar() {
                     }
                     </div>
                     <div
-                        className="-mr-2 flex lg:hidden lg:gap-0 gap-2 rounded-full py-[0.75rem] px-4"
+                        className="-mr-2 flex xl:hidden xl:gap-0 gap-2 rounded-full py-[0.75rem] px-4"
                     >
                         {/* <DarkBtn /> */}
                         <Menu.Button className='inline-flex items-center justify-center rounded-md text-gray-600 focus:outline-none'>
@@ -219,7 +223,7 @@ export default function Topbar() {
                     className='absolute w-full left-0 shadow-sm outline-0'
                 >
                     <Menu.Items
-                        className='montserrat lg:hidden rounded-[1.15rem] bg-white overflow-y-auto h-auto'
+                        className='montserrat xl:hidden rounded-[1.15rem] bg-white overflow-y-auto h-auto'
                         id='mobile-menu'
                     >
                         <div className='space-y-1 p-2'>
@@ -258,6 +262,13 @@ export default function Topbar() {
                                             <ItemNav
                                                 title={'Sesi'}
                                                 path={'/dashboard/batches'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Pengguna'}
+                                                path={'/dashboard/users'}
                                                 classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                             />
                                         </Menu.Item>
