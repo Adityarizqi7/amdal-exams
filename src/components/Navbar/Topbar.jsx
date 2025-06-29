@@ -51,13 +51,13 @@ export default function Topbar() {
 
         setLoadingLogout(true)
         apiLogout().finally(() => {
-            window.location.reload()
             setLoadingLogout(false)
             clearAuth();                // hapus token di localStorage
             dispatch(logout());         // reset redux state user
             setTimeout(() => {
                 navigate('/login');       // beri jeda 1 tick agar tidak race
             }, 0);
+            window.location.reload()
         })
     };
 
