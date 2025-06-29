@@ -147,7 +147,7 @@ const ListAnswers = () => {
         <CommonLayout
             title='Daftar Opsi Jawaban - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-answers-component md:px-[7.5rem] px-4 pb-8">
+            <div className="list-answers-component lg:px-[7.5rem] px-4 pb-8">
                 {
                     loadingAnswer ?
                     <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Opsi Jawaban...</h1>

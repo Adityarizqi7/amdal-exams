@@ -10,7 +10,7 @@ export default function Footer() {
             className="montserrat bg-cover bg-no-repeat bg-white relative z-10"
         >
             {/* <hr className='mb-6 sm:mx-auto lg:mb-8' /> */}
-            <div className='md:flex md:justify-between py-[2.5rem] border border-gray-100 md:px-[7.5rem] px-4'>
+            <div className='md:flex md:justify-between py-[2.5rem] border border-gray-100 lg:px-[7.5rem] px-4'>
                 <div className='mb-6 md:mb-0'>
                     <div className='flex flex-wrap items-center gap-x-4 gap-y-0'>
                         <img

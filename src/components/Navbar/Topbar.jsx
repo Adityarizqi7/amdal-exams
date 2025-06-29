@@ -8,12 +8,14 @@ import {
     ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/16/solid'
 
-import { Logout } from "../../utils/Auth"
+import { clearAuth, Logout } from "../../utils/Auth"
 import klh from '../../assets/images/klh.png'
 import amdalnet from '../../assets/images/amdalnet.png'
 import { useLazyLogoutQuery } from "../../store/auth/authApi"
 
 export default function Topbar() {
+
+    const [apiLogout] = useLazyLogoutQuery();
 
     const [logout] = useLazyLogoutQuery();
 
@@ -44,26 +46,20 @@ export default function Topbar() {
         setIsOpen(!isOpen);
     }
 
-    const handleLogout = useCallback( async (e) => {
+    const handleLogout = async (e) => {
         e.preventDefault();
 
-        try {
-            setLoadingLogout(true)
-            const response = await logout();
-    
-            const { error } = response;
-
-            if (error) {
-                setLoadingLogout(false)
-                throw new Error("Gagal Logout.");
-            }
-            window.location.reload();
-            dispatch(Logout());
-        } catch (error) {
+        setLoadingLogout(true)
+        apiLogout().finally(() => {
+            window.location.reload()
             setLoadingLogout(false)
-            console.log(error)
-        }
-    }, [dispatch, logout]);
+            clearAuth();                // hapus token di localStorage
+            dispatch(logout());         // reset redux state user
+            setTimeout(() => {
+                navigate('/login');       // beri jeda 1 tick agar tidak race
+            }, 0);
+        })
+    };
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -83,7 +79,7 @@ export default function Topbar() {
 
     return (
         <header
-            className={`${location.pathname === '/' ? isScrolled ? 'bg-white border-b border-gray-100' : 'bg-transparent border-0 border-gray-100' : 'bg-white border-b border-gray-100'} transition-colors  sticky top-0 z-[999] w-full md:px-[7.5rem] px-4`}
+            className={`${location.pathname === '/' ? isScrolled ? 'bg-white border-b border-gray-100' : 'bg-transparent border-0 border-gray-100' : 'bg-white border-b border-gray-100'} transition-colors  sticky top-0 z-[999] w-full lg:px-[7.5rem] px-4`}
         >
             {/* Dekstop Menu Navbar */}
             <Menu>
@@ -128,6 +124,10 @@ export default function Topbar() {
                                     <ItemDropdownNav
                                         title={'Jawaban'}
                                         path={'/dashboard/answers'}
+                                    />
+                                    <ItemDropdownNav
+                                        title={'Sesi'}
+                                        path={'/dashboard/batches'}
                                     />
                                 </>
                                 : false
@@ -251,6 +251,13 @@ export default function Topbar() {
                                             <ItemNav
                                                 title={'Jawaban'}
                                                 path={'/dashboard/answers'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Sesi'}
+                                                path={'/dashboard/batches'}
                                                 classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                             />
                                         </Menu.Item>

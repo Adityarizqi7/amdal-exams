@@ -1,64 +1,67 @@
+import dayjs from 'dayjs'
+import 'dayjs/locale/id'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Tooltip } from 'react-tooltip'
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import CONST from '../../../utils/Constant';
-import { getToken } from '../../../utils/Auth';
-import CommonLayout from "../../../layouts/CommonLayout"
-import { useLazyGetQuestionQuery } from "../../../store/question/questionApi";
-import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
+import CONST from '../../../../utils/Constant';
+import { getToken } from '../../../../utils/Auth';
+import CommonLayout from "../../../../layouts/CommonLayout"
+import { useLazyGetBatchQuery } from '../../../../store/exam/batchApi';
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 
-const ListQuestion = () => {
+dayjs.locale('id')
+
+const ListExamBatch = () => {
     
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
-    const [pagination, setPagination] = useState({
-        current_page: 1,
-        last_page: 1,
-    });
-
+    // const [pagination, setPagination] = useState({
+    //     current_page: 1,
+    //     last_page: 1,
+    // });
     const inputRef = useRef()
     const [search, setSearch] = useState('')
+    const [batch, setBatch] = useState([]);
+    const [getBatch] = useLazyGetBatchQuery();
     const [focusInput, setFocusInput] = useState(false)
-    const [getQuestion] = useLazyGetQuestionQuery();
-    const [questions, setQuestions] = useState([]);
-    const [loadingQuestion, setLoadingQuestion] = useState(false);
+    const [loadingBatch, setLoadingBatch] = useState(false);
 
-    const getAllQuestion = useCallback( async (search) => {
+    const getAllBatch = useCallback( async () => {
         try {
-            setLoadingQuestion(true)
+            setLoadingBatch(true)
 
-            const response = await getQuestion(search);
+            const response = await getBatch();
             const { data, error } = response;
-
-            setQuestions(data?.data?.data);
-            setPagination({
-                current_page: data.data.current_page,
-                last_page: data.data.last_page,
-                total: data.data.total,
-                per_page: data.data.per_page,
-            });
+            
+            setBatch(data?.data?.data);
+            // setPagination({
+            //     current_page: data.data.current_page,
+            //     last_page: data.data.last_page,
+            //     total: data.data.total,
+            //     per_page: data.data.per_page,
+            // });
 
             if (error) {
-                setLoadingQuestion(false)
+                setLoadingBatch(false)
                 throw new Error("Gagal Mengambail data.");
             }
-            setLoadingQuestion(false)
+            setLoadingBatch(false)
             
         } catch (error) {
-            setLoadingQuestion(false)
+            setLoadingBatch(false)
             console.log(error)
         }
-    }, [getQuestion])
+    }, [getBatch])
 
-    const deleteQuestion = useCallback((event, el) => {
+    const deleteBatch = useCallback((event, el) => {
         event.preventDefault();
       
         Swal.fire({
           title: 'Apakah kamu yakin?',
-          text: "Data Pertanyaan ini akan dihapus secara permanen!",
+          text: "Data Sesi ini akan dihapus secara permanen!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#d33',
@@ -70,10 +73,10 @@ const ListQuestion = () => {
           }
         }).then( async (result) => {
           if (result.isConfirmed) {
-            setLoadingQuestion(true);
+            setLoadingBatch(true);
             
             const token = await getToken();
-            axios.delete(`${CONST.BASE_URL_API}questions/${el.id}`, {
+            axios.delete(`${CONST.BASE_URL_API}exam-batches/${el.id}`, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }})
@@ -81,12 +84,12 @@ const ListQuestion = () => {
                 Swal.fire({
                   icon: 'success',
                   title: 'Berhasil',
-                  text: 'Pertanyaan berhasil dihapus!',
+                  text: 'Sesi berhasil dihapus!',
                   customClass: {
                     container: 'montserrat'
                   }
                 }).then(() => {
-                    getAllQuestion();
+                    getAllBatch();
                 })
                 
               })
@@ -102,26 +105,26 @@ const ListQuestion = () => {
                 });
               })
               .finally(() => {
-                setLoadingQuestion(false);
+                setLoadingBatch(false);
               });
         }
         });
-    }, [getAllQuestion])
+    }, [getAllBatch])
 
-    const handlePageChange = (page) => {
-        if (page < 1 || page > pagination.last_page) return;
-        getAllQuestion(page);
-    };
+    // const handlePageChange = (page) => {
+    //     if (page < 1 || page > pagination.last_page) return;
+    //     getAllBatch(page);
+    // };
 
     const handleChange = useCallback(e => setSearch(e.target.value), [])
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            getAllQuestion(e.target.value);
+            getAllBatch(e.target.value);
         }
-    }, [getAllQuestion]);
+    }, [getAllBatch]);
     const deleteText = useCallback(() => setSearch(''), [])
-    
+
     const handleFocusInput = useCallback(
         event => {
             if ((event.ctrlKey || event.metaKey) && event.code === 'KeyK') {
@@ -135,23 +138,23 @@ const ListQuestion = () => {
     )
 
     useEffect(() => {
-        getAllQuestion()
+        getAllBatch()
 
         document.addEventListener('keydown', handleFocusInput)
 
         return () => {
             document.removeEventListener('keydown', handleFocusInput)
         }
-    }, [getAllQuestion, handleFocusInput])
+    }, [getAllBatch, handleFocusInput])
 
     return (
         <CommonLayout
-            title='Daftar Pertanyaan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
+            title='Daftar Sesi - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-questions-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-batch-component md:px-[7.5rem] px-4 pb-8">
                 {
-                    loadingQuestion ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Pertanyaan...</h1>
+                    loadingBatch ?
+                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Sesi...</h1>
                     :
                     <div className='mt-[2rem]'>
                         <div className='flex max-xs:flex-col items-center justify-between gap-5'>
@@ -166,7 +169,7 @@ const ListQuestion = () => {
                                                 ? 'border-b-[rgb(72, 96, 228)]'
                                                 : false
                                         } text-black w-full bg-transparent pl-[10px] pr-[3.75rem] py-[0.75rem] border border-gray-500 rounded-[8px] font-normal`}
-                                        placeholder='Cari Pertanyaan...'
+                                        placeholder='Cari Sesi...'
                                         onChange={handleChange}
                                         onKeyDown={handleKeyDown}
                                         ref={inputRef}
@@ -202,14 +205,22 @@ const ListQuestion = () => {
                                     }
                                 </div>
                             </div>
-                            <NavLink to='/dashboard/question/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                <span>Tambah Pertanyaan</span>
-                            </NavLink>
+                            <div className='flex items-center gap-2 max-xs:w-full'>
+                                <NavLink to='/dashboard/batch/assign' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <span>Set Sesi Ujian</span>
+                                </NavLink>
+                                <NavLink to='/dashboard/batch/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <span>Tambah Sesi</span>
+                                </NavLink>
+                            </div>
                         </div>
-                        <div className="all-questions-table mt-8 overflow-x-auto">
+                        <div className="all-batch-table mt-8 overflow-x-auto">
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
                                 <thead className="text-white uppercase bg-green-base montserrat">
                                     <tr>
@@ -217,20 +228,17 @@ const ListQuestion = () => {
                                             No.
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Pertanyaan
+                                            Nama Sesi
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Urutan Soal
+                                            Sesi Mulai
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Jenis
+                                            Sesi Berakhir
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Bobot
+                                            Jumlah Peserta
                                         </th>
-                                        {/* <th scope="col" className="px-6 py-3">
-                                            Jumlah Pertanyaan
-                                        </th> */}
                                         <th scope="col" className="px-6 py-3">
                                             Aksi
                                         </th>
@@ -238,16 +246,16 @@ const ListQuestion = () => {
                                 </thead>
                                 <tbody className="montserrat">
                                 {
-                                    questions?.length < 1 ?
+                                    batch?.length < 1 ?
                                     (
                                         <tr className="bg-white border-b border-gray-300">
                                             <td colSpan={6} className="px-6 py-4 text-[1.25rem]">
-                                                Data Pertanyaan masih kosong, segera tambahkan.
+                                                Data Sesi masih kosong, segera tambahkan.
                                             </td>
                                         </tr>
                                     )  
                                     :
-                                    questions
+                                    batch
                                     ?.map( (e, i) => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
@@ -255,38 +263,29 @@ const ListQuestion = () => {
                                                     {i + 1}.
                                                 </td>
                                                 <td className="px-6 py-4 text-left">
-                                                    {e?.question_text}
+                                                    {e?.name}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {e?.order}
+                                                    {dayjs(e?.start_time).format('DD MMMM YYYY HH:mm')}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {e?.question_type === 'essay' ? 'Essay' : 'Pilihan Ganda'}
+                                                    {dayjs(e?.end_time).format('DD MMMM YYYY HH:mm')}
                                                 </td>
-                                                <td className="px-6 py-4 ">
-                                                    {e?.weight}
+                                                <td className="px-6 py-4">
+                                                    {e?.max_participants} Orang
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex justify-center items-center gap-2">
-                                                        <button onClick={() => {
-                                                            navigate(`/dashboard/question/${e.id}/preview`)
-                                                        }} id='preview-icon' className='cursor-pointer'>
-                                                            <EyeIcon className="w-6 h-6 text-gray-700" />
-                                                        </button>
-                                                        <Tooltip anchorSelect="#preview-icon">
-                                                            Tinjau
-                                                        </Tooltip>
-
-                                                        <button onClick={() => {
-                                                            navigate(`/dashboard/question/${e.id}/edit`)
+                                                        {/* <button onClick={() => {
+                                                            navigate(`/dashboard/batch/${e.id}/edit`)
                                                         }} id='edit-icon' className='cursor-pointer'>
                                                             <PencilSquareIcon className="w-6 h-6 text-blue-600" />
                                                         </button>
                                                         <Tooltip anchorSelect="#edit-icon">
                                                             Ubah
-                                                        </Tooltip>
+                                                        </Tooltip> */}
 
-                                                        <button id='trash-icon' onClick={(el) => deleteQuestion(el, e)} className="cursor-pointer">
+                                                        <button id='trash-icon' onClick={(el) => deleteBatch(el, e)} className="cursor-pointer">
                                                             <TrashIcon className="w-5 h-5 text-red-500" />
                                                         </button>
                                                         <Tooltip anchorSelect="#trash-icon">
@@ -302,7 +301,7 @@ const ListQuestion = () => {
                             </table>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end'>
+                        {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                             <button
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}
@@ -330,7 +329,7 @@ const ListQuestion = () => {
                             >
                                 Next
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 }
             </div>
@@ -338,4 +337,4 @@ const ListQuestion = () => {
     )
 }
 
-export default ListQuestion
+export default ListExamBatch
