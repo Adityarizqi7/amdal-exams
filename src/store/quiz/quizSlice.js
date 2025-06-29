@@ -40,10 +40,27 @@ const quizSlice = createSlice({
         (el) => el.question_id === question_id
       );
 
+      const isEmpty = (selected_option_id === null || selected_option_id === undefined) && (!answer_text || answer_text.trim() === "");
+
       if (index !== -1) {
-        state.answerQuestion[index] = { ...state.answerQuestion[index], selected_option_id: selected_option_id, answer_text };
+        if (isEmpty) {
+          state.answerQuestion.splice(index, 1); // remove from array
+        } else {
+          state.answerQuestion[index] = {
+            ...state.answerQuestion[index],
+            selected_option_id,
+            answer_text,
+          };
+        }
       } else {
-        state.answerQuestion.push({ question:{ id:question_id }, question_id, selected_option_id: selected_option_id, answer_text });
+        if (!isEmpty) {
+          state.answerQuestion.push({
+            question: { id: question_id },
+            question_id,
+            selected_option_id,
+            answer_text,
+          });
+        }
       }
     },
     setInfoQuestion: (state, action) => {

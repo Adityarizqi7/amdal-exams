@@ -14,12 +14,13 @@ const CardHeader = ({ setTimeOut }) => {
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (startQuiz && userLog?.batch_start_time && userLog?.batch_end_time) {
+    if (startQuiz && userLog?.start_exam && activeExam?.duration) {
       const now = dayjs().tz("Asia/Jakarta");
-      const endTime = dayjs(userLog.batch_end_time).tz("Asia/Jakarta");
+      const startTime = dayjs(userLog.start_exam).tz("Asia/Jakarta");
+      const endTime = startTime.add(activeExam.duration, 'minute');
       const diff = endTime.diff(now, 'second');
 
-      if (now && endTime && diff <= 0) {
+      if (diff <= 0) {
         setQuizTime(0);
         setTimeOut(true);
       } else {
@@ -27,7 +28,7 @@ const CardHeader = ({ setTimeOut }) => {
         timeRef.current = diff;
       }
     }
-  }, [startQuiz, userLog?.batch_start_time, userLog?.batch_end_time, setTimeOut]);
+  }, [startQuiz, userLog?.start_exam, activeExam?.duration, setTimeOut]);
 
   useEffect(() => {
     if (!startQuiz || intervalRef.current) return;

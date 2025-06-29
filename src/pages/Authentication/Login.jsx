@@ -26,7 +26,6 @@ export default function Login() {
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        console.log(formData.email === '' || formData.password === '' || errors.password || errors.email || loading)
     },[formData.email,  formData.password, errors.password, errors.email,  loading])
 
     const validate = (fields = formData) => {
@@ -106,6 +105,7 @@ export default function Login() {
                                 navigate("/dashboard/exams")
                             } else {
                                 navigate("/quiz")
+                                window.location.reload()
                             }
                         }
                     }) 

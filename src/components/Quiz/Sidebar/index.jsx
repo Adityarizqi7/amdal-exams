@@ -3,7 +3,7 @@ import { Bars3Icon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 import { useState, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setNumberQuestion } from "../../../store/quiz/quizSlice";
+import { setNumberQuestion, setStartQuiz } from "../../../store/quiz/quizSlice";
 import { useNavigate } from "react-router-dom";
 import { clearAuth } from "../../../utils/Auth";
 import { logout } from "../../../store/user/userSlice";
@@ -29,29 +29,29 @@ const QuizSideBar = () => {
 
 
   return (
-    <div className="fixed inset-0 z-10 flex justify-end pointer-events-none">
-      {/* Overlay */}
-      <Transition
-        as={Fragment}
-        show={isOpen}
-        enter="transition-opacity duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-20"
-        leave="transition-opacity duration-300"
-        leaveFrom="opacity-20"
-        leaveTo="opacity-0"
-      >
-        <div
-          className="absolute inset-0 bg-black opacity-20 pointer-events-auto"
-          onClick={() => setIsOpen(false)}
-        />
-      </Transition>
+    // <div className="fixed inset-0 z-10 flex justify-end pointer-events-none">
+    //   {/* Overlay */}
+    //   <Transition
+    //     as={Fragment}
+    //     show={isOpen || true}
+    //     enter="transition-opacity duration-300"
+    //     enterFrom="opacity-0"
+    //     enterTo="opacity-20"
+    //     leave="transition-opacity duration-300"
+    //     leaveFrom="opacity-20"
+    //     leaveTo="opacity-0"
+    //   >
+    //     <div
+    //       className="absolute inset-0 bg-black opacity-0 pointer-events-none"
+    //       onClick={() => setIsOpen(false)}
+    //     />
+    //   </Transition>
 
-      {/* Sidebar */}
       <aside
         className={clsx(
-          "relative w-[20em] h-full bg-white shadow-lg z-20 transition-transform duration-500 px-4 py-12 pointer-events-auto flex flex-col justify-between",
-          isOpen ? "translate-x-0" : "translate-x-full"
+          "relative w-[20em] shrink bg-white shadow-lg z-20 transition-transform duration-500 px-4 py-12 pointer-events-auto flex flex-col justify-between",
+          // eslint-disable-next-line no-constant-condition
+          (isOpen || true) ? "translate-x-0" : "translate-x-full"
         )}
       >
         <div>
@@ -59,7 +59,7 @@ const QuizSideBar = () => {
           { startQuiz && (
           <div className="my-8 grid grid-cols-3 grid-rows-auto gap-4 overflow-auto max-h-[80svh] px-2">
             {listQuestion?.map((q, i) => {
-              const isAnswered = answerQuestion?.find((el) => el.question.id === q.id);
+              const isAnswered = answerQuestion?.find((el) => el.question.id === q.id && (el.selected_option_id || el.answer_text) );
               return (
                 <div
                   key={q.id}
@@ -85,6 +85,7 @@ const QuizSideBar = () => {
               apiLogout().finally(() => {
                 clearAuth();                // hapus token di localStorage
                 dispatch(logout());         // reset redux state user
+                dispatch(setStartQuiz(false))
                 setTimeout(() => {
                   navigate('/login');       // beri jeda 1 tick agar tidak race
                 }, 0);
@@ -97,14 +98,14 @@ const QuizSideBar = () => {
         </div>
 
         {/* Toggle Button */}
-        <div
+        {/* <div
           className="size-14 flex items-center justify-center bg-white absolute top-0 -left-14 rounded-l-full cursor-pointer shadow-lg"
           onClick={() => setIsOpen(!isOpen)}
         >
           <Bars3Icon className="size-6" />
-        </div>
+        </div> */}
       </aside>
-    </div>
+    // </div>
   );
 };
 

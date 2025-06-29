@@ -8,14 +8,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, useMemo, useCallback } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
-import { useLazyGetExamQuery, useLazyGetListQuestionQuery, useStartExamBeMutation } from "../../store/exam/examApi";
+import {
+  useLazyGetExamQuery,
+  useLazyGetListQuestionQuery,
+  useStartExamBeMutation,
+} from "../../store/exam/examApi";
 import { setActiveExam, setListExam } from "../../store/exam/examSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadData from "../../components/Quiz/Loading/LoadData";
 import { setListQuestion, setStartQuiz } from "../../store/quiz/quizSlice";
-// import { setStartTime } from "../../store/user/userSlice";
 
 const Info = () => {
   const navigate = useNavigate();
@@ -29,6 +32,7 @@ const Info = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const [isBeforeTime, setIsBeforeTime] = useState(false);
   const [isAfterTime, setIsAfterTime] = useState(false);
   const [timeWarning, setTimeWarning] = useState(false);
@@ -37,94 +41,95 @@ const Info = () => {
   const [apiGetQuestions] = useLazyGetListQuestionQuery();
   const [apiStartExam] = useStartExamBeMutation();
 
-  const getExam = async () => {
-    const dataExam = await apiGetExams();
-    if (dataExam?.data?.success) {
-      if (userLog?.exam_id) {
+  const selectedData = useMemo(() => listExam?.find(e => e.id === selectedExam), [selectedExam, listExam]);
+
+  const fetchExams = useCallback(async () => {
+    const response = await apiGetExams();
+    const data = response?.data?.data;
+    if (data) {
+      dispatch(setListExam(data));
+      if (userLog.exam_id) {
         setSelectedExam(userLog.exam_id);
         dispatch(setActiveExam(userLog.exam_id));
       }
-      dispatch(setListExam(dataExam.data.data));
     }
-  };
+  }, [apiGetExams, dispatch, userLog.exam_id]);
 
-  const getQuestion = async (exam_id) => {
-    const dataQuestion = await apiGetQuestions(exam_id);
-    if (dataQuestion.data.success) {
-      dispatch(setListQuestion(dataQuestion.data.data));
+  const fetchQuestions = async (exam_id) => {
+    const response = await apiGetQuestions(exam_id);
+    if (response?.data?.success) {
+      dispatch(setListQuestion(response.data.data));
     }
   };
 
   const handleChangeExam = (val) => {
-    if (userLog.exam_id) return false;
-    setSelectedExam(val);
-    dispatch(setActiveExam(val));
+    if (!userLog.exam_id) {
+      setSelectedExam(val);
+      dispatch(setActiveExam(val));
+    }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setIsOpen(false);
-    getQuestion(activeExam.id);
+    await fetchQuestions(activeExam.id);
     if (!userLog.start_exam) {
-      apiStartExam({ exam_id: activeExam.id }).then(res => {
-        if(res.data.success){
-          dispatch(setStartQuiz(true))
-        }
-      })
-      // .finally(() => {
-      //   navigate("/quiz/ready");
-      // })
-      // return
+      const response = await apiStartExam({ exam_id: activeExam.id });
+      if (response?.data?.success) dispatch(setStartQuiz(true));
     }
-    if(!isAfterTime && !isBeforeTime){
-      // dispatch(setStartTime(userLog.start_exam  || (new Date().toISOString()) ));
-      dispatch(setStartQuiz(true))
+    if (!isBeforeTime && !isAfterTime) {
+      dispatch(setStartQuiz(true));
       navigate("/quiz/ready");
     }
   };
 
   useEffect(() => {
-    if(!listExam?.length){
-      getExam();
-    }
-    if (activeExam && userLog) {
-      if (userLog.start_exam && userLog.exam_id) {
-        if (userLog.submitted_at) {
-          navigate("/quiz/finish");
-        } else {
-          handleConfirm();
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeExam]);
+    if (!listExam?.length) fetchExams();
+  }, [fetchExams, listExam?.length]);
 
   useEffect(() => {
     if (userLog?.email) {
       setLoading(false);
       setSelectedExam(userLog.exam_id);
-      dispatch(setActiveExam(userLog.exam_id))
-
-      const now = new Date();
-      const start = new Date(userLog.batch_start_time);
-      const end = new Date(userLog.batch_end_time);
-
-      setIsBeforeTime(now < start);
-      setIsAfterTime(now > end);
-      setTimeWarning(now < start || now > end);
+      dispatch(setActiveExam(userLog.exam_id));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLog]);
+  }, [userLog, dispatch]);
+
+  // ⏱️ Update time window when selectedData or userLog changes
+  useEffect(() => {
+    if (!selectedData || !userLog) return;
+
+    const now = new Date();
+    const start = new Date(userLog.batch_start_time);
+    const end = userLog.start_exam && selectedData.duration
+      ? new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000) // duration dalam menit
+      : new Date(userLog.batch_end_time);
+
+    setIsBeforeTime(now < start);
+    setIsAfterTime(now > end);
+    setTimeWarning(now < start || now > end);
+  }, [selectedData, userLog]);
 
   useEffect(() => {
-    if(startQuiz) navigate('/quiz/ready')
+    if (activeExam && userLog.start_exam && userLog.exam_id) {
+      userLog.submitted_at ? navigate("/quiz/finish") : handleConfirm();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startQuiz])
+  }, [activeExam, userLog, navigate]);
 
-  const selectedData = listExam?.find((e) => e.id === selectedExam);
+  useEffect(() => {
+    if (startQuiz) navigate("/quiz/ready");
+  }, [startQuiz, navigate]);
 
-  if (loading) {
-    return <LoadData />;
-  }
+  const isAssessmentEnded = useMemo(() => {
+    if (userLog.submitted_at || isAfterTime) return true;
+    if (userLog.start_exam && selectedData?.duration) {
+      const endTime = new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000); // durasi menit
+      return new Date() > endTime;
+    }
+    return false;
+  }, [userLog, selectedData, isAfterTime]);
+
+  if (loading) return <LoadData />;
 
   return (
     <div className="flex items-center justify-center px-4 montserrat">
@@ -171,7 +176,6 @@ const Info = () => {
           </div>
         </div>
 
-        {/* Select Exam */}
         <div className="space-y-2 text-sm">
           <label className="font-semibold flex items-center gap-1">
             <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
@@ -180,55 +184,65 @@ const Info = () => {
           {timeWarning && !userLog.exam_id ? (
             <p className="text-red-600">Anda Belum Memilih Asessment</p>
           ) : (
-          <Listbox value={selectedExam} onChange={handleChangeExam} disabled={userLog.exam_id}>
-            <div className="relative">
-              <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-green-base focus:border-green-base text-sm">
-                <span className="block truncate">
-                  {selectedExam
-                    ? selectedData?.title || "Asesmen Tidak Ditemukan"
-                    : "-- Pilih Asesmen --"}
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                  <ChevronUpDownIcon className="h-4 w-4 text-gray-400" />
-                </span>
-              </Listbox.Button>
-              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none">
-                {listExam?.map((exam) => (
-                  <Listbox.Option
-                    key={exam.id}
-                    value={exam.id}
-                    className={({ active }) =>
-                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                        active ? "bg-green-100 text-green-900" : "text-gray-900"
-                      }`
-                    }
-                  >
-                    {({ selected }) => (
-                      <>
-                        <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
-                          {exam.title}
-                        </span>
-                        {selected && (
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
-                            <CheckIcon className="h-4 w-4" />
+            <Listbox
+              value={selectedExam}
+              onChange={handleChangeExam}
+              disabled={userLog.exam_id}
+            >
+              <div className="relative">
+                <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-green-base focus:border-green-base text-sm">
+                  <span className="block truncate">
+                    {selectedExam
+                      ? selectedData?.title || "Asesmen Tidak Ditemukan"
+                      : "-- Pilih Asesmen --"}
+                  </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <ChevronUpDownIcon className="h-4 w-4 text-gray-400" />
+                  </span>
+                </Listbox.Button>
+                <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none">
+                  {listExam?.map((exam) => (
+                    <Listbox.Option
+                      key={exam.id}
+                      value={exam.id}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                          active ? "bg-green-100 text-green-900" : "text-gray-900"
+                        }`
+                      }
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-medium" : "font-normal"
+                            }`}
+                          >
+                            {exam.title}
                           </span>
-                        )}
-                      </>
-                    )}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </div>
-          </Listbox>
+                          {selected && (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+                              <CheckIcon className="h-4 w-4" />
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </div>
+            </Listbox>
           )}
 
           {selectedData && (
             <div className="mt-3 text-sm text-gray-700 space-y-1 border-t pt-3">
               <div>
-                <span className="font-semibold">Jumlah Soal:</span> {selectedData.questions_count || 0}
+                <span className="font-semibold">Jumlah Soal:</span>{" "}
+                {selectedData.questions_count || 0}
               </div>
               <div>
-                <span className="font-semibold">Durasi:</span> Sesuai Waktu Sesi
+                <span className="font-semibold">Durasi:</span>{" "}
+                {selectedData.duration || 0} menit
               </div>
             </div>
           )}
@@ -236,7 +250,7 @@ const Info = () => {
 
         {/* Tombol Aksi */}
         <div className="mt-6">
-          {isAfterTime || userLog.submitted_at ? (
+          {isAssessmentEnded ? (
             <button
               onClick={() => navigate("/quiz/finish")}
               className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all"
@@ -251,7 +265,7 @@ const Info = () => {
           ) : (
             <button
               onClick={() => setIsOpen(true)}
-              disabled={!selectedExam}
+              disabled={!selectedExam || !selectedData}
               className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
             >
               <PlayCircleIcon className="w-5 h-5" />
