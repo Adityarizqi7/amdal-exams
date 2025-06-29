@@ -32,7 +32,6 @@ const Ready = () => {
   // 🔁 Validasi user dan fetch soal
   useEffect(() => {
     if (meSuccess && meSuccess && userLog) {
-      console.log(activeExam?.id, startQuiz)
       if (!activeExam?.id || !startQuiz) {
         navigate("/quiz");
         console.log('apakah navigate')

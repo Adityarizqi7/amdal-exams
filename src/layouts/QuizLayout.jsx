@@ -5,6 +5,7 @@ import QuizNavbar from "../components/Quiz/Navbar";
 import { useDispatch } from "react-redux";
 import { setOnline } from "../store/inet/inetSlice";
 import { useEffect } from "react";
+import klh from '../assets/images/klh-half-gray.png'
 
 const QuizLayout = () => {
   const dispatch = useDispatch();
@@ -55,12 +56,22 @@ const QuizLayout = () => {
       </HelmetProvider>
 
       {/* Layout: Navbar, Sidebar, Content */}
-      <div className="montserrat">
-        <QuizNavbar />
-        <QuizSideBar />
-        <div className="relative w-[100svw] min-h-[100svh] bg-green-base flex justify-center items-center">
-          <Outlet />
+      <div className="flex">
+        <div className="grow-1 relative overflow-hidden">
+          <QuizNavbar />
+          <div className="relative min-h-[100svh] bg-green-base/5 flex justify-center items-center">
+            <img
+                src={klh}
+                loading='lazy'
+                alt='KLH Logo'
+                className='absolute w-1/2 object-contain opacity-50 z-0 left-0'
+            />
+            <div className="relative z-[1]">
+              <Outlet />
+            </div>
+          </div>
         </div>
+        <QuizSideBar />
       </div>
     </>
   );
