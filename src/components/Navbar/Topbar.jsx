@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, NavLink, useLocation } from 'react-router-dom'
 import { Menu, Transition } from '@headlessui/react'
@@ -17,9 +17,9 @@ export default function Topbar() {
 
     const [apiLogout] = useLazyLogoutQuery();
 
-    const [logout] = useLazyLogoutQuery();
+    // const [logout] = useLazyLogoutQuery();
 
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     
     const userLog = useSelector((state) => state.user)
 
@@ -53,7 +53,7 @@ export default function Topbar() {
         apiLogout().finally(() => {
             setLoadingLogout(false)
             clearAuth();                // hapus token di localStorage
-            dispatch(logout());         // reset redux state user
+            // dispatch(logout());         // reset redux state user
             setTimeout(() => {
                 navigate('/login');       // beri jeda 1 tick agar tidak race
             }, 0);
