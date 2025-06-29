@@ -72,7 +72,7 @@ const CreateQuestion = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value)
+        // console.log(name, value)
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
@@ -186,7 +186,7 @@ const CreateQuestion = () => {
                                     }}
                                     />
                                     {
-                                        selectedExam ?
+                                        selectedExam === '' || !selectedExam ?
                                             <h4 className="absolute top-[45px] left-3">Pilih Pertanyaan</h4> 
                                         : false
                                     }

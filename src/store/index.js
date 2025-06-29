@@ -10,6 +10,7 @@ import { authApi } from "./auth/authApi";
 import { questionApi } from "./question/questionApi";
 import { answersApi } from "./answers/answersApi";
 import { answerApi } from "./answer/answerApi";
+import { batchApi } from "./exam/batchApi";
 
 const reducer = combineReducers({
     user: userSlice,
@@ -22,6 +23,7 @@ const reducer = combineReducers({
     [questionApi.reducerPath]: questionApi.reducer,
     [answersApi.reducerPath]: answersApi.reducer,
     [answerApi.reducerPath]: answerApi.reducer,
+    [batchApi.reducerPath]: batchApi.reducer,
 });
 
 const store = configureStore({
@@ -34,6 +36,7 @@ const store = configureStore({
             questionApi.middleware,
             answersApi.middleware,
             answerApi.middleware,
+            batchApi.middleware,
         ),
 });
 
