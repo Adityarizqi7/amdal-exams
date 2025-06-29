@@ -14,6 +14,8 @@ const Ready = () => {
 
   const listQuestion = useSelector((state) => state.quiz.listQuestion);
   const userLog = useSelector((state) => state.user);
+  const activeExam = useSelector(state => state.exam.activeExam)
+  const startQuiz = useSelector(state => state.quiz.startQuiz)
 
   const [fetchQuestions, { data: fetchedData, isSuccess }] = useLazyGetListQuestionQuery();
   const { isLoading, data: fetchMe, isSuccess: meSuccess } = useMeQuery(undefined, {
@@ -29,9 +31,11 @@ const Ready = () => {
 
   // 🔁 Validasi user dan fetch soal
   useEffect(() => {
-    if (!isLoading && meSuccess && userLog) {
-      if (!userLog.exam_id || !userLog.start_exam) {
+    if (meSuccess && meSuccess && userLog) {
+      console.log(activeExam?.id, startQuiz)
+      if (!activeExam?.id || !startQuiz) {
         navigate("/quiz");
+        console.log('apakah navigate')
         return;
       } else if (userLog.submited_at) {
         navigate("/quiz/finish");
@@ -44,7 +48,7 @@ const Ready = () => {
         dispatch(setNumberQuestion(0));
       }
     }
-  }, [userLog, listQuestion, isLoading, meSuccess, fetchQuestions, navigate, dispatch]);
+  }, [userLog, listQuestion, isLoading, meSuccess, fetchQuestions, navigate, dispatch, activeExam, startQuiz]);
 
   // 🔁 Simpan soal ke store saat berhasil
   useEffect(() => {

@@ -17,6 +17,7 @@ const CardFooter = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [unansweredWarning, setUnansweredWarning] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [saveAnswer] = useSaveAnswerMutation();
   const [endExam] = useEndExamBeMutation();
 
@@ -27,16 +28,15 @@ const CardFooter = () => {
   const simpanJawaban = async () => {
     const questionId = active.id;
     const questionType = active.question_type;
-
     const currentAnswer = answer?.find(el => el.question_id === questionId);
 
     if (questionType === "essay") {
+      if (!currentAnswer?.answer_text) return;
       dispatch(changeAnswerQuestion({
         question_id: questionId,
         selected_option_id: null,
         answer_text: currentAnswer?.answer_text,
       }));
-
       await saveAnswer({
         question_id: questionId,
         selected_option_id: null,
@@ -44,7 +44,6 @@ const CardFooter = () => {
       });
     } else {
       const selectedOptionId = currentAnswer?.selected_option_id;
-
       if (selectedOptionId) {
         await saveAnswer({
           question_id: questionId,
@@ -56,8 +55,8 @@ const CardFooter = () => {
   };
 
   const handleNext = async () => {
+    setIsLoading(true);
     await simpanJawaban();
-
     if (currentIndex + 1 < total) {
       dispatch(setNumberQuestion(currentIndex + 1));
     } else {
@@ -67,22 +66,24 @@ const CardFooter = () => {
           (ans.selected_option_id !== null || (ans?.answer_text && ans?.answer_text.trim() !== ""))
         )
       );
-
       setUnansweredWarning(!isAllAnswered);
       setIsOpen(true);
     }
+    setIsLoading(false);
   };
 
   const handleBack = async () => {
+    setIsLoading(true);
     await simpanJawaban();
     if (currentIndex > 0) {
       dispatch(setNumberQuestion(currentIndex - 1));
     }
+    setIsLoading(false);
   };
 
   const confirmFinish = async () => {
     if (!unansweredWarning) {
-      await endExam()
+      await endExam();
       setIsOpen(false);
       navigate("/quiz/finish");
     }
@@ -90,26 +91,23 @@ const CardFooter = () => {
 
   return (
     <>
-      <div
-        className="flex justify-between px-4 py-2"
-        style={{ boxShadow: "0 -4px 6px rgba(0, 0, 0, 0.1)" }}
-      >
+      <div className="flex justify-between px-4 py-2" style={{ boxShadow: "0 -4px 6px rgba(0, 0, 0, 0.1)" }}>
         {currentIndex > 0 ? (
           <button
             onClick={handleBack}
-            className="cursor-pointer bg-gray-300 px-4 py-2 rounded font-bold text-black"
+            disabled={isLoading}
+            className="cursor-pointer bg-gray-300 px-4 py-2 rounded font-bold text-black disabled:opacity-50"
           >
-            Kembali
+            {isLoading ? "Loading..." : "Kembali"}
           </button>
-        ) : (
-          <div />
-        )}
+        ) : <div />}
 
         <button
-          className="cursor-pointer bg-green-base px-4 py-2 rounded font-bold text-white"
           onClick={handleNext}
+          disabled={isLoading}
+          className="cursor-pointer bg-green-base px-4 py-2 rounded font-bold text-white disabled:opacity-50"
         >
-          {currentIndex + 1 === total ? "Selesai" : "Next Question"}
+          {isLoading ? "Loading..." : (currentIndex + 1 === total ? "Selesai" : "Next Question")}
         </button>
       </div>
 
