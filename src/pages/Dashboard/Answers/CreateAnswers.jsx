@@ -304,7 +304,7 @@ const CreateAnswers = () => {
                     <section className="form-create-answers-card mt-[1.5rem]">
                         <div className="form-wrapper montserrat space-y-6">
                             <div className="form-input relative">
-                                <label className="inline-block mb-1">Pilih Tipe Ujian<span className="text-red-500">*</span></label>
+                                <label className="inline-block mb-1">Pilih Tipe Ujian <span className="text-red-500">*</span></label>
                                 <Combobox value={selectedExam} onChange={setSelectedExam}>
                                     <ComboboxInput
                                     name="question_id"
@@ -320,7 +320,7 @@ const CreateAnswers = () => {
                                             <h4 className="absolute top-[45px] left-3">Pilih Tipe Ujian</h4> 
                                         : false
                                     }
-                                    <ComboboxButton className="group absolute top-[37px] right-0 px-2.5">
+                                    <ComboboxButton className="group absolute top-[41px] right-0 px-2.5">
                                         <ChevronDownIcon className="size-8 fill-black" />
                                     </ComboboxButton>
                                     <ComboboxOptions
@@ -365,7 +365,7 @@ const CreateAnswers = () => {
                             selectedExam ?
                             <>
                                     <div className="form-input relative">
-                                        <label className="inline-block mb-1">Pilih Pertanyaan<span className="text-red-500">*</span></label>
+                                        <label className="inline-block mb-1">Pilih Pertanyaan <span className="text-red-500">*</span></label>
                                         <Combobox value={selectedQuestion} onChange={setSelectedQuestion}>
                                             <ComboboxInput
                                             name="question_id"
@@ -381,7 +381,7 @@ const CreateAnswers = () => {
                                                     <h4 className="absolute top-[45px] left-3">Pilih Pertanyaan</h4> 
                                                 : false
                                             }
-                                            <ComboboxButton className="group absolute top-[37px] right-0 px-2.5">
+                                            <ComboboxButton className="group absolute top-[41px] right-0 px-2.5">
                                                 <ChevronDownIcon className="size-8 fill-black" />
                                             </ComboboxButton>
                                             <ComboboxOptions
@@ -427,7 +427,7 @@ const CreateAnswers = () => {
                                     <>
                                     {
                                         options.map((option, index) => (
-                                            <div key={index} className="options-row flex items-center gap-5">
+                                            <div key={index} className="options-row flex max-4xs:flex-col max-4xs:items-end items-center gap-5">
                                                 <div className="form-input relative w-full">
                                                     <label className="inline-block mb-1">Nama Opsi Jawaban <span className="text-red-500">*</span></label>
                                                     <input

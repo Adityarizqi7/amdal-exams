@@ -87,7 +87,7 @@ const ListExam = () => {
                         container: 'montserrat'
                       }
                     })
-                    navigate('/dashboard/exams')
+                    getAllExam();
                   })
                   .catch((error) => {
                     console.error(error);
@@ -106,7 +106,7 @@ const ListExam = () => {
             }
         }
         });
-    }, [navigate])
+    }, [getAllExam])
 
     const handlePageChange = (page) => {
         if (page < 1 || page > pagination.last_page) return;
@@ -148,7 +148,7 @@ const ListExam = () => {
         <CommonLayout
             title='Daftar Tipe Ujian - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-exams-component md:px-[7.5rem] px-4 pb-8">
+            <div className="list-exams-component lg:px-[7.5rem] px-4 pb-8">
                 {
                     loadingExam ?
                     <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Tipe Ujian...</h1>

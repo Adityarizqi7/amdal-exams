@@ -18,6 +18,30 @@ export const examApi = createApi({
             },
             invalidatesTags:["Exam"],
         }),
+        getExamWithoutPaginate: builder.query({
+            query: (search) => ({
+                url: `exams/all/without-paginate`,
+                method: "GET",
+                params: { search },
+            }),              
+            transformResponse(response) {
+                return response;
+
+            },
+            invalidatesTags:["Exam"],
+        }),
+        getUserForAssignBatch: builder.query({
+            query: (batch_id, search) => ({
+                url: `users/not-submitted-yet/${batch_id}`,
+                method: "GET",
+                params: { search },
+            }),              
+            transformResponse(response) {
+                return response;
+
+            },
+            invalidatesTags:["Exam"],
+        }),
         getListQuestion: builder.query({
             query: (exam_id) => ({
                 url: `/questions/list/${exam_id}`,
@@ -76,6 +100,8 @@ export const examApi = createApi({
 });
 
 export const {
+    useLazyGetExamWithoutPaginateQuery,
+    useLazyGetUserForAssignBatchQuery,
     useLazyGetExamQuery,
     useLazyGetListQuestionQuery,
     useStartExamBeMutation,

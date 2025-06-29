@@ -15,6 +15,12 @@ import CreateQuestion from '../pages/Dashboard/Question/CreateQuestion'
 import EditQuestion from "../pages/Dashboard/Question/EditQuestion";
 
 // import PreviewQuestion from '../pages/Dashboard/Question/PreviewQuestion'
+import SetBatch from '../pages/Dashboard/Exam/Batch/SetBatch'
+import ListExamBatch from '../pages/Dashboard/Exam/Batch/ListExamBatch'
+import CreateBatch from '../pages/Dashboard/Exam/Batch/CreateBatch'
+import EditBatch from "../pages/Dashboard/Exam/Batch/EditBatch";
+
+// import PreviewQuestion from '../pages/Dashboard/Question/PreviewQuestion'
 import ListAnswers from '../pages/Dashboard/Answers/ListAnswers'
 import CreateAnswers from "../pages/Dashboard/Answers/CreateAnswers";
 import EditAnswers from "../pages/Dashboard/Answers/EditAnswers";
@@ -100,6 +106,38 @@ export default function Router() {
                         <EditAnswers/>
                     </PrivateRoute>
                     } />
+
+                {/* Batch */}
+                <Route path='/dashboard/batches' element={
+                    <PrivateRoute>
+                        <ListExamBatch/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/batch/create' element={
+                    <PrivateRoute>
+                        <CreateBatch/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/batch/:id/edit' element={
+                    <PrivateRoute>
+                        <EditBatch/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/batch/assign' element={
+                    <PrivateRoute>
+                        <SetBatch/>
+                    </PrivateRoute>
+                    } />
+                {/* <Route path='/dashboard/answers/create' element={
+                    <PrivateRoute>
+                        <CreateAnswers/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/answers/:id/edit' element={
+                    <PrivateRoute>
+                        <EditAnswers/>
+                    </PrivateRoute>
+                    } /> */}
 
                 <Route path='quiz' element={
                     <PrivateRoute>
