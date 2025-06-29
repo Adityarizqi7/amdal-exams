@@ -280,40 +280,36 @@ export default function Topbar() {
                                                 </span>
                                             </button>
                                         </Menu.Item>
-                                        {
-                                            userLog.name ? 
-                                                <div ref={dropdownAccountRef} className="account-popup relative">
-                                                    <button onClick={toggleAccount} type="button" className="cursor-pointer inline-flex items-center gap-2 rounded-md bg-green-base hover:bg-green-base/80 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10">
-                                                        {formatShortName(userLog.name)}
-                                                        <ChevronDownIcon className="size-4 fill-white/60" />
+                                        <div ref={dropdownAccountRef} className="account-popup relative">
+                                            <button onClick={toggleAccount} type="button" className="cursor-pointer inline-flex items-center gap-2 rounded-md bg-green-base hover:bg-green-base/80 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10">
+                                                {formatShortName(userLog.name)}
+                                                <ChevronDownIcon className="size-4 fill-white/60" />
+                                            </button>
+                                            {
+                                                isOpen ? 
+                                                <div className="wrapper-account absolute bg-white shadow-own top-[3.25rem] right-[0rem] w-52 origin-top-right rounded-[8px] border border-white/5 text-sm/6 transition duration-100 ease-out [--anchor-gap:--spacing(1)] p-2">
+                                                    <button type="button" onClick={handleLogout} className={`${loadingLogout ? 'opacity-50 pointer-events-none' : ''} menu-item p-2 w-full rounded-[6px] hover:bg-gray-100 text-red-500 cursor-pointer flex items-center gap-2`}>
+                                                        <ArrowRightStartOnRectangleIcon className="size-5 fill-red-500" />
+                                                        <span className="font-semibold">
+                                                            {loadingLogout ? 'Memuat...' : 'Keluar'}
+                                                        </span>
                                                     </button>
-                                                    {
-                                                        isOpen ? 
-                                                        <div className="wrapper-account absolute bg-white shadow-own top-[3.25rem] right-[0rem] w-52 origin-top-right rounded-[8px] border border-white/5 text-sm/6 transition duration-100 ease-out [--anchor-gap:--spacing(1)] p-2">
-                                                            <button type="button" onClick={handleLogout} className={`${loadingLogout ? 'opacity-50 pointer-events-none' : ''} menu-item p-2 w-full rounded-[6px] hover:bg-gray-100 text-red-500 cursor-pointer flex items-center gap-2`}>
-                                                                <ArrowRightStartOnRectangleIcon className="size-5 fill-red-500" />
-                                                                <span className="font-semibold">
-                                                                    {loadingLogout ? 'Memuat...' : 'Keluar'}
-                                                                </span>
-                                                            </button>
-                                                        </div>
-                                                        : false
-                                                    }
                                                 </div>
-                                            :
-                                                <div className='flex items-center gap-4'>
-                                                    <button onClick={() => {
-                                                        navigate('/login')
-                                                    }} className='bg-green-base rounded-[10px] border-0 py-3 px-8 text-white hover:bg-green-base/80 cursor-pointer'>
-                                                        Masuk
-                                                    </button>
-                                                    {/* <button className='border border-green-base rounded-[10px] py-3 px-8 text-green-base bg-green-base/10 hover:bg-green-base/20 cursor-pointer'>
-                                                        Daftar
-                                                    </button> */}
-                                                </div>
-                    }
+                                                : false
+                                            }
+                                        </div>
                                     </div>
-                                : false
+                                :
+                                    <div className='flex items-center gap-4'>
+                                        <button onClick={() => {
+                                            navigate('/login')
+                                        }} className='bg-green-base rounded-[10px] border-0 py-3 px-8 text-white hover:bg-green-base/80 cursor-pointer'>
+                                            Masuk
+                                        </button>
+                                        {/* <button className='border border-green-base rounded-[10px] py-3 px-8 text-green-base bg-green-base/10 hover:bg-green-base/20 cursor-pointer'>
+                                            Daftar
+                                        </button> */}
+                                    </div>
                             }
                         </div>
                     </Menu.Items>
