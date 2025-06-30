@@ -9,6 +9,7 @@ import { getToken } from '../../../utils/Auth';
 import CommonLayout from "../../../layouts/CommonLayout"
 import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { useLazyGetAnswersQuery } from '../../../store/answers/answersApi';
+import DashboardLayout from 'src/layouts/DashboardLayout';
 
 const ListAnswers = () => {
     
