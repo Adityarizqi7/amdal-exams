@@ -203,6 +203,8 @@ const SetBatch = () => {
                             }
                         }).then(() => {
                             getAllBatch();
+                            setIsOpenDialogSetSesi(false)
+                            setSelectedRows([])
                         })
                     })
                     .catch((error) => {
