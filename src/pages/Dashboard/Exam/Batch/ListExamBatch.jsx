@@ -39,7 +39,7 @@ const ListExamBatch = () => {
                 searchInput = { search: searchInput, page: pagination.current_page }
             }
 
-            const response = await getBatch();
+            const response = await getBatch(searchInput);
             const { data, error } = response;
             
             setBatch(data?.data?.data);
@@ -283,7 +283,7 @@ const ListExamBatch = () => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
                                                 <td className="px-6 py-4 font-medium">
-                                                    {i + 1}.
+                                                    {(pagination.current_page - 1) * pagination.per_page + (i + 1)}.
                                                 </td>
                                                 <td className="px-6 py-4 text-left">
                                                     {e?.name}
@@ -339,6 +339,7 @@ const ListExamBatch = () => {
                                     onClick={() => handlePageChange(page)}
                                     style={{
                                         fontWeight: page === pagination.current_page ? 'bold' : 'normal',
+                                        cursor: 'pointer'
                                     }}
                                 >
                                     {page}
