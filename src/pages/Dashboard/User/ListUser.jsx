@@ -27,7 +27,7 @@ const ListUser = () => {
     const [users, setUser] = useState([]);
     const [loadingUser, setLoadingUser] = useState(false);
 
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState('');
     const [loadingImportExcel, setLoadingImportExcel] = useState(false)
 
     const handleChangeImportExcel = (e) => {
@@ -184,7 +184,11 @@ const ListUser = () => {
                             container: 'montserrat'
                         }
                     })
+                    getAllUser()
+                    setIsOpenDialogSetSesi(false)
                     setLoadingImportExcel(false)
+
+                    window.location.reload()
                 }
             }
           
@@ -431,9 +435,13 @@ const ListUser = () => {
                                             className={`${loadingImportExcel || file === '' ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-green-base px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-green-700 data-open:bg-green-700 cursor-pointer`}
                                             onClick={importDocumentExcel}
                                         >
-                                            Simpan
+                                            {
+                                                loadingImportExcel ? 'Mengirim data..' : 'Simpan'
+                                            }
                                         </Button>
-                                        <CloseButton onClick={onclose} className={`${loadingImportExcel ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-red-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-red-600 data-open:bg-red-600 cursor-pointer`}>Batal Simpan</CloseButton>
+                                        <CloseButton onClick={onclose} className={`${loadingImportExcel ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-red-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-red-600 data-open:bg-red-600 cursor-pointer`}>{
+                                            loadingImportExcel ? 'Mengirim data..' : 'Batal Simpan'
+                                        }</CloseButton>
                                     </div>
                                     </DialogPanel>
                                 </form>
