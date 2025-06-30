@@ -80,7 +80,7 @@ const EditQuestion = () => {
                         <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Detail Pertanyaan...</h1>
                     :
                     !detailQuest ? 
-                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Pertanyaan tidak ditemukan.</h1>
+                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Pertanyaan tidak ditemukan.</h1>
                     :
                     <form id="form_wrapper" encType="multipart/form-data" className="form-create-question-container mt-[2.5rem]">
                         <div className="flex items-center w-full justify-between">

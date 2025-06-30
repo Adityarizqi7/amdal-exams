@@ -35,11 +35,23 @@ export const userApi = createApi({
                 return response;
 
             },
-            invalidatesTags:["Exam"],
-        })
+            invalidatesTags:["User"],
+        }),
+        getDetail: builder.query({
+            query: (id) => ({
+                url: `/users/${id}`,
+                method: "GET",
+            }),
+            transformResponse(response) {
+                return response;
+
+            },
+            invalidatesTags:["User"],
+        }),
     }),
 });
 export const {
+    useGetDetailQuery,
     useLazyGetUserQuery,
     useLazyGetExamQuery,
     useCreateMutation
