@@ -32,7 +32,7 @@ export const examApi = createApi({
         }),
         getUserForAssignBatch: builder.query({
             query: (search) => ({
-                url: `users/not-submitted-yet`,
+                url: `users/not-assign-batch`,
                 method: "GET",
                 params: { search },
             }),              

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../utils/Constant';
 import { getToken } from '../../../utils/Auth';
-import CommonLayout from "../../../layouts/CommonLayout"
+import DashboardLayout from "../../../layouts/DashboardLayout"
 import { useLazyGetExamQuery } from "../../../store/exam/examApi";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 
@@ -161,13 +161,13 @@ const ListExam = () => {
     }, [getAllExam, handleFocusInput])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Daftar Tipe Ujian - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-exams-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-exams-component px-7 pb-8 overflow-y-auto">
                 {
                     loadingExam ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Tipe Ujian...</h1>
+                    <h1 className="montserrat mt-[2rem] text-center mx-auto text-[1.25rem] text-gray-700 font-semibold">Memuat Tipe Ujian...</h1>
                     :
                     <div className='mt-[2rem]'>
                         <div className='flex max-xs:flex-col items-center justify-between gap-5'>
@@ -284,7 +284,7 @@ const ListExam = () => {
                                                         <button onClick={() => {
                                                             navigate(`/dashboard/exam/${e.id}`)
                                                         }} id='edit-icon' className='cursor-pointer'>
-                                                            <PencilSquareIcon className="w-6 h-6 text-blue-600" />
+                                                            <PencilSquareIcon className="w-5 h-5 text-blue-600" />
                                                         </button>
                                                         <Tooltip anchorSelect="#edit-icon">
                                                             Ubah
@@ -339,7 +339,7 @@ const ListExam = () => {
                     </div>
                 }
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

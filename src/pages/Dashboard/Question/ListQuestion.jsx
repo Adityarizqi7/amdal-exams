@@ -156,7 +156,7 @@ const ListQuestion = () => {
         <CommonLayout
             title='Daftar Pertanyaan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-questions-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-questions-component px-7 pb-8">
                 {
                     loadingQuestion ?
                     <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Pertanyaan...</h1>
@@ -288,7 +288,7 @@ const ListQuestion = () => {
                                                         <button onClick={() => {
                                                             navigate(`/dashboard/question/${e.id}/edit`)
                                                         }} id='edit-icon' className='cursor-pointer'>
-                                                            <PencilSquareIcon className="w-6 h-6 text-blue-600" />
+                                                            <PencilSquareIcon className="w-5 h-5 text-blue-600" />
                                                         </button>
                                                         <Tooltip anchorSelect="#edit-icon">
                                                             Ubah

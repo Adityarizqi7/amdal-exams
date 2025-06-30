@@ -113,7 +113,7 @@ const CreateExam = () => {
                 </NavLink>
 
                 <form id="form_wrapper" encType="multipart/form-data" className="form-create-exam-container mt-[2.5rem]">
-                    <h1 className="font-semibold text-[1.75rem] text-gray-700">Tambah Tipe Ujian Soal</h1>
+                    <h1 className="font-semibold text-[1.75rem] text-gray-700">Tambah Tipe Ujian / Formasi Ujian</h1>
                     <section className="form-create-exam-card mt-[1.5rem]">
                         <div className="form-wrapper montserrat space-y-5">
                             <div className="form-input relative">

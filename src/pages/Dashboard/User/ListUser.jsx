@@ -218,7 +218,7 @@ const ListUser = () => {
         <CommonLayout
             title='Daftar Pengguna - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-users-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-users-component px-7 pb-8">
                 {
                     loadingUser ?
                     <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Pengguna...</h1>
@@ -273,7 +273,7 @@ const ListUser = () => {
                                 </div>
                             </div>
                             <div className='flex items-center gap-2'>
-                                <button onClick={open} className='font-semibold bg-green-200/80 hover:bg-green-300/60 text-green-600  rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                <button onClick={open} className='font-semibold bg-yellow-200/80 text-yellow-600 hover:bg-yellow-200 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                     </svg>
@@ -346,7 +346,7 @@ const ListUser = () => {
                                                         <button onClick={() => {
                                                             navigate(`/dashboard/user/${e.id}/edit`)
                                                         }} id='edit-icon' className='cursor-pointer'>
-                                                            <PencilSquareIcon className="w-6 h-6 text-blue-600" />
+                                                            <PencilSquareIcon className="w-5 h-5 text-blue-600" />
                                                         </button>
                                                         <Tooltip anchorSelect="#edit-icon">
                                                             Ubah
