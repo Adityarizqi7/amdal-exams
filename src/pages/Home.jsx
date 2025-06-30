@@ -1,14 +1,34 @@
+import { useState } from "react"
+
 import CommonLayout from "../layouts/CommonLayout"
 
 import '../styles/library/Marquee.css'
 import klh from '../../src/assets/images/klh-half-gray.png'
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "flowbite-react"
 
 const Home = () => {
+
+  const [openModal, setOpenModal] = useState(true);
+
   return (
     <CommonLayout
       title='Beranda - Seleksi Tenaga Teknis Operasional Amdalnet 2025'
     >
       <div className="home-component mb-[5rem] max-2xs:mb-[4rem] max-3xs:mb-[2rem]">
+        <Modal show={openModal} onClose={() => setOpenModal(false)}>
+          <ModalHeader>Pengumuman, Harap Diperhatikan!</ModalHeader>
+          <ModalBody>
+            <div className="space-y-6">
+              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Mohon bersabar ya, ujiannya belum dimulai 😂.<br /><br />
+              Akun Anda (email dan kata sandi) belum dapat digunakan hingga waktu pelaksanaan ujian dimulai. Silakan mencoba kembali saat ujian telah dibuka sesuai jadwal formasi.
+              </p>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setOpenModal(false)}>Mengerti</Button>
+          </ModalFooter>
+        </Modal>
         <div className="jumbotron absolute top-[0] z-0">
             <img
                 width='auto'

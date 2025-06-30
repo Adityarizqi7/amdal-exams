@@ -1,20 +1,17 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Tooltip } from 'react-tooltip'
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../utils/Constant';
 import { getToken } from '../../../utils/Auth';
 import DashboardLayout from "../../../layouts/DashboardLayout"
-import { useLazyGetUserQuery } from "../../../store/user/userApi";
-import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
+import { useLazyGetResultQuery } from '../../../store/assesment/assesmentApi';
 import { CloseButton, Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 const ListResult = () => {
     
-    const navigate = useNavigate()
-
     const [pagination, setPagination] = useState({
         current_page: 1,
         last_page: 1,
@@ -23,7 +20,7 @@ const ListResult = () => {
     const inputRef = useRef()
     const [search, setSearch] = useState('')
     const [focusInput, setFocusInput] = useState(false)
-    const [getUser] = useLazyGetUserQuery();
+    const [getUser] = useLazyGetResultQuery();
     const [users, setUser] = useState([]);
     const [loadingUser, setLoadingUser] = useState(false);
 
@@ -54,13 +51,14 @@ const ListResult = () => {
             const response = await getUser(searchInput);
             const { data, error } = response;
 
-            setUser(data?.data?.data);
-            setPagination({
-                current_page: data.data.current_page,
-                last_page: data.data.last_page,
-                total: data.data.total,
-                per_page: data.data.per_page,
-            });
+            console.log(data)
+            // setUser(data?.data?.data);
+            // setPagination({
+            //     current_page: data.data.current_page,
+            //     last_page: data.data.last_page,
+            //     total: data.data.total,
+            //     per_page: data.data.per_page,
+            // });
 
             if (error) {
                 setLoadingUser(false)
@@ -73,61 +71,6 @@ const ListResult = () => {
             console.log(error)
         }
     }, [getUser])
-
-    const deleteUser = useCallback((event, el) => {
-        event.preventDefault();
-      
-        Swal.fire({
-          title: 'Apakah kamu yakin?',
-          text: "Data Pengguna ini akan dihapus secara permanen!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
-          confirmButtonText: 'Ya, hapus!',
-          cancelButtonText: 'Batal',
-          customClass: {
-            container: 'montserrat'
-          }
-        }).then( async (result) => {
-          if (result.isConfirmed) {
-            setLoadingUser(true);
-            
-            const token = await getToken();
-            axios.delete(`${CONST.BASE_URL_API}users/${el.id}`, {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }})
-              .then(() => {
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Berhasil',
-                  text: 'Penggua berhasil dihapus!',
-                  customClass: {
-                    container: 'montserrat'
-                  }
-                }).then(() => {
-                    getAllUser();
-                })
-                
-              })
-              .catch((error) => {
-                console.error(error);
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Gagal Menghapus',
-                  text: 'Terjadi kesalahan saat menghapus data.',
-                  customClass: {
-                    container: 'montserrat'
-                  }
-                });
-              })
-              .finally(() => {
-                setLoadingUser(false);
-              });
-        }
-        });
-    }, [getAllUser])
 
     const handlePageChange = (page) => {
         if (page < 1 || page > pagination.last_page) return;
@@ -216,7 +159,7 @@ const ListResult = () => {
 
     return (
         <DashboardLayout
-            title='Daftar Pengguna - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
+            title='Perankingan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
             <div className="list-users-component px-7 pb-8">
                 {
@@ -236,7 +179,7 @@ const ListResult = () => {
                                                 ? 'border-b-[rgb(72, 96, 228)]'
                                                 : false
                                         } text-black w-full bg-transparent pl-[10px] pr-[3.75rem] py-[0.75rem] border border-gray-500 rounded-[8px] font-normal`}
-                                        placeholder='Cari Pengguna...'
+                                        placeholder='Cari Peserta...'
                                         onChange={handleChange}
                                         onKeyDown={handleKeyDown}
                                         ref={inputRef}
@@ -277,14 +220,8 @@ const ListResult = () => {
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                     </svg>
-                                    <span>Import Excel</span>
+                                    <span>Export Excel</span>
                                 </button>
-                                <NavLink to='/dashboard/user/create' className='font-semibold bg-green-200/80 text-green-600 hover:bg-green-300/60 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                    <span>Tambah Pengguna</span>
-                                </NavLink>
                             </div>
                         </div>
                         <div className="all-users-table mt-8 overflow-x-auto">
@@ -301,13 +238,10 @@ const ListResult = () => {
                                             Email
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Role
+                                            Nilai
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Aktif
-                                        </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            Aksi
+                                            Waktu Lama Pengerjaan
                                         </th>
                                     </tr>
                                 </thead>
@@ -317,7 +251,7 @@ const ListResult = () => {
                                     (
                                         <tr className="bg-white border-b border-gray-300">
                                             <td colSpan={6} className="px-6 py-4 text-[1.25rem]">
-                                                Data Pengguna masih kosong, segera tambahkan.
+                                                Para Peserta belum submit ujian.
                                             </td>
                                         </tr>
                                     )  
@@ -340,25 +274,6 @@ const ListResult = () => {
                                                 </td>
                                                 <td className="px-6 py-4 ">
                                                     {e.is_active ? 'Aktif' : 'Tidak Aktif'}
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex justify-center items-center gap-2">
-                                                        <button onClick={() => {
-                                                            navigate(`/dashboard/user/${e.id}/edit`)
-                                                        }} id='edit-icon' className='cursor-pointer'>
-                                                            <PencilSquareIcon className="w-5 h-5 text-blue-600" />
-                                                        </button>
-                                                        <Tooltip anchorSelect="#edit-icon">
-                                                            Ubah
-                                                        </Tooltip>
-
-                                                        <button id='trash-icon' onClick={(el) => deleteUser(el, e)} className="cursor-pointer">
-                                                            <TrashIcon className="w-5 h-5 text-red-500" />
-                                                        </button>
-                                                        <Tooltip anchorSelect="#trash-icon">
-                                                            Hapus
-                                                        </Tooltip>
-                                                    </div>
                                                 </td>
                                             </tr>
                                         )
