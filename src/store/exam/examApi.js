@@ -95,7 +95,17 @@ export const examApi = createApi({
 
             },
             invalidatesTags:["Exam"],
-        })
+        }),
+        activitySuspect: builder.mutation({
+            query: () =>({
+                url: "activity",
+                method: "POST",
+            }),
+            transformResponse(response) {
+                return response;
+            },
+            invalidatesTags:["Exam"],
+        }),
     }),
 });
 
@@ -107,5 +117,6 @@ export const {
     useStartExamBeMutation,
     useEndExamBeMutation,
     useLazyMyExamQuery,
-    useCreateMutation
+    useCreateMutation,
+    useActivitySuspectMutation
 } = examApi;

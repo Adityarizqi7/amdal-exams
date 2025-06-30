@@ -5,20 +5,18 @@ import QuizNavbar from "../components/Quiz/Navbar";
 import { useDispatch } from "react-redux";
 import { setOnline } from "../store/inet/inetSlice";
 import { useEffect } from "react";
-import klh from '../assets/images/klh-half-gray.png'
+import klh from "../assets/images/klh-half-gray.png";
 
 const QuizLayout = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(setOnline(navigator.onLine));
-
     const handleOnline = () => dispatch(setOnline(true));
     const handleOffline = () => dispatch(setOnline(false));
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
-
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
@@ -30,13 +28,11 @@ const QuizLayout = () => {
       <HelmetProvider>
         <Helmet prioritizeSeoTags>
           <title>Quiz Programmer</title>
-          {/* Link font tetap */}
         </Helmet>
       </HelmetProvider>
 
-      {/* Layout: Navbar, Sidebar, Content */}
       <div className="flex">
-        <div className={"grow-1 relative overflow-auto"}>
+        <div className="grow-1 relative overflow-auto">
           <QuizNavbar />
           <div className="relative min-h-[100svh] bg-green-base/5 flex justify-center items-center pt-[8em] pb-[4em] overflow-hidden">
             <img

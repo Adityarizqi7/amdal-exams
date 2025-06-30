@@ -8,6 +8,7 @@ const QuillEditor = ({ value, onChange }) => {
       onChange={onChange}
       theme="snow"
       placeholder="Tulis jawabanmu di sini..."
+      style={{ height: "12em", marginBottom: "3em" }}
       modules={{
         toolbar: [
           ['bold', 'italic', 'underline'],
