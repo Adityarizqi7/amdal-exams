@@ -22,10 +22,10 @@ const SetBatch = () => {
     
     // const navigate = useNavigate()
 
-    // const [pagination, setPagination] = useState({
-    //     current_page: 1,
-    //     last_page: 1,
-    // });
+    const [pagination, setPagination] = useState({
+        current_page: 1,
+        last_page: 1,
+    });
     const location = useLocation()
 
     const inputRef = useRef()
@@ -97,25 +97,30 @@ const SetBatch = () => {
         }
     }, [getBatch])
 
-    const getAllUserNotSubmitted = useCallback( async (search) => {
+    const getAllUserNotSubmitted = useCallback( async (searchInput) => {
         try {
             setLoadingUser(true)
 
+            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
+                searchInput = { search, ...searchInput }
+            } else {
+                searchInput = { search: searchInput, page: pagination.current_page }
+            }
+
             const response = await getUser(search);
             const { data, error } = response;
-
             
             if (error) {
                 setLoadingUser(false)
                 throw new Error("Gagal Mengambail data.");
             }
             setUser(data?.data);
-            // setPagination({
-            //     current_page: data.data.current_page,
-            //     last_page: data.data.last_page,
-            //     total: data.data.total,
-            //     per_page: data.data.per_page,
-            // });
+            setPagination({
+                current_page: data.data.current_page,
+                last_page: data.data.last_page,
+                total: data.data.total,
+                per_page: data.data.per_page,
+            });
             setSelectedRows([])
             setLoadingUser(false)
             
@@ -125,10 +130,12 @@ const SetBatch = () => {
         }
     }, [getUser])
 
-    const handleChange = useCallback(e => {
-        setSearch(e.target.value)
-        // console.log(e.target.value)   
-    }, [])
+    const handleChange = (e) => setSearch(e.target.value)
+
+    // const handleChange = useCallback(e => {
+    //     setSearch(e.target.value)
+    //     // console.log(e.target.value)   
+    // }, [])
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -137,10 +144,10 @@ const SetBatch = () => {
     }, []);
     const deleteText = useCallback(() => setSearch(''), [])
 
-    // const handlePageChange = (page) => {
-    //     if (page < 1 || page > pagination.last_page) return;
-    //     getAllUserNotSubmitted(page);
-    // };
+    const handlePageChange = (page) => {
+        if (page < 1 || page > pagination.last_page) return;
+        getAllUserNotSubmitted({page});
+    };
 
     const handleFocusInput = useCallback(
         event => {
@@ -502,7 +509,7 @@ const SetBatch = () => {
                         </div>
                     </Dialog>
 
-                    {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                         <button
                             onClick={() => handlePageChange(pagination.current_page - 1)}
                             disabled={pagination.current_page === 1}
@@ -530,7 +537,7 @@ const SetBatch = () => {
                         >
                             Next
                         </button>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </DashboardLayout>

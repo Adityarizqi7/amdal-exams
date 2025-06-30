@@ -34,7 +34,7 @@ export const examApi = createApi({
             query: (search) => ({
                 url: `users/not-assign-batch`,
                 method: "GET",
-                params: { search },
+                params: { ...search },
             }),              
             transformResponse(response) {
                 return response;
