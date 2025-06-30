@@ -132,8 +132,8 @@ const Info = () => {
   if (loading) return <LoadData />;
 
   return (
-    <div className="flex items-center justify-center px-4 montserrat">
-      <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-[30em] max-w-md">
+    <div className="flex items-center justify-center px-4 montserrat max-w-full">
+      <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-[30em] max-w-full lg:max-w-md">
         <h2 className="text-lg font-bold text-green-base mb-4">Informasi Asesmen</h2>
 
         {timeWarning && (
