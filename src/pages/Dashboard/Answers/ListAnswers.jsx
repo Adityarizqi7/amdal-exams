@@ -15,10 +15,10 @@ const ListAnswers = () => {
     
     const navigate = useNavigate()
 
-    // const [pagination, setPagination] = useState({
-    //     current_page: 1,
-    //     last_page: 1,
-    // });
+    const [pagination, setPagination] = useState({
+        current_page: 1,
+        last_page: 1,
+    });
     const inputRef = useRef()
     const [search, setSearch] = useState('')
     const [focusInput, setFocusInput] = useState(false)
@@ -33,13 +33,13 @@ const ListAnswers = () => {
             const response = await getAnswers(search);
             const { data, error } = response;
 
-            setAnswers(data?.data);
-            // setPagination({
-            //     current_page: data.data.current_page,
-            //     last_page: data.data.last_page,
-            //     total: data.data.total,
-            //     per_page: data.data.per_page,
-            // });
+            setAnswers(data?.data?.data);
+            setPagination({
+                current_page: data.data.current_page,
+                last_page: data.data.last_page,
+                total: data.data.total,
+                per_page: data.data.per_page,
+            });
 
             if (error) {
                 setLoadingAnswer(false)
@@ -116,10 +116,38 @@ const ListAnswers = () => {
         });
     }, [getAllAnswer])
 
-    // const handlePageChange = (page) => {
-    //     if (page < 1 || page > pagination.last_page) return;
-    //     getAllAnswer(page);
-    // };
+    const getPaginationPages = (current, last) => {
+        const delta = 2;
+        const pages = [];
+        const range = [];
+        let l;
+      
+        for (let i = 1; i <= last; i++) {
+          if (i === 1 || i === last || (i >= current - delta && i <= current + delta)) {
+            range.push(i);
+          }
+        }
+      
+        for (let i of range) {
+          if (l) {
+            if (i - l === 2) {
+              pages.push(l + 1);
+            } else if (i - l > 2) {
+              pages.push('...');
+            }
+          }
+          pages.push(i);
+          l = i;
+        }
+      
+        return pages;
+    };
+      
+
+    const handlePageChange = (page) => {
+        if (page < 1 || page > pagination.last_page) return;
+        getAllAnswer({page});
+    };
 
     const handleChange = (e) => setSearch(e.target.value)
     const handleKeyDown = useCallback((e) => {
@@ -292,7 +320,7 @@ const ListAnswers = () => {
                             </table>
                         </div>
 
-                        {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                             <button
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}
@@ -301,17 +329,28 @@ const ListAnswers = () => {
                                 Prev
                             </button>
 
-                            {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
+                            {getPaginationPages(pagination.current_page, pagination.last_page).map((page, index) =>
+                            page === '...' ? (
+                                <span key={`ellipsis-${index}`} style={{ padding: '0 6px' }}>...</span>
+                            ) : (
                                 <button
-                                    key={page}
-                                    onClick={() => handlePageChange(page)}
-                                    style={{
-                                        fontWeight: page === pagination.current_page ? 'bold' : 'normal',
-                                    }}
+                                key={page}
+                                onClick={() => handlePageChange(page)}
+                                style={{
+                                    fontWeight: page === pagination.current_page ? 'bold' : 'normal',
+                                    cursor: 'pointer',
+                                    margin: '0 4px',
+                                    padding: '4px 8px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    backgroundColor: page === pagination.current_page ? '#ddd' : '#fff'
+                                }}
                                 >
-                                    {page}
+                                {page}
                                 </button>
-                            ))}
+                            )
+                            )}
+
 
                             <button
                                 className={`cursor-pointer ${pagination.current_page === pagination.last_page ? 'pointer-events-none opacity-50' : ''}`}
@@ -320,7 +359,7 @@ const ListAnswers = () => {
                             >
                                 Next
                             </button>
-                        </div> */}
+                        </div>
                     </div>
                 }
             </div>
