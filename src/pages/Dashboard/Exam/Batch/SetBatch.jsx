@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import CONST from '../../../../utils/Constant';
 import { getToken } from '../../../../utils/Auth';
 // import { getToken } from '../../../../utils/Auth';
-import CommonLayout from "../../../../layouts/CommonLayout"
+import DashboardLayout from "../../../../layouts/DashboardLayout"
 import { ChevronDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { useLazyGetAllQuery } from '../../../../store/exam/batchApi';
 import { useLazyGetUserForAssignBatchQuery } from '../../../../store/exam/examApi';
@@ -236,10 +236,10 @@ const SetBatch = () => {
     }, [handleFocusInput, getAllBatch, getAllUserNotSubmitted])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Set Sesi Ujian - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-batch-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-batch-component px-7 pb-8">
                 <div className='mt-[2rem]'>
                     <div className='flex sm:flex-row flex-col items-center justify-between gap-5'>
                         {
@@ -530,7 +530,7 @@ const SetBatch = () => {
                     </div> */}
                 </div>
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

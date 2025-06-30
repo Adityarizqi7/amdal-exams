@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../utils/Constant';
 import { getToken } from '../../../utils/Auth';
-import CommonLayout from "../../../layouts/CommonLayout"
+import DashboardLayout from "../../../layouts/DashboardLayout"
 import { useLazyGetUserQuery } from "../../../store/user/userApi";
 import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { CloseButton, Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
@@ -215,7 +215,7 @@ const ListUser = () => {
     
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Daftar Pengguna - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
             <div className="list-users-component px-7 pb-8">
@@ -441,7 +441,7 @@ const ListUser = () => {
                     </div>
                 }
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../../utils/Constant';
 import { getToken } from '../../../../utils/Auth';
-import CommonLayout from "../../../../layouts/CommonLayout"
+import DashboardLayout from "../../../../layouts/DashboardLayout"
 import { useLazyGetBatchQuery } from '../../../../store/exam/batchApi';
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 
@@ -164,7 +164,7 @@ const ListExamBatch = () => {
     }, [getAllBatch, handleFocusInput])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Daftar Sesi - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
             <div className="list-batch-component px-7 pb-8">
@@ -349,7 +349,7 @@ const ListExamBatch = () => {
                     </div>
                 }
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

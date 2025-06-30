@@ -1,7 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useCallback, useEffect, useState } from "react";
-import CommonLayout from "../../../layouts/CommonLayout"
+import DashboardLayout from "../../../layouts/DashboardLayout"
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getToken } from "../../../utils/Auth";
 import CONST from "../../../utils/Constant";
@@ -168,10 +168,10 @@ const EditExam = () => {
     }, [getDetail])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title={`Ubah Tipe '${examDetail.title}' - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025`}
         >
-            <div className="edit-exam-component md:px-[7.5rem] px-4 pb-12 montserrat">
+            <div className="edit-exam-component px-7 pb-12 montserrat">
                 <NavLink to='/dashboard/exams' className="go-back flex items-center gap-2 hover:opacity-80 cursor-pointer mt-[2rem]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -261,7 +261,7 @@ const EditExam = () => {
 
             }
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

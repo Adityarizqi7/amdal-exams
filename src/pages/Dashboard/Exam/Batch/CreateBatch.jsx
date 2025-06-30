@@ -13,7 +13,7 @@ import 'rsuite/TimePicker/styles/index.css';
 import CONST from "../../../../utils/Constant";
 // import { getToken } from "../../../../utils/Auth";
 import { NavLink, useNavigate } from "react-router-dom";
-import CommonLayout from "../../../../layouts/CommonLayout"
+import DashboardLayout from "../../../../layouts/DashboardLayout"
 import { useCreateMutation } from "../../../../store/exam/batchApi";
 
 
@@ -202,10 +202,10 @@ const CreateBatch = () => {
     // }, [query, getAllExam]);
     
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Buat Pertanyaan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="create-question-component md:px-[7.5rem] px-4 pb-[12rem] montserrat">
+            <div className="create-question-component px-7 pb-[12rem] montserrat">
                 <NavLink to='/dashboard/batches' className="go-back flex items-center gap-2 hover:opacity-80 cursor-pointer mt-[2rem]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -372,7 +372,7 @@ const CreateBatch = () => {
                     </section>
                 </form>
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

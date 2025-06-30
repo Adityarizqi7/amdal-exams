@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../utils/Constant';
 import { getToken } from '../../../utils/Auth';
-import CommonLayout from "../../../layouts/CommonLayout"
+import DashboardLayout from "../../../layouts/DashboardLayout"
 import { useLazyGetQuestionQuery } from "../../../store/question/questionApi";
 import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 
@@ -153,7 +153,7 @@ const ListQuestion = () => {
     }, [getAllQuestion, handleFocusInput])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Daftar Pertanyaan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
             <div className="list-questions-component px-7 pb-8">
@@ -342,7 +342,7 @@ const ListQuestion = () => {
                     </div>
                 }
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

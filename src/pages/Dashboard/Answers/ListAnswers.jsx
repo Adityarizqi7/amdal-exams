@@ -152,7 +152,7 @@ const ListAnswers = () => {
     }, [getAllAnswer, handleFocusInput])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Daftar Opsi Jawaban - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
             <div className="list-answers-component px-7 pb-8">
@@ -323,7 +323,7 @@ const ListAnswers = () => {
                     </div>
                 }
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

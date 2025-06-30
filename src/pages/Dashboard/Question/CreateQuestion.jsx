@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Select } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/16/solid";
-import CommonLayout from "../../../layouts/CommonLayout"
+import DashboardLayout from "../../../layouts/DashboardLayout"
 import { NavLink, useNavigate } from "react-router-dom";
 import { useCreateMutation } from "../../../store/question/questionApi";
 import axios from "axios";
@@ -156,10 +156,10 @@ const CreateQuestion = () => {
     }, [query, getAllExam]);
     
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Buat Pertanyaan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="create-question-component md:px-[7.5rem] px-4 pb-12 montserrat">
+            <div className="create-question-component px-7 pb-12 montserrat">
                 <NavLink to='/dashboard/questions' className="go-back flex items-center gap-2 hover:opacity-80 cursor-pointer mt-[2rem]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -315,7 +315,7 @@ const CreateQuestion = () => {
                     </section>
                 </form>
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 
