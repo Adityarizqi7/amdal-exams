@@ -53,10 +53,10 @@ const EditBatch = () => {
     // const [, setPage] = useState(1);
     // const [hasMore, setHasMore] = useState(true);
 
-    const parseLocalDate = (str) => {
-        const [year, month, day] = str.split('-') // pastikan formatnya "YYYY-MM-DD"
-        return new Date(Number(year), Number(month) - 1, Number(day)) // month is 0-based
-    }
+    // const parseLocalDate = (str) => {
+    //     const [year, month, day] = str.split('-') // pastikan formatnya "YYYY-MM-DD"
+    //     return new Date(Number(year), Number(month) - 1, Number(day)) // month is 0-based
+    // }
       
 
     const getDetail = useCallback( async () => {
@@ -290,16 +290,16 @@ const EditBatch = () => {
 
             {
                 loadingDetail ?
-                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Detail Sesi...</h1>
+                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Detail Sesi...</h1>
                     :
                     !detailBatch ? 
-                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Sesi Ujian tidak ditemukan.</h1>
+                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Sesi Ujian tidak ditemukan.</h1>
                     :
                     false
             }
 
                 <form id="form_wrapper" encType="multipart/form-data" className="form-edit-batch-container mt-[2.5rem]">
-                    <h1 className="font-semibold text-[1.75rem]">Ubah Sesi Ujian</h1>
+                    <h1 className="font-semibold text-[1.75rem] text-gray-700">Ubah Sesi Ujian</h1>
                     <section className="form-edit-batch-card mt-[1.5rem]">
                         <div className="form-wrapper montserrat">
                             <div className="space-y-5 mt-5">

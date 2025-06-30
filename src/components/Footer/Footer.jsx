@@ -50,7 +50,7 @@ export default function Footer() {
                             <li className='mb-4 text-lg'>
                                 <a
                                     href='https://amdalnet.menlhk.go.id/#/'
-                                    className="hover:underline"
+                                    className="hover:underline text-gray-700"
                                 >
                                     Website Resmi Amdalnet
                                 </a>

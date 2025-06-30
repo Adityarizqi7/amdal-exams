@@ -17,14 +17,16 @@ export default function App() {
     });
     useEffect(() => {
         const fetchUser = async () => {
-            if (data) {
-                dispatch(setUserDetails(data.data));
-            } else {
-                clearAuth();
-                if (location.pathname === '/admin/signin') {
-                    navigate('/admin/signin')
+            if(data) {
+                if (data?.success) {
+                    dispatch(setUserDetails(data.data));
                 } else {
-                    navigate('/login')
+                    clearAuth();
+                    if (location.pathname === '/admin/signin') {
+                        navigate('/admin/signin')
+                    } else {
+                        navigate('/login')
+                    }
                 }
             }
         };

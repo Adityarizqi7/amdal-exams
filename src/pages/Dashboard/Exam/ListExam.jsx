@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../utils/Constant';
 import { getToken } from '../../../utils/Auth';
-import CommonLayout from "../../../layouts/CommonLayout"
+import DashboardLayout from "../../../layouts/DashboardLayout"
 import { useLazyGetExamQuery } from "../../../store/exam/examApi";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 
@@ -43,6 +43,14 @@ const ListExam = () => {
 
             if (error) {
                 setLoadingExam(false)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Mengambil',
+                    text: 'Terjadi kesalahan saat mengambil data.',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                });
                 throw new Error("Gagal Mengambail data.");
             }
             setLoadingExam(false)
@@ -50,6 +58,14 @@ const ListExam = () => {
         } catch (error) {
             setLoadingExam(false)
             console.log(error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Mengambil',
+                text: 'Terjadi kesalahan saat mengambil data.',
+                customClass: {
+                container: 'montserrat'
+                }
+            });
         }
     }, [all])
 
@@ -75,34 +91,34 @@ const ListExam = () => {
             const token = await getToken();
             if (token) {
                 axios.delete(`${CONST.BASE_URL_API}exams/${el.id}`, {
-                    headers: {
-                      Authorization: `Bearer ${token}`
-                    }})
-                  .then(() => {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }})
+                .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Tipe Ujian berhasil dihapus!',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                })
+                getAllExam();
+                })
+                .catch((error) => {
+                console.error(error);
                     Swal.fire({
-                      icon: 'success',
-                      title: 'Berhasil',
-                      text: 'Tipe Ujian berhasil dihapus!',
-                      customClass: {
-                        container: 'montserrat'
-                      }
-                    })
-                    getAllExam();
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Gagal Menghapus',
-                      text: 'Terjadi kesalahan saat menghapus data.',
-                      customClass: {
-                        container: 'montserrat'
-                      }
+                        icon: 'error',
+                        title: 'Gagal Menghapus',
+                        text: 'Terjadi kesalahan saat menghapus data.',
+                        customClass: {
+                            container: 'montserrat'
+                        }
                     });
-                  })
-                  .finally(() => {
+                })
+                .finally(() => {
                     setLoadingExam(false);
-                  });
+                });
             }
         }
         });
@@ -145,13 +161,13 @@ const ListExam = () => {
     }, [getAllExam, handleFocusInput])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title='Daftar Tipe Ujian - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-exams-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-exams-component px-7 pb-8 overflow-y-auto">
                 {
                     loadingExam ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Tipe Ujian...</h1>
+                    <h1 className="montserrat mt-[2rem] text-center mx-auto text-[1.25rem] text-gray-700 font-semibold">Memuat Tipe Ujian...</h1>
                     :
                     <div className='mt-[2rem]'>
                         <div className='flex max-xs:flex-col items-center justify-between gap-5'>
@@ -202,7 +218,7 @@ const ListExam = () => {
                                     }
                                 </div>
                             </div>
-                            <NavLink to='/dashboard/exam/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                            <NavLink to='/dashboard/exam/create' className='font-semibold bg-green-200/80 text-green-600 hover:bg-green-300/60 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
@@ -211,7 +227,7 @@ const ListExam = () => {
                         </div>
                         <div className="all-exams-table mt-8 overflow-x-auto">
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
-                                <thead className="text-white uppercase bg-green-base montserrat">
+                                <thead className="uppercase bg-second-base/25 text-second-base/90 montserrat">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">
                                             No.
@@ -268,7 +284,7 @@ const ListExam = () => {
                                                         <button onClick={() => {
                                                             navigate(`/dashboard/exam/${e.id}`)
                                                         }} id='edit-icon' className='cursor-pointer'>
-                                                            <PencilSquareIcon className="w-6 h-6 text-blue-600" />
+                                                            <PencilSquareIcon className="w-5 h-5 text-blue-600" />
                                                         </button>
                                                         <Tooltip anchorSelect="#edit-icon">
                                                             Ubah
@@ -323,7 +339,7 @@ const ListExam = () => {
                     </div>
                 }
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

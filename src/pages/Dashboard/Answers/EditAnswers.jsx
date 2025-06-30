@@ -444,13 +444,13 @@ const EditAnswers = () => {
 
                 {
                     loadingDetail ?
-                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Detail Opsi Jawaban...</h1>
+                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Detail Opsi Jawaban...</h1>
                     :
                     !detailAnswer ? 
-                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Opsi Jawaban tidak ditemukan.</h1>
+                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Opsi Jawaban tidak ditemukan.</h1>
                     :
                     <form id="form_wrapper" encType="multipart/form-data" className="form-edit-answers-container mt-[2.5rem]">
-                        <h1 className="font-semibold text-[1.75rem]">Ubah Opsi Jawaban</h1>
+                        <h1 className="font-semibold text-[1.75rem] text-gray-700">Ubah Opsi Jawaban</h1>
                         <section className="form-edit-answers-card mt-[1.5rem]">
                             <div className="form-wrapper montserrat space-y-6">
                                 <div className="form-input relative w-full">

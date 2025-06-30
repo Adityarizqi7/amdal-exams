@@ -58,7 +58,7 @@ const SetBatch = () => {
     const handleChangeSelectBatch = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        getAllUserNotSubmitted(value, '')
+        // getAllUserNotSubmitted(value, '')
     };
 
     const toggleRowSet = (id) => {
@@ -97,25 +97,26 @@ const SetBatch = () => {
         }
     }, [getBatch])
 
-    const getAllUserNotSubmitted = useCallback( async (exam_id, search) => {
+    const getAllUserNotSubmitted = useCallback( async (search) => {
         try {
             setLoadingUser(true)
 
-            const response = await getUser(exam_id, search);
+            const response = await getUser(search);
             const { data, error } = response;
 
+            
+            if (error) {
+                setLoadingUser(false)
+                throw new Error("Gagal Mengambail data.");
+            }
+            console.log(data)
+            setUser(data?.data);
             // setPagination({
             //     current_page: data.data.current_page,
             //     last_page: data.data.last_page,
             //     total: data.data.total,
             //     per_page: data.data.per_page,
             // });
-
-            if (error) {
-                setLoadingUser(false)
-                throw new Error("Gagal Mengambail data.");
-            }
-            setUser(data?.data);
             setSelectedRows([])
             setLoadingUser(false)
             
@@ -136,6 +137,11 @@ const SetBatch = () => {
         }
     }, []);
     const deleteText = useCallback(() => setSearch(''), [])
+
+    // const handlePageChange = (page) => {
+    //     if (page < 1 || page > pagination.last_page) return;
+    //     getAllUserNotSubmitted(page);
+    // };
 
     const handleFocusInput = useCallback(
         event => {
@@ -220,13 +226,14 @@ const SetBatch = () => {
 
     useEffect(() => {
         getAllBatch()
+        getAllUserNotSubmitted()
 
         document.addEventListener('keydown', handleFocusInput)
 
         return () => {
             document.removeEventListener('keydown', handleFocusInput)
         }
-    }, [handleFocusInput, getAllBatch])
+    }, [handleFocusInput, getAllBatch, getAllUserNotSubmitted])
 
     return (
         <CommonLayout
@@ -238,7 +245,7 @@ const SetBatch = () => {
                         {
                             user?.length > 0 ?
                             <div className='flex items-center gap-2'>
-                                <button onClick={setBatchToUser} type='button' className='bg-gray-800 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-gray-800/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                <button onClick={setBatchToUser} type='button' className='bg-black/80 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-black cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                 </svg>
@@ -251,7 +258,7 @@ const SetBatch = () => {
                                 }
                                 </span>
                                 </button>
-                                <button onClick={open} type='button' className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} bg-gray-800 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-gray-800/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2`}>
+                                <button onClick={open} type='button' className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} bg-black/80 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-black cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#000000" className="size-6 fill-white">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
                                         </svg>
@@ -263,7 +270,7 @@ const SetBatch = () => {
                             : false
                         }
                         <div className='flex items-center gap-2 max-xs:w-full'>
-                            <NavLink to='/dashboard/batch/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                            <NavLink to='/dashboard/batch/create' className='font-semibold bg-green-200/80 text-green-600 hover:bg-green-300/60 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
@@ -349,7 +356,7 @@ const SetBatch = () => {
                                 }
                                     <option value="" disabled hidden>
                                         {
-                                            loadingBatch ? 'Memuat batch..' : 'Pilih Exam Batch'
+                                            loadingBatch ? 'Memuat sesi..' : 'Pilih Sesi Ujian'
                                         }
                                     </option>
                                 </Select>
@@ -360,12 +367,11 @@ const SetBatch = () => {
                             </div>
                         </div>
                     {
-                        loadingUser || loadingBatch ?
-                            <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat peserta...</h1>
+                        loadingUser ?
+                            <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat peserta...</h1>
                         :
-                            (formData.exam_batch !== '') &&
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
-                                <thead className="text-white uppercase bg-green-base montserrat">
+                                <thead className="bg-second-base/25 text-second-base/90 uppercase montserrat">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">
                                             Set

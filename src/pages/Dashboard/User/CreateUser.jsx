@@ -29,7 +29,7 @@ const CreateUser = () => {
 
     const validate = (fields = formData) => {
         const newErrors = {};
-        if (!fields.name) newErrors.name = 'Kolom Judul Pertanyaan harus diisi!';
+        if (!fields.name) newErrors.name = 'Kolom Nama harus diisi!';
         if (!fields.email) newErrors.email = 'Kolom Urutan harus diisi!';
         if (!fields.password) {
             newErrors.password = 'Kolom Password harus diisi!';
@@ -128,7 +128,7 @@ const CreateUser = () => {
                 </NavLink>
 
                 <form id="form_wrapper" encType="multipart/form-data" className="form-create-question-container mt-[2.5rem]">
-                    <h1 className="font-semibold text-[1.75rem]">Tambah Pengguna</h1>
+                    <h1 className="font-semibold text-[1.75rem] text-gray-700">Tambah Pengguna</h1>
                     <section className="form-create-question-card mt-[1.5rem]">
                         <div className="form-wrapper montserrat grid grid-cols-2 max-2xs:grid-cols-1 gap-5">
                             <div className="form-input relative">
@@ -146,7 +146,7 @@ const CreateUser = () => {
                                         borderRadius: '6px',
                                         marginTop: '0.25rem',
                                     }}
-                                    placeholder="Masukkan judul pertanyaan"
+                                    placeholder="Masukkan nama"
                                 />
                                 {touched.name && errors.name && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.name}</div>}
                             </div>
@@ -166,7 +166,7 @@ const CreateUser = () => {
                                         borderRadius: '6px',
                                         marginTop: '0.25rem',
                                     }}
-                                    placeholder="Masukkan urutan pertanyaan"
+                                    placeholder="Masukkan email"
                                 />
                                 {touched.email && errors.email && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '8px' }}>{errors.email}</div>}
                             </div>

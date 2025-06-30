@@ -118,10 +118,19 @@ export default function Login() {
                     // navigate("/dashboard"); // Ensure navigation only on success
                     // window.location.href = "/dashboard"
                 } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Masuk',
+                        text: 'Terjadi kesalahan saat proses masuk.',
+                        customClass: {
+                        container: 'montserrat'
+                        }
+                    });
                     throw new Error("Error when login");
                 }
             } catch (error) {
                 console.log(error)
+                Swal.fire({icon: "error", title: "Gagal Login", text: error.message})
             }
         }
     };

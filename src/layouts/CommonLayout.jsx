@@ -38,7 +38,6 @@ const CommonLayout = ({
                 <Footer />
             </main>
 
-            {/* <BtnToTop /> */}
         </HelmetProvider>
     )
 }

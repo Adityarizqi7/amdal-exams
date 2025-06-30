@@ -45,12 +45,28 @@ const ListExamBatch = () => {
             // });
 
             if (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal mengambil data',
+                    text: 'Terjadi kesalahan saat mengambil data.',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                });
                 setLoadingBatch(false)
-                throw new Error("Gagal Mengambail data.");
+                throw new Error("Gagal Mengambil data.");
             }
             setLoadingBatch(false)
             
         } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal mengambil data',
+                text: 'Terjadi kesalahan saat mengambil data.',
+                customClass: {
+                container: 'montserrat'
+                }
+            });
             setLoadingBatch(false)
             console.log(error)
         }
@@ -151,10 +167,10 @@ const ListExamBatch = () => {
         <CommonLayout
             title='Daftar Sesi - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-batch-component md:px-[7.5rem] px-4 pb-8">
+            <div className="list-batch-component px-7 pb-8">
                 {
                     loadingBatch ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Sesi...</h1>
+                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Sesi...</h1>
                     :
                     <div className='mt-[2rem]'>
                         <div className='flex max-xs:flex-col items-center justify-between gap-5'>
@@ -206,13 +222,13 @@ const ListExamBatch = () => {
                                 </div>
                             </div>
                             <div className='flex items-center gap-2 max-xs:w-full'>
-                                <NavLink to='/dashboard/batch/assign' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                <NavLink to='/dashboard/batch/assign' className='bg-yellow-200/80 rounded-[8px] border-0 py-2 px-4 text-yellow-600 hover:bg-yellow-200 font-semibold cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                     <span>Set Sesi Ujian</span>
                                 </NavLink>
-                                <NavLink to='/dashboard/batch/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                <NavLink to='/dashboard/batch/create' className='rounded-[8px] border-0 py-2 px-4 font-semibold bg-green-200/80 text-green-600 hover:bg-green-300/60 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
@@ -222,7 +238,7 @@ const ListExamBatch = () => {
                         </div>
                         <div className="all-batch-table mt-8 overflow-x-auto">
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
-                                <thead className="text-white uppercase bg-green-base montserrat">
+                                <thead className="bg-second-base/25 text-second-base/90 uppercase montserrat">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">
                                             No.

@@ -6,9 +6,9 @@ import flowbiteReact from "flowbite-react/plugin/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), flowbiteReact()],
-  build: {
-    outDir: 'public',
-  },
+//   build: {
+//     outDir: 'public',
+//   },
   content: [
         './index.html', './src/**/*.{js,ts,jsx,tsx}',
         "./node_modules/flowbite-react/**/*.js",

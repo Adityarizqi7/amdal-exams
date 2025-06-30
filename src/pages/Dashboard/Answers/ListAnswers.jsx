@@ -42,6 +42,14 @@ const ListAnswers = () => {
 
             if (error) {
                 setLoadingAnswer(false)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal mengambil data',
+                    text: 'Terjadi kesalahan saat mengambil data.',
+                    customClass: {
+                    container: 'montserrat'
+                    }
+                });
                 throw new Error("Gagal Mengambail data.");
             }
             setLoadingAnswer(false)
@@ -147,10 +155,10 @@ const ListAnswers = () => {
         <CommonLayout
             title='Daftar Opsi Jawaban - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-answers-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-answers-component px-7 pb-8">
                 {
                     loadingAnswer ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Opsi Jawaban...</h1>
+                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Opsi Jawaban...</h1>
                     :
                     <div className='mt-[2rem]'>
                         <div className='flex max-xs:flex-col items-center justify-between gap-5'>
@@ -201,7 +209,7 @@ const ListAnswers = () => {
                                     }
                                 </div>
                             </div>
-                            <NavLink to='/dashboard/answers/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                            <NavLink to='/dashboard/answers/create' className='rounded-[8px] border-0 py-2 px-4 font-semibold bg-green-200/80 text-green-600 hover:bg-green-300/60 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
@@ -210,7 +218,7 @@ const ListAnswers = () => {
                         </div>
                         <div className="all-answers-table mt-8 overflow-x-auto">
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
-                                <thead className="text-white uppercase bg-green-base montserrat">
+                                <thead className="bg-second-base/25 text-second-base/90 uppercase montserrat">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">
                                             No.
@@ -261,7 +269,7 @@ const ListAnswers = () => {
                                                         <button onClick={() => {
                                                             navigate(`/dashboard/answers/${e.id}/edit`)
                                                         }} id='edit-icon' className='cursor-pointer'>
-                                                            <PencilSquareIcon className="w-6 h-6 text-blue-600" />
+                                                            <PencilSquareIcon className="w-5 h-5 text-blue-600" />
                                                         </button>
                                                         <Tooltip anchorSelect="#edit-icon">
                                                             Ubah

@@ -236,13 +236,13 @@ const EditQuestion = () => {
 
                 {
                     loadingDetail ?
-                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Detail Pertanyaan...</h1>
+                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Detail Pertanyaan...</h1>
                     :
                     !detailQuest ? 
-                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Pertanyaan tidak ditemukan.</h1>
+                        <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Pertanyaan tidak ditemukan.</h1>
                     :
                     <form id="form_wrapper" encType="multipart/form-data" className="form-create-question-container mt-[2.5rem]">
-                        <h1 className="font-semibold text-[1.75rem]">Tambah Pertanyaan</h1>
+                        <h1 className="font-semibold text-[1.75rem] text-gray-700">Ubah Pertanyaan</h1>
                         <section className="form-create-question-card mt-[1.5rem]">
                             <div className="form-wrapper montserrat grid grid-cols-2 max-2xs:grid-cols-1 gap-5">
                                 <div className="form-input relative">
