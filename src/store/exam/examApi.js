@@ -31,8 +31,8 @@ export const examApi = createApi({
             invalidatesTags:["Exam"],
         }),
         getUserForAssignBatch: builder.query({
-            query: (batch_id, search) => ({
-                url: `users/not-submitted-yet/${batch_id}`,
+            query: (search) => ({
+                url: `users/not-submitted-yet`,
                 method: "GET",
                 params: { search },
             }),              

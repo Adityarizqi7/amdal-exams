@@ -22,10 +22,10 @@ const SetBatch = () => {
     
     // const navigate = useNavigate()
 
-    // const [pagination, setPagination] = useState({
-    //     current_page: 1,
-    //     last_page: 1,
-    // });
+    const [pagination, setPagination] = useState({
+        current_page: 1,
+        last_page: 1,
+    });
     const location = useLocation()
 
     const inputRef = useRef()
@@ -58,7 +58,7 @@ const SetBatch = () => {
     const handleChangeSelectBatch = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        getAllUserNotSubmitted(value, '')
+        // getAllUserNotSubmitted(value, '')
     };
 
     const toggleRowSet = (id) => {
@@ -97,25 +97,25 @@ const SetBatch = () => {
         }
     }, [getBatch])
 
-    const getAllUserNotSubmitted = useCallback( async (exam_id, search) => {
+    const getAllUserNotSubmitted = useCallback( async (search) => {
         try {
             setLoadingUser(true)
 
-            const response = await getUser(exam_id, search);
+            const response = await getUser(search);
             const { data, error } = response;
 
-            // setPagination({
-            //     current_page: data.data.current_page,
-            //     last_page: data.data.last_page,
-            //     total: data.data.total,
-            //     per_page: data.data.per_page,
-            // });
-
+            
             if (error) {
                 setLoadingUser(false)
                 throw new Error("Gagal Mengambail data.");
             }
-            setUser(data?.data);
+            setUser(data?.data?.data);
+            setPagination({
+                current_page: data.data.current_page,
+                last_page: data.data.last_page,
+                total: data.data.total,
+                per_page: data.data.per_page,
+            });
             setSelectedRows([])
             setLoadingUser(false)
             
@@ -136,6 +136,11 @@ const SetBatch = () => {
         }
     }, []);
     const deleteText = useCallback(() => setSearch(''), [])
+
+    const handlePageChange = (page) => {
+        if (page < 1 || page > pagination.last_page) return;
+        getAllUserNotSubmitted(page);
+    };
 
     const handleFocusInput = useCallback(
         event => {
@@ -220,13 +225,14 @@ const SetBatch = () => {
 
     useEffect(() => {
         getAllBatch()
+        getAllUserNotSubmitted()
 
         document.addEventListener('keydown', handleFocusInput)
 
         return () => {
             document.removeEventListener('keydown', handleFocusInput)
         }
-    }, [handleFocusInput, getAllBatch])
+    }, [handleFocusInput, getAllBatch, getAllUserNotSubmitted])
 
     return (
         <CommonLayout
@@ -360,10 +366,9 @@ const SetBatch = () => {
                             </div>
                         </div>
                     {
-                        loadingUser || loadingBatch ?
+                        loadingUser ?
                             <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat peserta...</h1>
                         :
-                            (formData.exam_batch !== '') &&
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
                                 <thead className="text-white uppercase bg-green-base montserrat">
                                     <tr>
@@ -493,7 +498,7 @@ const SetBatch = () => {
                         </div>
                     </Dialog>
 
-                    {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                         <button
                             onClick={() => handlePageChange(pagination.current_page - 1)}
                             disabled={pagination.current_page === 1}
@@ -521,7 +526,7 @@ const SetBatch = () => {
                         >
                             Next
                         </button>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </CommonLayout>
