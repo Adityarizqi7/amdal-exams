@@ -15,7 +15,7 @@ const ChoiceOption = ({ listChoice, onChange }) => {
           onClick={() => onChange(el.id)}
         >
           <input
-            type="checkbox"
+            type="radio"
             checked={el?.selected}
             readOnly
             className="size-4"

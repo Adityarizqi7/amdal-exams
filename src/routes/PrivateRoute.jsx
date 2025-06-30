@@ -12,6 +12,7 @@ const PrivateRoute = ({children}) => {
           // if (!user.id || !user.email) {
           //     navigate('/login')
           // }
+          console.log(res)
           if (!res) {
               navigate('/login')
           }

@@ -1,55 +1,57 @@
 import { useDispatch } from "react-redux";
-import Router from "./routes/Router";
-import { useMeQuery } from "./store/auth/authApi";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useMeQuery } from "./store/auth/authApi";
 import { setUserDetails } from "./store/user/userSlice";
-import { clearAuth, getToken } from "./utils/Auth";
+import { getToken, clearAuth } from "./utils/Auth";
 
 export default function App() {
-
-    const location = useLocation()
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [token, setToken] = useState(null);
 
     const { isLoading, data, error } = useMeQuery(undefined, {
+        skip: !token, // skip if token belum ada
         refetchOnMountOrArgChange: true,
     });
 
-    const token = getToken()
-
+    // ✅ Redirect dari '/admin/signin/' ke '/admin/signin'
     useEffect(() => {
-        const fetchUser = async () => {
-            if(!token) return
-            if(data) {
-                if (data?.success) {
-                    dispatch(setUserDetails(data.data));
-                } else {
-                    // clearAuth();
-                    // if (location.pathname === '/admin/signin') {
-                    //     navigate('/admin/signin')
-                    // } else {
-                    //     console.log("ini")
-                    //     navigate('/login')
-                    // }
-                }
-            // } else if (error.status == 401) {
-            //     clearAuth();
-            //     if (location.pathname === '/admin/signin') {
-            //         navigate('/admin/signin')
-            //     } else {
-            //         console.log("itu")
-            //         navigate('/login')
-            //     }
+        if (location.pathname === "/admin/signin/") {
+            navigate("/admin/signin", { replace: true });
+        }
+    }, [location.pathname, navigate]);
+
+    // ✅ Ambil token saat pertama kali load
+    useEffect(() => {
+        const init = async () => {
+            const result = await getToken();
+            if (!result) {
+                // Cek apakah ini halaman admin
+                const loginPath = location.pathname.startsWith("/admin") ? "/admin/signin" : "/login";
+                navigate(loginPath);
+            } else {
+                setToken(result);
             }
         };
 
-        if (!isLoading) {
-            fetchUser(); // Call fetchUser properly
+        init();
+    }, [navigate, location.pathname, token]);
+
+    // ✅ Jika sudah ada token, tapi hasil query error atau gagal
+    useEffect(() => {
+        if (!token || isLoading) return;
+
+        if (data?.success) {
+            dispatch(setUserDetails(data.data));
+        } else {
+            clearAuth();
+            const loginPath = location.pathname.startsWith("/admin") ? "/admin/signin" : "/login";
+            navigate(loginPath);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, isLoading, token]);
+    }, [token, isLoading, data, error, dispatch, navigate, location.pathname]);
 
     return <Outlet />;
-    // return <Router />
 }
