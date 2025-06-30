@@ -188,8 +188,8 @@ const SetBatch = () => {
                         user_ids: selectedRows
                     }
                     
-                    console.log(formData.exam_batch, 'hahaha')
-                    axios.post(`${CONST.BASE_URL_API}exam-batches/0197b680-3cb5-725f-a855-82a0f73a7123/assign-users`, body ,{
+                    // console.log(formData.exam_batch, 'hahaha')
+                    axios.post(`${CONST.BASE_URL_API}exam-batches/${formData.exam_batch}/assign-users`, body ,{
                     headers: {
                         Authorization: `Bearer ${token}`
                     }})
@@ -205,6 +205,7 @@ const SetBatch = () => {
                             getAllBatch();
                             setIsOpenDialogSetSesi(false)
                             setSelectedRows([])
+                            window.location.reload();
                         })
                     })
                     .catch((error) => {
