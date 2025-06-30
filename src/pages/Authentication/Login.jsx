@@ -30,6 +30,8 @@ export default function Login() {
     useEffect(() => {
         if(userLog?.role == 'user'){
             navigate('/quiz')
+        } else if(userLog?.role == 'admin'){
+            navigate('/dashboard/exams')
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[formData.email,  formData.password, errors.password, errors.email,  loading, userLog])
