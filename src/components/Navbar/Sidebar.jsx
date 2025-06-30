@@ -171,32 +171,32 @@ export default function Topbar() {
                         <SidebarCollapse
                             label="Pengguna"
                         >
-                            <SidebarItem href="dashboard/users">Daftar Pengguna</SidebarItem>
-                            <SidebarItem href="dashboard/user/create">Buat Pengguna Baru</SidebarItem>
+                            <SidebarItem href="/dashboard/users">Daftar Pengguna</SidebarItem>
+                            <SidebarItem href="/dashboard/user/create">Buat Pengguna Baru</SidebarItem>
                         </SidebarCollapse>
                         <SidebarCollapse
                             label="Tipe Ujian"
                         >
-                            <SidebarItem href="dashboard/exams">Daftar Tipe Ujian</SidebarItem>
-                            <SidebarItem href="dashboard/exam/create">Buat Tipe Ujian</SidebarItem>
+                            <SidebarItem href="/dashboard/exams">Daftar Tipe Ujian</SidebarItem>
+                            <SidebarItem href="/dashboard/exam/create">Buat Tipe Ujian</SidebarItem>
                         </SidebarCollapse>
                         <SidebarCollapse
                             label="Pertanyaan"
                         >
-                            <SidebarItem href="dashboard/questions">Daftar Pertanyaan</SidebarItem>
-                            <SidebarItem href="dashboard/question/create">Buat Pertanyaan</SidebarItem>
+                            <SidebarItem href="/dashboard/questions">Daftar Pertanyaan</SidebarItem>
+                            <SidebarItem href="/dashboard/question/create">Buat Pertanyaan</SidebarItem>
                         </SidebarCollapse>
                         <SidebarCollapse
                             label="Opsi Jawaban"
                         >
-                            <SidebarItem href="dashboard/answers">Daftar Opsi Jawaban</SidebarItem>
-                            <SidebarItem href="dashboard/answer/create">Buat Opsi Jawaban</SidebarItem>
+                            <SidebarItem href="/dashboard/answers">Daftar Opsi Jawaban</SidebarItem>
+                            <SidebarItem href="/dashboard/answer/create">Buat Opsi Jawaban</SidebarItem>
                         </SidebarCollapse>
                         <SidebarCollapse
                             label="Sesi Ujian"
                         >
-                            <SidebarItem href="dashboard/batches">Daftar Sesi</SidebarItem>
-                            <SidebarItem href="dashboard/batch/create">Buat Sesi</SidebarItem>
+                            <SidebarItem href="/dashboard/batches">Daftar Sesi</SidebarItem>
+                            <SidebarItem href="/dashboard/batch/create">Buat Sesi</SidebarItem>
                         </SidebarCollapse>
                     </SidebarItemGroup>
                 </SidebarItems>
