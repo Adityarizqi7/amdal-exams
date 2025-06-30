@@ -6,6 +6,7 @@ import { changeAnswerQuestion } from "../../../store/quiz/quizSlice";
 import clsx from "clsx";
 import { useSaveAnswerMutation } from "../../../store/answer/answerApi";
 import { useRef } from "react";
+import QuillEditor from "../Answer/QuillEditor";
 
 const CardBody = () => {
   const dispatch = useDispatch();
@@ -60,33 +61,13 @@ const CardBody = () => {
       {activeQuestion.question_type === "multiple_choice" ? (
         <ChoiceOption listChoice={listChoice} onChange={handleChangeChoice} />
       ) : activeQuestion.question_type === "essay" ? (
-        // <TinyMCEEditor
-        //   value={storedAnswer?.answer_text || ""}
-          // onChange={(val) => {
-          //   dispatch(
-          //     changeAnswerQuestion({
-          //       question_id: activeQuestion.id,
-          //       selected_option_id: null,
-          //       answer_text: val,
-          //     })
-          //   );
-          // }}
-        //   key={`${activeQuestion.id}`}
-        // />
-        <textarea 
-          key={`${activeQuestion.id}`} 
-          value={storedAnswer?.answer_text}
-          placeholder="Masukkan Jawaban disini"
-          className={clsx("w-full min-w-full max-w-full min-h-[10em] focus:outline-green-base border rounded-[.5em] p-2",
-            storedAnswer?.answer_text ? "border-green-base" : "border-blue-300"
-          )}
-          onChange={(e) => {
-            const value = e.target.value;
-
+        <QuillEditor
+          value={storedAnswer?.answer_text || ""}
+          onChange={(val) => {
             const payload = {
               question_id: activeQuestion.id,
               selected_option_id: null,
-              answer_text: value,
+              answer_text: val,
             };
 
             dispatch(changeAnswerQuestion(payload));
@@ -100,7 +81,60 @@ const CardBody = () => {
             debounceRef.current = setTimeout(() => {
               saveAnswer(payload);
             }, 1000); // 500ms debounce
-          }}></textarea>
+          }}
+          key={`${activeQuestion.id}`}
+        />
+        // <TinyMCEEditor
+        //   value={storedAnswer?.answer_text || ""}
+        //   onChange={(val) => {
+        //     const payload = {
+        //       question_id: activeQuestion.id,
+        //       selected_option_id: null,
+        //       answer_text: val,
+        //     };
+
+        //     dispatch(changeAnswerQuestion(payload));
+
+        //     // Clear previous timeout if exists
+        //     if (debounceRef.current) {
+        //       clearTimeout(debounceRef.current);
+        //     }
+
+        //     // Set new debounce timeout
+        //     debounceRef.current = setTimeout(() => {
+        //       saveAnswer(payload);
+        //     }, 1000); // 500ms debounce
+        //   }}
+        //   key={`${activeQuestion.id}`}
+        // />
+        // <textarea 
+        //   key={`${activeQuestion.id}`} 
+        //   value={storedAnswer?.answer_text}
+        //   placeholder="Masukkan Jawaban disini"
+        //   className={clsx("w-full min-w-full max-w-full min-h-[10em] focus:outline-green-base border rounded-[.5em] p-2",
+        //     storedAnswer?.answer_text ? "border-green-base" : "border-blue-300"
+        //   )}
+        //   onChange={(e) => {
+        //     const value = e.target.value;
+
+        //     const payload = {
+        //       question_id: activeQuestion.id,
+        //       selected_option_id: null,
+        //       answer_text: value,
+        //     };
+
+        //     dispatch(changeAnswerQuestion(payload));
+
+        //     // Clear previous timeout if exists
+        //     if (debounceRef.current) {
+        //       clearTimeout(debounceRef.current);
+        //     }
+
+        //     // Set new debounce timeout
+        //     debounceRef.current = setTimeout(() => {
+        //       saveAnswer(payload);
+        //     }, 1000); // 500ms debounce
+        //   }}></textarea>
       ) : null}
     </div>
   );
