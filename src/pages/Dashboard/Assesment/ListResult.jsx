@@ -159,7 +159,7 @@ const ListResult = () => {
 
     return (
         <DashboardLayout
-            title='Daftar Pengguna - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
+            title='Perankingan - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
             <div className="list-users-component px-7 pb-8">
                 {
@@ -251,7 +251,7 @@ const ListResult = () => {
                                     (
                                         <tr className="bg-white border-b border-gray-300">
                                             <td colSpan={6} className="px-6 py-4 text-[1.25rem]">
-                                                Data Pengguna masih kosong, segera tambahkan.
+                                                Para Peserta belum submit ujian.
                                             </td>
                                         </tr>
                                     )  
