@@ -29,9 +29,15 @@ const ListExamBatch = () => {
     const [focusInput, setFocusInput] = useState(false)
     const [loadingBatch, setLoadingBatch] = useState(false);
 
-    const getAllBatch = useCallback( async () => {
+    const getAllBatch = useCallback( async (searchInput) => {
         try {
             setLoadingBatch(true)
+
+            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
+                searchInput = { search, ...searchInput }
+            } else {
+                searchInput = { search: searchInput, page: pagination.current_page }
+            }
 
             const response = await getBatch();
             const { data, error } = response;
