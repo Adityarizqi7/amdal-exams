@@ -67,7 +67,7 @@ const CardBody = () => {
             const payload = {
               question_id: activeQuestion.id,
               selected_option_id: null,
-              answer_text: val,
+              answer_text: val === '' || val === '<p><br></p>' ? '' : val,
             };
 
             dispatch(changeAnswerQuestion(payload));
