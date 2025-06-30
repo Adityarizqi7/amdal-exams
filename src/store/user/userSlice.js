@@ -25,7 +25,9 @@ const userSlice = createSlice({
         setStartTime: (state, action) => {
             state.start_time = action.payload;
         },
-        logout: () => initialValue,
+        logout: (state) => {
+            state == initialValue
+        },
     },
 });
 
