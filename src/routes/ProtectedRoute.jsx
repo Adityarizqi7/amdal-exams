@@ -14,7 +14,12 @@ const ProtectedRoute = ({children}) => {
           //     navigate('/login')
           // }
           if (res) {
-              navigate('/login')
+            if (location.pathname === '/admin/signin') {
+                navigate('/admin/signin')
+            } else {
+                console.log("itu")
+                navigate('/login')
+            }
           }
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
