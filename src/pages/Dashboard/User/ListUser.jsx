@@ -43,11 +43,15 @@ const ListUser = () => {
         setIsOpenDialogSetSesi(false)
     }
 
-    const getAllUser = useCallback( async (search) => {
+    const getAllUser = useCallback( async (searchInput) => {
         try {
             setLoadingUser(true)
-
-            const response = await getUser(search);
+            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
+                searchInput = { search, ...searchInput }
+            } else {
+                searchInput = { search: searchInput, page: pagination.current_page }
+            }
+            const response = await getUser(searchInput);
             const { data, error } = response;
 
             setUser(data?.data?.data);
@@ -127,10 +131,11 @@ const ListUser = () => {
 
     const handlePageChange = (page) => {
         if (page < 1 || page > pagination.last_page) return;
-        getAllUser(page);
+        getAllUser({page});
     };
 
-    const handleChange = useCallback(e => setSearch(e.target.value), [])
+    // const handleChange = useCallback(e => setSearch(e.target.value), [])
+    const handleChange = (e) => setSearch(e.target.value)
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();

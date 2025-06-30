@@ -19,7 +19,7 @@ export const userApi = createApi({
             query: (search) => ({
                 url: "users",
                 method: "GET",
-                params: { search }
+                params: { ...search }
             }),
             transformResponse: (response) => response,
             providesTags: ["User"],
