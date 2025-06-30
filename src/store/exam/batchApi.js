@@ -7,10 +7,10 @@ export const batchApi = createApi({
     tagTypes: ["Batch"],
     endpoints: (builder) => ({
         getBatch: builder.query({
-            query: () => ({
+            query: (search) => ({
                 url: "exam-batches",
                 method: "GET",
-                // params: { search },
+                params: { ...search },
             }),
             transformResponse(response) {
                 return response;
