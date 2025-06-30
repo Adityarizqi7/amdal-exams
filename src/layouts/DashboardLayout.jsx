@@ -1,6 +1,6 @@
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
-import SideBar from '../components/Navbar/SideBar'
+import SideBar from '../components/Navbar/Sidebar'
 import TopbarDashboard from '../components/Navbar/TopbarDashboard'
 
 const DashboardLayout = ({
