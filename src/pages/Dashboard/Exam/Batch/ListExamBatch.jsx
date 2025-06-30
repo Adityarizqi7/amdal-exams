@@ -18,10 +18,10 @@ const ListExamBatch = () => {
     
     // const navigate = useNavigate()
 
-    // const [pagination, setPagination] = useState({
-    //     current_page: 1,
-    //     last_page: 1,
-    // });
+    const [pagination, setPagination] = useState({
+        current_page: 1,
+        last_page: 1,
+    });
     const inputRef = useRef()
     const [search, setSearch] = useState('')
     const [batch, setBatch] = useState([]);
@@ -37,12 +37,12 @@ const ListExamBatch = () => {
             const { data, error } = response;
             
             setBatch(data?.data?.data);
-            // setPagination({
-            //     current_page: data.data.current_page,
-            //     last_page: data.data.last_page,
-            //     total: data.data.total,
-            //     per_page: data.data.per_page,
-            // });
+            setPagination({
+                current_page: data.data.current_page,
+                last_page: data.data.last_page,
+                total: data.data.total,
+                per_page: data.data.per_page,
+            });
 
             if (error) {
                 Swal.fire({
@@ -127,12 +127,13 @@ const ListExamBatch = () => {
         });
     }, [getAllBatch])
 
-    // const handlePageChange = (page) => {
-    //     if (page < 1 || page > pagination.last_page) return;
-    //     getAllBatch(page);
-    // };
+    const handlePageChange = (page) => {
+        if (page < 1 || page > pagination.last_page) return;
+        getAllBatch({page});
+    };
 
-    const handleChange = useCallback(e => setSearch(e.target.value), [])
+    const handleChange = (e) => setSearch(e.target.value)
+    // const handleChange = useCallback(e => setSearch(e.target.value), [])
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -317,7 +318,7 @@ const ListExamBatch = () => {
                             </table>
                         </div>
 
-                        {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                             <button
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}
@@ -345,7 +346,7 @@ const ListExamBatch = () => {
                             >
                                 Next
                             </button>
-                        </div> */}
+                        </div>
                     </div>
                 }
             </div>

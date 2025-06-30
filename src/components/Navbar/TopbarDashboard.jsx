@@ -83,23 +83,23 @@ export default function Topbar() {
         >
             {/* Dekstop Menu Navbar */}
             <Menu>
-                <div className='montserrat flex max-5xs:flex-col gap-2 py-6 max-5xs:py-4 max-xs:gap-1 items-center justify-between max-6xs:justify-center'>
+                <div className='montserrat flex max-5xs:flex-col gap-2 py-5 max-5xs:py-4 max-xs:gap-1 items-center justify-between max-6xs:justify-center'>
                     <div className='brand-image flex items-center gap-4'>
                         <img
                             src={klh}
                             width='auto'
                             height='auto'
                             loading='lazy'
-                            alt={`Me Logo`}
-                            className='w-[3rem]'
+                            alt={`KLH Logo`}
+                            className='w-[2.27rem]'
                         />
                         <img
                             src={amdalnet}
                             width='auto'
                             height='auto'
                             loading='lazy'
-                            alt={`Me Logo`}
-                            className='w-[11rem] md:hidden block'
+                            alt={`Amdalnet Logo`}
+                            className='w-[10rem] md:hidden block'
                         />
                     </div>
                     <div className='md:block hidden'>
