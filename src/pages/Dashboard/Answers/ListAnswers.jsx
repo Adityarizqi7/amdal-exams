@@ -155,7 +155,7 @@ const ListAnswers = () => {
         <CommonLayout
             title='Daftar Opsi Jawaban - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-answers-component lg:px-[7.5rem] px-4 pb-8">
+            <div className="list-answers-component px-7 pb-8">
                 {
                     loadingAnswer ?
                     <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Opsi Jawaban...</h1>
@@ -269,7 +269,7 @@ const ListAnswers = () => {
                                                         <button onClick={() => {
                                                             navigate(`/dashboard/answers/${e.id}/edit`)
                                                         }} id='edit-icon' className='cursor-pointer'>
-                                                            <PencilSquareIcon className="w-6 h-6 text-blue-600" />
+                                                            <PencilSquareIcon className="w-5 h-5 text-blue-600" />
                                                         </button>
                                                         <Tooltip anchorSelect="#edit-icon">
                                                             Ubah

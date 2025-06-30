@@ -1,6 +1,7 @@
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 import SideBar from '../components/Navbar/SideBar'
+import TopbarDashboard from '../components/Navbar/TopbarDashboard'
 
 const DashboardLayout = ({
     title = 'Seleksi Tenaga Teknis Operasional Amdalnet 2025',
@@ -31,10 +32,12 @@ const DashboardLayout = ({
                 ></link>
             </Helmet>
 
-            <main>
-                <TopBar />
-                {children}
-                <Footer />
+            <main className='flex items-start'>
+                <SideBar />
+                <section className='xl:w-[80%] md:w-[70%] w-full'>
+                    <TopbarDashboard />
+                    {children}
+                </section>
             </main>
         </HelmetProvider>
     )

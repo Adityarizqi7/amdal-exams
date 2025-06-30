@@ -22,10 +22,10 @@ const SetBatch = () => {
     
     // const navigate = useNavigate()
 
-    const [pagination, setPagination] = useState({
-        current_page: 1,
-        last_page: 1,
-    });
+    // const [pagination, setPagination] = useState({
+    //     current_page: 1,
+    //     last_page: 1,
+    // });
     const location = useLocation()
 
     const inputRef = useRef()
@@ -109,13 +109,14 @@ const SetBatch = () => {
                 setLoadingUser(false)
                 throw new Error("Gagal Mengambail data.");
             }
-            setUser(data?.data?.data);
-            setPagination({
-                current_page: data.data.current_page,
-                last_page: data.data.last_page,
-                total: data.data.total,
-                per_page: data.data.per_page,
-            });
+            console.log(data)
+            setUser(data?.data);
+            // setPagination({
+            //     current_page: data.data.current_page,
+            //     last_page: data.data.last_page,
+            //     total: data.data.total,
+            //     per_page: data.data.per_page,
+            // });
             setSelectedRows([])
             setLoadingUser(false)
             
@@ -137,10 +138,10 @@ const SetBatch = () => {
     }, []);
     const deleteText = useCallback(() => setSearch(''), [])
 
-    const handlePageChange = (page) => {
-        if (page < 1 || page > pagination.last_page) return;
-        getAllUserNotSubmitted(page);
-    };
+    // const handlePageChange = (page) => {
+    //     if (page < 1 || page > pagination.last_page) return;
+    //     getAllUserNotSubmitted(page);
+    // };
 
     const handleFocusInput = useCallback(
         event => {
@@ -355,7 +356,7 @@ const SetBatch = () => {
                                 }
                                     <option value="" disabled hidden>
                                         {
-                                            loadingBatch ? 'Memuat batch..' : 'Pilih Exam Batch'
+                                            loadingBatch ? 'Memuat sesi..' : 'Pilih Sesi Ujian'
                                         }
                                     </option>
                                 </Select>
@@ -498,7 +499,7 @@ const SetBatch = () => {
                         </div>
                     </Dialog>
 
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                    {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                         <button
                             onClick={() => handlePageChange(pagination.current_page - 1)}
                             disabled={pagination.current_page === 1}
@@ -526,7 +527,7 @@ const SetBatch = () => {
                         >
                             Next
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </CommonLayout>

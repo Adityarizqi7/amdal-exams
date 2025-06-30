@@ -167,7 +167,7 @@ const ListExamBatch = () => {
         <CommonLayout
             title='Daftar Sesi - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
-            <div className="list-batch-component md:px-[7.5rem] px-4 pb-8">
+            <div className="list-batch-component px-7 pb-8">
                 {
                     loadingBatch ?
                     <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Sesi...</h1>
