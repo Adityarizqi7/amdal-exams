@@ -128,7 +128,7 @@ const CreateUser = () => {
                 </NavLink>
 
                 <form id="form_wrapper" encType="multipart/form-data" className="form-create-question-container mt-[2.5rem]">
-                    <h1 className="font-semibold text-[1.75rem]">Tambah Pengguna</h1>
+                    <h1 className="font-semibold text-[1.75rem] text-gray-700">Tambah Pengguna</h1>
                     <section className="form-create-question-card mt-[1.5rem]">
                         <div className="form-wrapper montserrat grid grid-cols-2 max-2xs:grid-cols-1 gap-5">
                             <div className="form-input relative">

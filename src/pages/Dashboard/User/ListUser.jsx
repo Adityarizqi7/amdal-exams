@@ -268,13 +268,13 @@ const ListUser = () => {
                                 </div>
                             </div>
                             <div className='flex items-center gap-2'>
-                                <button onClick={open} className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                <button onClick={open} className='font-semibold bg-green-200/80 hover:bg-green-300/60 text-green-600  rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                     </svg>
                                     <span>Import Excel</span>
                                 </button>
-                                <NavLink to='/dashboard/user/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                <NavLink to='/dashboard/user/create' className='font-semibold bg-green-200/80 text-green-600 hover:bg-green-300/60 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
@@ -283,8 +283,8 @@ const ListUser = () => {
                             </div>
                         </div>
                         <div className="all-users-table mt-8 overflow-x-auto">
-                            <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
-                                <thead className="text-white uppercase bg-green-base montserrat">
+                            <table className="w-full text-[1.05rem] text-center border-x border-gray-200">
+                                <thead className="bg-second-base/25 text-second-base/90 uppercase montserrat">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">
                                             No.

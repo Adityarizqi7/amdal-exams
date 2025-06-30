@@ -1,9 +1,8 @@
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
-import Footer from '../components/Footer/Footer'
-import TopBar from '../components/Navbar/Topbar'
+import SideBar from '../components/Navbar/SideBar'
 
-const CommonLayout = ({
+const DashboardLayout = ({
     title = 'Seleksi Tenaga Teknis Operasional Amdalnet 2025',
     children = '',
 }) => {
@@ -37,9 +36,8 @@ const CommonLayout = ({
                 {children}
                 <Footer />
             </main>
-
         </HelmetProvider>
     )
 }
 
-export default CommonLayout
+export default DashboardLayout

@@ -183,13 +183,13 @@ const EditExam = () => {
 
             {
                 loadingDetail ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Detail Tipe...</h1>
+                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Detail Tipe...</h1>
                 :
                 !examDetail ? 
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Tipe Ujian Soal tidak ditemukan.</h1>
+                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Tipe Ujian Soal tidak ditemukan.</h1>
                 :
                     <form id="form_wrapper" encType="multipart/form-data" className="form-edit-exam-container mt-[2.5rem]">
-                        <h1 className="font-semibold text-[1.75rem]">Ubah Tipe Ujian Soal</h1>
+                        <h1 className="font-semibold text-[1.75rem] text-gray-700">Ubah Tipe Ujian Soal</h1>
                         <section className="form-edit-exam-card mt-[1.5rem]">
                             <div className="form-wrapper montserrat space-y-5">
                                 <div className="form-input relative">

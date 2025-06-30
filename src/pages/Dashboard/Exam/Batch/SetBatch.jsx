@@ -361,7 +361,7 @@ const SetBatch = () => {
                         </div>
                     {
                         loadingUser || loadingBatch ?
-                            <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat peserta...</h1>
+                            <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat peserta...</h1>
                         :
                             (formData.exam_batch !== '') &&
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">

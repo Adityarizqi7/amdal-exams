@@ -167,7 +167,7 @@ const ListExam = () => {
             <div className="list-exams-component lg:px-[7.5rem] px-4 pb-8">
                 {
                     loadingExam ?
-                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] font-semibold">Memuat Tipe Ujian...</h1>
+                    <h1 className="montserrat mt-[2rem] text-center text-[1.25rem] text-gray-700 font-semibold">Memuat Tipe Ujian...</h1>
                     :
                     <div className='mt-[2rem]'>
                         <div className='flex max-xs:flex-col items-center justify-between gap-5'>
@@ -218,7 +218,7 @@ const ListExam = () => {
                                     }
                                 </div>
                             </div>
-                            <NavLink to='/dashboard/exam/create' className='bg-green-base rounded-[8px] border-0 py-2 px-4 text-white hover:bg-green-base/80 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                            <NavLink to='/dashboard/exam/create' className='font-semibold bg-green-200/80 text-green-600 hover:bg-green-300/60 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 fill-white">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
@@ -227,7 +227,7 @@ const ListExam = () => {
                         </div>
                         <div className="all-exams-table mt-8 overflow-x-auto">
                             <table className="w-full text-[1.05rem] text-center text-neutral-800 border-x border-gray-200">
-                                <thead className="text-white uppercase bg-green-base montserrat">
+                                <thead className="uppercase bg-second-base/25 text-second-base/90 montserrat">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">
                                             No.

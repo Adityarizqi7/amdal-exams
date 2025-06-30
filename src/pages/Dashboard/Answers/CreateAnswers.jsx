@@ -303,7 +303,7 @@ const CreateAnswers = () => {
                 </NavLink>
 
                 <form id="form_wrapper" encType="multipart/form-data" className="form-create-answers-container mt-[2.5rem]">
-                    <h1 className="font-semibold text-[1.75rem]">Tambah Opsi Jawaban</h1>
+                    <h1 className="font-semibold text-[1.75rem] text-gray-700">Tambah Opsi Jawaban</h1>
                     <section className="form-create-answers-card mt-[1.5rem]">
                         <div className="form-wrapper montserrat space-y-6">
                             <div className="form-input relative">
