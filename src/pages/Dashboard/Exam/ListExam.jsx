@@ -26,9 +26,15 @@ const ListExam = () => {
     const [exams, setExams] = useState([]);
     const [loadingExam, setLoadingExam] = useState(false);
 
-    const getAllExam = useCallback( async (search) => {
+    const getAllExam = useCallback( async (searchInput) => {
         try {
             setLoadingExam(true)
+
+            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
+                searchInput = { search, ...searchInput }
+            } else {
+                searchInput = { search: searchInput, page: pagination.current_page }
+            }
 
             const response = await all(search);
             const { data, error } = response;
@@ -126,10 +132,10 @@ const ListExam = () => {
 
     const handlePageChange = (page) => {
         if (page < 1 || page > pagination.last_page) return;
-        getAllExam(page);
+        getAllExam({page});
     };
 
-    const handleChange = useCallback(e => setSearch(e.target.value), [])
+    const handleChange = e => setSearch(e.target.value)
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -265,7 +271,7 @@ const ListExam = () => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
                                                 <td className="px-6 py-4 font-medium">
-                                                    {i + 1}.
+                                                    {(pagination.current_page - 1) * pagination.per_page + (i + 1)}.
                                                 </td>
                                                 <td className="px-6 py-4 text-left">
                                                     {e?.title}
@@ -322,6 +328,7 @@ const ListExam = () => {
                                     onClick={() => handlePageChange(page)}
                                     style={{
                                         fontWeight: page === pagination.current_page ? 'bold' : 'normal',
+                                        cursor: 'pointer'
                                     }}
                                 >
                                     {page}

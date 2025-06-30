@@ -26,11 +26,17 @@ const ListQuestion = () => {
     const [questions, setQuestions] = useState([]);
     const [loadingQuestion, setLoadingQuestion] = useState(false);
 
-    const getAllQuestion = useCallback( async (search) => {
+    const getAllQuestion = useCallback( async (searchInput) => {
         try {
             setLoadingQuestion(true)
 
-            const response = await getQuestion(search);
+            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
+                searchInput = { search, ...searchInput }
+            } else {
+                searchInput = { search: searchInput, page: pagination.current_page }
+            }
+
+            const response = await getQuestion(searchInput);
             const { data, error } = response;
 
             setQuestions(data?.data?.data);
@@ -118,10 +124,11 @@ const ListQuestion = () => {
 
     const handlePageChange = (page) => {
         if (page < 1 || page > pagination.last_page) return;
-        getAllQuestion(page);
+        getAllQuestion({page});
     };
 
-    const handleChange = useCallback(e => setSearch(e.target.value), [])
+    const handleChange = (e) => setSearch(e.target.value)
+    // const handleChange = useCallback(e => setSearch(e.target.value), [])
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -260,7 +267,7 @@ const ListQuestion = () => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
                                                 <td className="px-6 py-4 font-medium">
-                                                    {i + 1}.
+                                                    {(pagination.current_page - 1) * pagination.per_page + (i + 1)}.
                                                 </td>
                                                 <td className="px-6 py-4 text-left">
                                                     {e?.question_text}
@@ -325,6 +332,7 @@ const ListQuestion = () => {
                                     onClick={() => handlePageChange(page)}
                                     style={{
                                         fontWeight: page === pagination.current_page ? 'bold' : 'normal',
+                                        cursor: 'pointer'
                                     }}
                                 >
                                     {page}

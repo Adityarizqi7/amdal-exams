@@ -1,7 +1,7 @@
 import Swal from "sweetalert2"
-import { useSelector } from "react-redux"
-import { useNavigate, NavLink, useLocation } from 'react-router-dom'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+// import { useSelector } from "react-redux"
+import { NavLink } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import {
     ChevronDownIcon,
@@ -9,9 +9,9 @@ import {
 } from '@heroicons/react/16/solid'
 import { createTheme, ThemeProvider } from "flowbite-react";
 
-import { clearAuth, Logout } from "../../utils/Auth"
+import { Logout } from "../../utils/Auth"
 import amdalnet from '../../assets/images/amdalnet.png'
-import { useLazyLogoutQuery } from "../../store/auth/authApi"
+// import { useLazyLogoutQuery } from "../../store/auth/authApi"
 import { Sidebar, SidebarCollapse, SidebarItem, SidebarItemGroup, SidebarItems, SidebarLogo } from "flowbite-react"
 
 const SideBarTheme = createTheme({
@@ -96,64 +96,64 @@ const SideBarTheme = createTheme({
 
 export default function Topbar() {
 
-    const [apiLogout] = useLazyLogoutQuery();
+    // const [apiLogout] = useLazyLogoutQuery();
 
     // const [logout] = useLazyLogoutQuery();
 
     // const dispatch = useDispatch()
     
-    const userLog = useSelector((state) => state.user)
+    // const userLog = useSelector((state) => state.user)
 
-    const dropdownAccountRef = useRef(null);
+    // const dropdownAccountRef = useRef(null);
 
-    const location = useLocation()
-    const navigate = useNavigate();
+    // const location = useLocation()
+    // const navigate = useNavigate();
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [loadingLogout, setLoadingLogout] = useState(false);
+    // const [isOpen, setIsOpen] = useState(false);
+    const [, setIsScrolled] = useState(false);
+    // const [loadingLogout, setLoadingLogout] = useState(false);
     
     const changeColor = useCallback(() => {
         setIsScrolled(window.scrollY > 0);
     }, []);
 
-    function formatShortName(name) {
-        const parts = name.trim().split(/\s+/);
-        if (parts.length === 0) return '';
-        return parts[0] + (parts.length > 1 ? ' ' + parts.slice(1).map(w => w[0]).join('') : '');
-    }
+    // function formatShortName(name) {
+    //     const parts = name.trim().split(/\s+/);
+    //     if (parts.length === 0) return '';
+    //     return parts[0] + (parts.length > 1 ? ' ' + parts.slice(1).map(w => w[0]).join('') : '');
+    // }
 
-    const toggleAccount = () => {
-        setIsOpen(!isOpen);
-    }
+    // const toggleAccount = () => {
+    //     setIsOpen(!isOpen);
+    // }
 
-    const handleLogout = async (e) => {
-        e.preventDefault();
+    // const handleLogout = async (e) => {
+    //     e.preventDefault();
 
-        setLoadingLogout(true)
-        apiLogout().finally(() => {
-            setLoadingLogout(false)
-            clearAuth();                
-            // dispatch(logout());
-            setTimeout(() => {
-                navigate('/login');
-            }, 0);
-            window.location.reload()
-        })
-    };
+    //     setLoadingLogout(true)
+    //     apiLogout().finally(() => {
+    //         setLoadingLogout(false)
+    //         clearAuth();                
+    //         // dispatch(logout());
+    //         setTimeout(() => {
+    //             navigate('/login');
+    //         }, 0);
+    //         window.location.reload()
+    //     })
+    // };
 
     useEffect(() => {
-        function handleClickOutside(event) {
-            if (dropdownAccountRef.current && !dropdownAccountRef.current.contains(event.target)) {
-              setIsOpen(false);
-            }
-        }
+        // function handleClickOutside(event) {
+        //     if (dropdownAccountRef.current && !dropdownAccountRef.current.contains(event.target)) {
+        //       setIsOpen(false);
+        //     }
+        // }
       
-        document.addEventListener("mousedown", handleClickOutside);
+        // document.addEventListener("mousedown", handleClickOutside);
         window.addEventListener('scroll', changeColor);
 
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            // document.removeEventListener("mousedown", handleClickOutside);
             window.removeEventListener('scroll', changeColor);
         };
     }, [changeColor]);
@@ -197,6 +197,7 @@ export default function Topbar() {
                         >
                             <SidebarItem href="/dashboard/batches">Daftar Sesi</SidebarItem>
                             <SidebarItem href="/dashboard/batch/create">Buat Sesi</SidebarItem>
+                            <SidebarItem href="/dashboard/batch/assign">Set Sesi</SidebarItem>
                         </SidebarCollapse>
                     </SidebarItemGroup>
                 </SidebarItems>

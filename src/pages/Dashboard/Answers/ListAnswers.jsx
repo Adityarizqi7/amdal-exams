@@ -121,7 +121,7 @@ const ListAnswers = () => {
     //     getAllAnswer(page);
     // };
 
-    const handleChange = useCallback(e => setSearch(e.target.value), [])
+    const handleChange = (e) => setSearch(e.target.value)
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();

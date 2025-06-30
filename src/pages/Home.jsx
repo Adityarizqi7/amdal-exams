@@ -20,8 +20,8 @@ const Home = () => {
             />
         </div>
         <div className="greeting-text montserrat w-[70rem] max-xxxs:w-full mx-auto max-xxxs:mt-[2rem] max-5xs:mt-[1rem] mt-[6rem] text-center max-xxxs:px-3 max-3xs:px-1">
-          <h1 className="text-center text-gray-700 text-[2.9rem] max-xxxs:text-[5vw] max-3xs:text-[7vw] font-bold">Kini Saatnya Menjadi Bagian dari <span className="text-green-base">AMDALNET</span> dan Berkontribusi untuk Indonesia!</h1>
-          <h4 className="mt-4 text-neutral-500 font-medium text-[1.1rem] max-xxxs:text-[2vw] max-xs:text-[2.5vw] max-3xs:text-[12px] text-center leading-loose">Amdalnet PDLUK membuka lowogan untuk Putra Putri Terbaik Indonesia melalui Seleksi Tenaga Teknis Operasional Amdalnet 2025.</h4>
+          <h1 className="text-center text-gray-700 text-[2.9rem] max-xxxs:text-[5vw] max-3xs:text-[7vw] font-bold relative z-10">Kini Saatnya Menjadi Bagian dari <span className="text-green-base">AMDALNET</span> dan Berkontribusi untuk Indonesia!</h1>
+          <h4 className="mt-4 text-neutral-500 font-medium text-[1.1rem] max-xxxs:text-[2vw] max-xs:text-[2.5vw] max-3xs:text-[12px] text-center leading-loose">Amdalnet PDLUK membuka lowongan untuk Putra Putri Terbaik Indonesia melalui Seleksi Tenaga Teknis Operasional Amdalnet 2025.</h4>
           <button onClick={() => {
             window.open('https://www.s.id/hasil_administrasi', '_blank')
           }} className="bg-green-300/60 text-green-600 hover:bg-green-300 font-semibold rounded-[10px] border-0 py-3 max-2xs:py-2 px-8 max-2xs:px-5 cursor-pointer mx-auto max-xxxs:mt-8 mt-14 text-[1.1rem] max-xxxs:text-[2vw] max-2xs:text-[12px]">Lihat Pengumuman</button>

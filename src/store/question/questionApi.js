@@ -10,7 +10,7 @@ export const questionApi = createApi({
             query: (search) => ({
                 url: "questions",
                 method: "GET",
-                params: { search },
+                params: { ...search },
             }),
             transformResponse(response) {
                 return response;
