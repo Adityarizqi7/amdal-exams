@@ -27,6 +27,8 @@ import ListUser from '../pages/Dashboard/User/ListUser'
 import CreateUser from "../pages/Dashboard/User/CreateUser";
 import EditUser from "../pages/Dashboard/User/EditUser";
 
+import ListResult from '../pages/Dashboard/Assesment/ListResult'
+
 // Quiz
 import QuizLayout from '../layouts/QuizLayout'
 import Ready from '../pages/Quiz/Ready'
@@ -145,6 +147,23 @@ export default function Router() {
                 <Route path='/dashboard/user/:id/edit' element={
                     <PrivateRoute>
                         <EditUser/>
+                    </PrivateRoute>
+                    } />
+
+                {/* Users */}
+                <Route path='/dashboard/users' element={
+                    <PrivateRoute>
+                        <ListUser/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/user/create' element={
+                    <PrivateRoute>
+                        <CreateUser/>
+                    </PrivateRoute>
+                    } />
+                <Route path='/dashboard/assesment/results' element={
+                    <PrivateRoute>
+                        <ListResult/>
                     </PrivateRoute>
                     } />
                 

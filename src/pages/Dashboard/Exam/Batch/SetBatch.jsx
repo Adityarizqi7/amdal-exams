@@ -164,7 +164,7 @@ const SetBatch = () => {
         }
     };
 
-    const saveSetBatch = useCallback((event, el) => {
+  const saveSetBatch = useCallback((event, el) => {
         event.preventDefault();
         
         Swal.fire({
@@ -488,7 +488,7 @@ const SetBatch = () => {
                             <div className="mt-4 space-x-4">
                                 <Button
                                     className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-green-base px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-green-700 data-open:bg-green-700 cursor-pointer`}
-                                    onClick={saveSetBatch}
+                                    onClick={(e) => saveSetBatch(e, e.id)}
                                 >
                                  Simpan
                                 </Button>
