@@ -17,7 +17,6 @@ const ProtectedRoute = ({children}) => {
             if (location.pathname === '/admin/signin') {
                 navigate('/admin/signin')
             } else {
-                console.log("itu")
                 navigate('/login')
             }
           }
