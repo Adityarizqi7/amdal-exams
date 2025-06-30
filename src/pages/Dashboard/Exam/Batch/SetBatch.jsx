@@ -55,11 +55,11 @@ const SetBatch = () => {
         setIsOpenDialogSetSesi(false)
     }
 
-    const handleChangeSelectBatch = (e) => {
+    const handleChangeSelectBatch = useCallback((e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
         // getAllUserNotSubmitted(value, '')
-    };
+    }, []);
 
     const toggleRowSet = (id) => {
         setSelectedRows((prev) => {
@@ -109,7 +109,6 @@ const SetBatch = () => {
                 setLoadingUser(false)
                 throw new Error("Gagal Mengambail data.");
             }
-            console.log(data)
             setUser(data?.data);
             // setPagination({
             //     current_page: data.data.current_page,
@@ -164,7 +163,7 @@ const SetBatch = () => {
         }
     };
 
-  const saveSetBatch = useCallback((event, el) => {
+  const saveSetBatch = useCallback((event) => {
         event.preventDefault();
         
         Swal.fire({
@@ -188,8 +187,9 @@ const SetBatch = () => {
                     const body = {
                         user_ids: selectedRows
                     }
-                
-                    axios.post(`${CONST.BASE_URL_API}exam-batches/${el}/assign-users/`, body ,{
+                    
+                    console.log(formData.exam_batch, 'hahaha')
+                    axios.post(`${CONST.BASE_URL_API}exam-batches/0197b680-3cb5-725f-a855-82a0f73a7123/assign-users`, body ,{
                     headers: {
                         Authorization: `Bearer ${token}`
                     }})
@@ -222,7 +222,7 @@ const SetBatch = () => {
                 }
             }
         });
-    }, [getAllBatch, selectedRows])
+    }, [getAllBatch, selectedRows, formData])
 
     useEffect(() => {
         getAllBatch()
@@ -344,7 +344,7 @@ const SetBatch = () => {
                                 <span>Set Ke Semua Peserta</span>
                             </button> */}
                             <div className="relative mb-4 mt-5">
-                                <Select onChange={handleChangeSelectBatch} value={formData.exam_batch} name="exam_batch" className={`${loadingBatch ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                <Select onChange={(e) => handleChangeSelectBatch(e)} value={formData.exam_batch} name="exam_batch" className={`${loadingBatch ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
                                 {
                                     batch.map((el) => {
                                         return (
@@ -483,12 +483,12 @@ const SetBatch = () => {
                                 Pemberitahuan Set Sesi Ujian
                             </DialogTitle>
                             <p className="mt-2 text-md/6 text-gray-500">
-                                <h3 className='text-[]'>Total User yang akan di Set: <span className='font-semibold'> {user?.length} Peserta</span></h3>
+                                <h3 className='text-[]'>Total User yang akan di Set: <span className='font-semibold'> {selectedRows?.length} Peserta</span></h3>
                             </p>
                             <div className="mt-4 space-x-4">
                                 <Button
                                     className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-green-base px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-green-700 data-open:bg-green-700 cursor-pointer`}
-                                    onClick={(eve) => saveSetBatch(eve, formData.exam_batch)}
+                                    onClick={saveSetBatch}
                                 >
                                  Simpan
                                 </Button>

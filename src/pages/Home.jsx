@@ -20,7 +20,7 @@ const Home = () => {
           <ModalBody>
             <div className="space-y-6">
               <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              Mohon bersabar ya, ujiannya belum dimulai 😂.<br /><br />
+              Mohon bersabar ya, ujiannya belum dimulai.<br /><br />
               Akun Anda (email dan kata sandi) belum dapat digunakan hingga waktu pelaksanaan ujian dimulai. Silakan mencoba kembali saat ujian telah dibuka sesuai jadwal formasi.
               </p>
             </div>
