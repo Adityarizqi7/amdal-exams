@@ -15,16 +15,16 @@ const Finish = () => {
 
   useEffect(() => {
     if (userLog?.id) {
-      apiEndSubmission().finally(() => {
+      // apiEndSubmission().finally(() => {
         fetchExam(); // panggil hanya sekali setelah user tersedia
-      })
+      // })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLog]);
 
   useEffect(() => {
     if (hasilExam?.data?.score !== undefined || hasilExam?.success) {
-      setScore(hasilExam?.data?.score || 0);
+      setScore(hasilExam?.data?.score);
     }
   }, [hasilExam]);
 
