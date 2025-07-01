@@ -9,7 +9,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { useNavigate } from "react-router-dom"
 import LoadData from "../Loading/LoadData"
 import { useLazyGetAnswerQuery } from "../../../store/answer/answerApi"
-import { useActivitySuspectMutation } from "../../../store/exam/examApi"
+import { useActivitySuspectMutation, useEndExamBeMutation } from "../../../store/exam/examApi"
 
 const CardQuiz = () => {
   const dispatch = useDispatch()
@@ -26,6 +26,7 @@ const CardQuiz = () => {
 
   const [apiGetAnswer] = useLazyGetAnswerQuery()
   const [apiActivitySuspect] = useActivitySuspectMutation()
+  const [apiEndSubmission] = useEndExamBeMutation()
 
   useEffect(() => {
     setTimeOut(false)
@@ -76,6 +77,7 @@ const CardQuiz = () => {
 
   const handleTimeoutConfirm = () => {
     dispatch(setFinishQuiz(true))
+    apiEndSubmission()
     navigate("/quiz/finish")
   }
 
