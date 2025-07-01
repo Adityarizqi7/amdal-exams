@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ChoiceOption from "../Answer/ChoiceOption";
 import TinyMCEEditor from "../Answer/TinyMCEEditor";
 import { changeAnswerQuestion } from "../../../store/quiz/quizSlice";
-import clsx from "clsx";
 import { useSaveAnswerMutation } from "../../../store/answer/answerApi";
 import { useRef } from "react";
 import QuillEditor from "../Answer/QuillEditor";
+import { Dialog, Transition } from "@headlessui/react";
 
 const CardBody = () => {
   const dispatch = useDispatch();
@@ -20,6 +20,10 @@ const CardBody = () => {
 
   const debounceRef = useRef(null);
   const [listChoice, setListChoice] = useState([]);
+
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState(null);
+
   useEffect(() => {
     if (!activeQuestion) return;
 
@@ -56,8 +60,49 @@ const CardBody = () => {
       <p className="font-bold text-xl mb-5">
         {activeQuestion.order}
         {startQuiz && "."} {activeQuestion.question_text}
+        {activeQuestion.image && (
+          <img src={activeQuestion.image} 
+          alt="Soal Gambar"
+          className=" max-h-[10em] object-contain"
+          onClick={() => {
+            setPreviewImageUrl(activeQuestion.image);
+            setShowImageModal(true);
+          }} />
+        )}
       </p>
 
+      <Transition appear show={showImageModal} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={() => setShowImageModal(false)}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-150"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <Dialog.Panel className="relative bg-white rounded-xl p-2 shadow-xl max-w-6xl w-full">
+              <button
+                onClick={() => setShowImageModal(false)}
+                className="absolute top-2 right-2 bg-white border rounded-full px-2 py-1 text-sm hover:bg-gray-100"
+              >
+                ❌
+              </button>
+              <img
+                src={previewImageUrl}
+                alt="Preview"
+                className="w-full h-auto object-contain rounded-lg"
+              />
+            </Dialog.Panel>
+          </div>
+        </Dialog>
+      </Transition>
+      
       {activeQuestion.question_type === "multiple_choice" ? (
         <ChoiceOption listChoice={listChoice} onChange={handleChangeChoice} />
       ) : activeQuestion.question_type === "essay" ? (
