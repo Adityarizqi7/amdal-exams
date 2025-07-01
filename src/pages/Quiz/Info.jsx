@@ -255,7 +255,7 @@ const Info = () => {
         </div>
 
         <div className="mt-6">
-          {isAssessmentEnded ? (
+          {(isAssessmentEnded && userLog?.batch_start_time) ? (
             <button
               onClick={() => navigate("/quiz/finish")}
               className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all"
@@ -263,7 +263,7 @@ const Info = () => {
               <ClipboardDocumentListIcon className="w-5 h-5" />
               Lihat Hasil Asesmen
             </button>
-          ) : isBeforeTime ? (
+          ) : (isBeforeTime && !userLog?.batch_start_time) ? (
             <div className="text-center text-sm text-red-600 font-semibold">
               ⏳ Waktu asesmen belum dimulai. Silakan kembali lagi nanti.
             </div>
@@ -273,7 +273,7 @@ const Info = () => {
                 if (!userLog?.email) return navigate("/login");
                 setIsOpen(true);
               }}
-              disabled={!selectedExam || !selectedData}
+              disabled={!selectedExam || !selectedData || !userLog?.batch_start_time}
               className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
             >
               <PlayCircleIcon className="w-5 h-5" />
