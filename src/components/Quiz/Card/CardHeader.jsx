@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import dayjs from "../../../utils/dayjsConfig";
+import dayjs from "../../../utils/dayjsConfig"; // Sudah harus extend timezone & utc
 
 const CardHeader = ({ setTimeOut }) => {
   const activeExam = useSelector((state) => state.exam.activeExam);
@@ -13,12 +13,21 @@ const CardHeader = ({ setTimeOut }) => {
   const timeRef = useRef(0);
   const intervalRef = useRef(null);
 
+  const wibTz = "Asia/Jakarta";
+
   useEffect(() => {
     if (startQuiz && userLog?.start_exam && activeExam?.duration) {
-      const now = dayjs().tz("Asia/Jakarta");
-      const startTime = dayjs(userLog.start_exam).tz("Asia/Jakarta");
-      const endTime = startTime.add(activeExam.duration, 'minute');
-      const diff = endTime.diff(now, 'second');
+      const now = dayjs().tz(wibTz); // Sekarang dalam WIB
+      const startTime = dayjs.tz(userLog.start_exam, wibTz); // Asumsikan start_exam sudah disimpan sebagai WIB
+      const endTime = startTime.add(activeExam.duration, "minute"); // Akhir ujian
+      const diff = endTime.diff(now, "second");
+
+      console.log("⏱ WIB Countdown Debug", {
+        now: now.format(),
+        startTime: startTime.format(),
+        endTime: endTime.format(),
+        diff
+      });
 
       if (diff <= 0) {
         setQuizTime(0);
@@ -51,15 +60,23 @@ const CardHeader = ({ setTimeOut }) => {
   if (!activeExam) return null;
 
   return (
-    <div className="py-4 px-6 flex flex-wrap justify-between items-center"
-      style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
+    <div
+      className="py-4 px-6 flex flex-wrap justify-between items-center"
+      style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
+    >
       <p className="font-bold">{activeExam.title}</p>
       <Transition show={Boolean(quizTime)}>
-        <div className={clsx(
-          "px-1 py-2 rounded text-black border flex items-center gap-2 ml-auto",
-          quizTime < 60 ? "bg-red-300 border-red-500 animate-pulse" : "bg-blue-300 border-blue-500"
-        )}>
-          <p>Time Left</p>
+        <div
+          className={clsx(
+            "px-2 py-2 rounded text-black border flex items-center gap-2 ml-auto",
+            quizTime < 60
+              ? "bg-red-300 border-red-500 animate-pulse"
+              : "bg-blue-300 border-blue-500"
+          )}
+        >
+          <p>
+            Time Left <span className="text-xs font-semibold">(WIB)</span>
+          </p>
           <div className="bg-black text-white px-1 font-bold rounded">
             {String(Math.floor(quizTime / 3600)).padStart(2, "0")}
           </div>
