@@ -5,16 +5,19 @@ import LoadData from "../../components/Quiz/Loading/LoadData";
 
 const Finish = () => {
   const userLog = useSelector((state) => state.user);
-  const [fetchExam, { data: hasilExam, isLoading }] = useLazyMyExamQuery();
-  const [score, setScore] = useState(null);
 
   const [apiEndSubmission] = useEndExamBeMutation()
 
-  apiEndSubmission()
+  const [fetchExam, { data: hasilExam, isLoading }] = useLazyMyExamQuery();
+  const [score, setScore] = useState(null);
+  
+
 
   useEffect(() => {
     if (userLog?.id) {
-      fetchExam(); // panggil hanya sekali setelah user tersedia
+      apiEndSubmission().finally(() => {
+        fetchExam(); // panggil hanya sekali setelah user tersedia
+      })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLog]);
