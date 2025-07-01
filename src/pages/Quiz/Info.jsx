@@ -140,12 +140,12 @@ const Info = () => {
   return (
     <div className="flex items-center justify-center px-4 montserrat max-w-full">
       <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-[30em] max-w-full lg:max-w-md">
-        <h2 className="text-lg font-bold text-green-base mb-4">Informasi Asesmen</h2>
+        <h2 className="text-lg font-bold text-green-base mb-4">Informasi Ujian</h2>
 
         {timeWarning && (
           <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md mb-4 text-sm flex items-center gap-2">
             <ExclamationTriangleIcon className="w-5 h-5" />
-            Saat ini berada di luar rentang waktu pengerjaan asesmen.
+            Saat ini berada di luar rentang waktu pengerjaan ujian.
           </div>
         )}
 
@@ -185,10 +185,10 @@ const Info = () => {
         <div className="space-y-2 text-sm">
           <label className="font-semibold flex items-center gap-1">
             <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
-            Pilih Asesmen
+            Pilih Ujian
           </label>
           {timeWarning && !userLog.exam_id ? (
-            <p className="text-red-600">Anda Belum Memilih Asesmen</p>
+            <p className="text-red-600">Anda Belum Memilih Ujian</p>
           ) : (
             <Listbox
               value={selectedExam}
@@ -199,8 +199,8 @@ const Info = () => {
                 <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-green-base focus:border-green-base text-sm">
                   <span className="block truncate">
                     {selectedExam
-                      ? selectedData?.title || "Asesmen Tidak Ditemukan"
-                      : "-- Pilih Asesmen --"}
+                      ? selectedData?.title || "Ujian Tidak Ditemukan"
+                      : "-- Pilih Ujian --"}
                   </span>
                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon className="h-4 w-4 text-gray-400" />
@@ -261,11 +261,11 @@ const Info = () => {
               className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all"
             >
               <ClipboardDocumentListIcon className="w-5 h-5" />
-              Lihat Hasil Asesmen
+              Lihat Hasil Ujian
             </button>
           ) : (isBeforeTime || !userLog?.batch_start_time) ? (
             <div className="text-center text-sm text-red-600 font-semibold">
-              ⏳ Waktu asesmen belum dimulai. Silakan kembali lagi nanti.
+              ⏳ Waktu ujian belum dimulai. Silakan kembali lagi nanti.
             </div>
           ) : (
             <button
@@ -277,7 +277,7 @@ const Info = () => {
               className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
             >
               <PlayCircleIcon className="w-5 h-5" />
-              {userLog.start_exam ? "Lanjutkan" : "Mulai Asesmen"}
+              {userLog.start_exam ? "Lanjutkan" : "Mulai Ujian"}
             </button>
           )}
         </div>
@@ -306,7 +306,7 @@ const Info = () => {
                 </Dialog.Title>
               </div>
               <Dialog.Description className="text-sm text-gray-600">
-                Apakah kamu yakin ingin memulai asesmen sekarang? Pastikan kamu sudah siap.
+                Apakah kamu yakin ingin memulai ujian sekarang? Pastikan kamu sudah siap.
               </Dialog.Description>
 
               <div className="flex justify-end gap-2 pt-2">
