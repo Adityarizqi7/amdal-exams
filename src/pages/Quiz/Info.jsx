@@ -71,14 +71,22 @@ const Info = () => {
 
   const handleConfirm = async () => {
     setIsOpen(false);
+    setLoading(true)
+    // 🔐 Cek login sebelum lanjut
+    if (!userLog?.email) {
+      navigate("/login");
+      return;
+    }
+
     await fetchQuestions(activeExam.id);
     if (!userLog.start_exam) {
       const response = await apiStartExam({ exam_id: activeExam.id });
       if (response?.data?.success) dispatch(setStartQuiz(true));
     }
+
     if (!isBeforeTime && !isAfterTime) {
       dispatch(setStartQuiz(true));
-      navigate("/quiz/ready");
+      // navigate("/quiz/ready");
     }
   };
 
@@ -94,14 +102,13 @@ const Info = () => {
     }
   }, [userLog, dispatch]);
 
-  // ⏱️ Update time window when selectedData or userLog changes
   useEffect(() => {
     if (!selectedData || !userLog) return;
 
     const now = new Date();
     const start = new Date(userLog.batch_start_time);
     const end = userLog.start_exam && selectedData.duration
-      ? new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000) // duration dalam menit
+      ? new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000)
       : new Date(userLog.batch_end_time);
 
     setIsBeforeTime(now < start);
@@ -113,7 +120,6 @@ const Info = () => {
     if (activeExam && userLog.start_exam && userLog.exam_id) {
       userLog.submitted_at ? navigate("/quiz/finish") : handleConfirm();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeExam, userLog, navigate]);
 
   useEffect(() => {
@@ -123,7 +129,7 @@ const Info = () => {
   const isAssessmentEnded = useMemo(() => {
     if (userLog.submitted_at || isAfterTime) return true;
     if (userLog.start_exam && selectedData?.duration) {
-      const endTime = new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000); // durasi menit
+      const endTime = new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000);
       return new Date() > endTime;
     }
     return false;
@@ -182,7 +188,7 @@ const Info = () => {
             Pilih Asesmen
           </label>
           {timeWarning && !userLog.exam_id ? (
-            <p className="text-red-600">Anda Belum Memilih Asessment</p>
+            <p className="text-red-600">Anda Belum Memilih Asesmen</p>
           ) : (
             <Listbox
               value={selectedExam}
@@ -248,7 +254,6 @@ const Info = () => {
           )}
         </div>
 
-        {/* Tombol Aksi */}
         <div className="mt-6">
           {isAssessmentEnded ? (
             <button
@@ -264,7 +269,10 @@ const Info = () => {
             </div>
           ) : (
             <button
-              onClick={() => setIsOpen(true)}
+              onClick={() => {
+                if (!userLog?.email) return navigate("/login");
+                setIsOpen(true);
+              }}
               disabled={!selectedExam || !selectedData}
               className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
             >
@@ -275,7 +283,6 @@ const Info = () => {
         </div>
       </div>
 
-      {/* MODAL KONFIRMASI */}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
           <Transition.Child
