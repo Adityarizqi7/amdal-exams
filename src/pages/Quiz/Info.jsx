@@ -263,7 +263,7 @@ const Info = () => {
               <ClipboardDocumentListIcon className="w-5 h-5" />
               Lihat Hasil Asesmen
             </button>
-          ) : (isBeforeTime && !userLog?.batch_start_time) ? (
+          ) : (isBeforeTime || !userLog?.batch_start_time) ? (
             <div className="text-center text-sm text-red-600 font-semibold">
               ⏳ Waktu asesmen belum dimulai. Silakan kembali lagi nanti.
             </div>
