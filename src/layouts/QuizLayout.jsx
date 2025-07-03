@@ -27,7 +27,7 @@ const QuizLayout = () => {
     <>
       <HelmetProvider>
         <Helmet prioritizeSeoTags>
-          <title>Quiz Programmer</title>
+          <title>Tes Tertulis Online PDLUK</title>
         </Helmet>
       </HelmetProvider>
 

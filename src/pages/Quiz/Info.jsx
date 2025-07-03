@@ -19,6 +19,7 @@ import { setActiveExam, setListExam } from "../../store/exam/examSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadData from "../../components/Quiz/Loading/LoadData";
 import { setListQuestion, setStartQuiz } from "../../store/quiz/quizSlice";
+import dayjs from "../../utils/dayjsConfig"; // Sudah extend timezone & utc
 
 const Info = () => {
   const navigate = useNavigate();
@@ -71,14 +72,20 @@ const Info = () => {
 
   const handleConfirm = async () => {
     setIsOpen(false);
+    setLoading(true);
+    if (!userLog?.email) {
+      navigate("/login");
+      return;
+    }
+
     await fetchQuestions(activeExam.id);
     if (!userLog.start_exam) {
       const response = await apiStartExam({ exam_id: activeExam.id });
       if (response?.data?.success) dispatch(setStartQuiz(true));
     }
+
     if (!isBeforeTime && !isAfterTime) {
       dispatch(setStartQuiz(true));
-      navigate("/quiz/ready");
     }
   };
 
@@ -94,26 +101,24 @@ const Info = () => {
     }
   }, [userLog, dispatch]);
 
-  // ⏱️ Update time window when selectedData or userLog changes
   useEffect(() => {
     if (!selectedData || !userLog) return;
 
-    const now = new Date();
-    const start = new Date(userLog.batch_start_time);
+    const now = dayjs().tz("Asia/Jakarta");
+    const start = dayjs.tz(userLog.batch_start_time, "Asia/Jakarta");
     const end = userLog.start_exam && selectedData.duration
-      ? new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000) // duration dalam menit
-      : new Date(userLog.batch_end_time);
+      ? dayjs.tz(userLog.start_exam, "Asia/Jakarta").add(selectedData.duration, 'minute')
+      : dayjs.tz(userLog.batch_end_time, "Asia/Jakarta");
 
-    setIsBeforeTime(now < start);
-    setIsAfterTime(now > end);
-    setTimeWarning(now < start || now > end);
+    setIsBeforeTime(now.isBefore(start));
+    setIsAfterTime(now.isAfter(end));
+    setTimeWarning(now.isBefore(start) || now.isAfter(end));
   }, [selectedData, userLog]);
 
   useEffect(() => {
     if (activeExam && userLog.start_exam && userLog.exam_id) {
       userLog.submitted_at ? navigate("/quiz/finish") : handleConfirm();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeExam, userLog, navigate]);
 
   useEffect(() => {
@@ -123,8 +128,8 @@ const Info = () => {
   const isAssessmentEnded = useMemo(() => {
     if (userLog.submitted_at || isAfterTime) return true;
     if (userLog.start_exam && selectedData?.duration) {
-      const endTime = new Date(new Date(userLog.start_exam).getTime() + selectedData.duration * 60000); // durasi menit
-      return new Date() > endTime;
+      const endTime = dayjs.tz(userLog.start_exam, "Asia/Jakarta").add(selectedData.duration, 'minute');
+      return dayjs().tz("Asia/Jakarta").isAfter(endTime);
     }
     return false;
   }, [userLog, selectedData, isAfterTime]);
@@ -134,12 +139,12 @@ const Info = () => {
   return (
     <div className="flex items-center justify-center px-4 montserrat max-w-full">
       <div className="bg-white backdrop-blur-lg rounded-xl shadow-lg p-6 w-[30em] max-w-full lg:max-w-md">
-        <h2 className="text-lg font-bold text-green-base mb-4">Informasi Asesmen</h2>
+        <h2 className="text-lg font-bold text-green-base mb-4">Informasi Ujian</h2>
 
         {timeWarning && (
           <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md mb-4 text-sm flex items-center gap-2">
             <ExclamationTriangleIcon className="w-5 h-5" />
-            Saat ini berada di luar rentang waktu pengerjaan asesmen.
+            Saat ini berada di luar rentang waktu pengerjaan ujian. (Waktu dihitung berdasarkan WIB)
           </div>
         )}
 
@@ -163,15 +168,9 @@ const Info = () => {
           </div>
           <div className="flex items-center gap-2">
             <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
-            Waktu:{" "}
+            Waktu (WIB):{" "}
             {userLog?.batch_start_time && userLog?.batch_end_time
-              ? `${new Date(userLog.batch_start_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })} - ${new Date(userLog.batch_end_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}`
+              ? `${dayjs.tz(userLog.batch_start_time, "Asia/Jakarta").format("HH:mm")} - ${dayjs.tz(userLog.batch_end_time, "Asia/Jakarta").format("HH:mm")}`
               : "-"}
           </div>
         </div>
@@ -179,10 +178,10 @@ const Info = () => {
         <div className="space-y-2 text-sm">
           <label className="font-semibold flex items-center gap-1">
             <ClipboardDocumentListIcon className="w-4 h-4 text-gray-600" />
-            Pilih Asesmen
+            Pilih Ujian
           </label>
           {timeWarning && !userLog.exam_id ? (
-            <p className="text-red-600">Anda Belum Memilih Asessment</p>
+            <p className="text-red-600">Anda Belum Memilih Ujian</p>
           ) : (
             <Listbox
               value={selectedExam}
@@ -190,34 +189,30 @@ const Info = () => {
               disabled={userLog.exam_id}
             >
               <div className="relative">
-                <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-green-base focus:border-green-base text-sm">
+                <Listbox.Button className="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm text-sm">
                   <span className="block truncate">
-                    {selectedExam
-                      ? selectedData?.title || "Asesmen Tidak Ditemukan"
-                      : "-- Pilih Asesmen --"}
+                    {
+                      selectedExam
+                        ? selectedData?.title || "Ujian Tidak Ditemukan"
+                        : listExam?.length ? "-- Pilih Ujian --" : "Loading"
+                    }
                   </span>
                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon className="h-4 w-4 text-gray-400" />
                   </span>
                 </Listbox.Button>
-                <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5">
                   {listExam?.map((exam) => (
                     <Listbox.Option
                       key={exam.id}
                       value={exam.id}
                       className={({ active }) =>
-                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                          active ? "bg-green-100 text-green-900" : "text-gray-900"
-                        }`
+                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? "bg-green-100 text-green-900" : "text-gray-900"}`
                       }
                     >
                       {({ selected }) => (
                         <>
-                          <span
-                            className={`block truncate ${
-                              selected ? "font-medium" : "font-normal"
-                            }`}
-                          >
+                          <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
                             {exam.title}
                           </span>
                           {selected && (
@@ -237,45 +232,44 @@ const Info = () => {
           {selectedData && (
             <div className="mt-3 text-sm text-gray-700 space-y-1 border-t pt-3">
               <div>
-                <span className="font-semibold">Jumlah Soal:</span>{" "}
-                {selectedData.questions_count || 0}
+                <span className="font-semibold">Jumlah Soal:</span> {selectedData.questions_count || 0}
               </div>
               <div>
-                <span className="font-semibold">Durasi:</span>{" "}
-                {selectedData.duration || 0} menit
+                <span className="font-semibold">Durasi:</span> {selectedData.duration || 0} menit
               </div>
             </div>
           )}
         </div>
 
-        {/* Tombol Aksi */}
         <div className="mt-6">
-          {isAssessmentEnded ? (
+          {(isAssessmentEnded && userLog?.batch_start_time) ? (
             <button
               onClick={() => navigate("/quiz/finish")}
-              className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all"
+              className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
             >
               <ClipboardDocumentListIcon className="w-5 h-5" />
-              Lihat Hasil Asesmen
+              Lihat Hasil Ujian
             </button>
-          ) : isBeforeTime ? (
+          ) : (isBeforeTime || !userLog?.batch_start_time) ? (
             <div className="text-center text-sm text-red-600 font-semibold">
-              ⏳ Waktu asesmen belum dimulai. Silakan kembali lagi nanti.
+              ⏳ Waktu ujian belum dimulai. Silakan kembali lagi nanti.
             </div>
           ) : (
             <button
-              onClick={() => setIsOpen(true)}
-              disabled={!selectedExam || !selectedData}
-              className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg transition-all disabled:opacity-50"
+              onClick={() => {
+                if (!userLog?.email) return navigate("/login");
+                setIsOpen(true);
+              }}
+              disabled={!selectedExam || !selectedData || !userLog?.batch_start_time}
+              className="cursor-pointer w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-green-base text-white font-semibold rounded-lg disabled:opacity-50"
             >
               <PlayCircleIcon className="w-5 h-5" />
-              {userLog.start_exam ? "Lanjutkan" : "Mulai Asesmen"}
+              {userLog.start_exam ? "Lanjutkan" : "Mulai Ujian"}
             </button>
           )}
         </div>
       </div>
 
-      {/* MODAL KONFIRMASI */}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
           <Transition.Child
@@ -291,7 +285,7 @@ const Info = () => {
           </Transition.Child>
 
           <div className="fixed inset-0 flex items-center justify-center px-4">
-            <Dialog.Panel className="w-full max-w-sm transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all space-y-4">
+            <Dialog.Panel className="w-full max-w-sm transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
                 <ExclamationTriangleIcon className="w-6 h-6 text-yellow-500" />
                 <Dialog.Title className="text-lg font-medium text-gray-800">
@@ -299,19 +293,19 @@ const Info = () => {
                 </Dialog.Title>
               </div>
               <Dialog.Description className="text-sm text-gray-600">
-                Apakah kamu yakin ingin memulai asesmen sekarang? Pastikan kamu sudah siap.
+                Apakah kamu yakin ingin memulai ujian sekarang? Pastikan kamu sudah siap.
               </Dialog.Description>
 
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="cursor-pointer px-4 py-2 rounded-md text-sm bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  className="px-4 py-2 rounded-md text-sm bg-gray-100 hover:bg-gray-200 text-gray-700"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="cursor-pointer px-4 py-2 rounded-md text-sm bg-green-base text-white font-medium"
+                  className="px-4 py-2 rounded-md text-sm bg-green-base text-white font-medium"
                 >
                   Ya, Mulai
                 </button>
