@@ -1,13 +1,13 @@
+import axios from "axios";
 import Swal from "sweetalert2";
 import { useCallback, useEffect, useState } from "react";
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Select, Switch } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
-import CommonLayout from "../../../layouts/CommonLayout"
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-// import { useCreateMutation } from "../../../store/answers/answersApi";
-import axios from "axios";
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Select, Switch } from "@headlessui/react";
+
 import CONST from "../../../utils/Constant";
 import { getToken } from "../../../utils/Auth";
+import DashboardLayout from "src/layouts/DashboardLayout";
 
 const EditAnswers = () => {
 
@@ -429,7 +429,7 @@ const EditAnswers = () => {
     }, [getDetail]);
     
     return (
-        <CommonLayout
+        <DashboardLayout
             title={`Ubah Opsi '${detailAnswer.option_text}' - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025`}
         >
             <div className="edit-answers-component px-7 pb-12 montserrat">
@@ -500,7 +500,7 @@ const EditAnswers = () => {
                 }
 
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

@@ -1,12 +1,13 @@
+import axios from "axios";
 import Swal from "sweetalert2";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Select } from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/16/solid";
-import CommonLayout from "../../../layouts/CommonLayout"
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { CheckIcon, ChevronDownIcon } from "@heroicons/react/16/solid";
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Select } from "@headlessui/react";
+
 import CONST from "../../../utils/Constant";
 import { getToken } from "../../../utils/Auth";
+import DashboardLayout from "src/layouts/DashboardLayout";
 
 const EditQuestion = () => {
 
@@ -221,7 +222,7 @@ const EditQuestion = () => {
     }, [query, getAllExam, getDetail]);
     
     return (
-        <CommonLayout
+        <DashboardLayout
             title={`Ubah Pertanyaan '${detailQuest.question_text}' - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025`}
         >
             <div className="create-question-component px-7 pb-12 montserrat">
@@ -384,7 +385,7 @@ const EditQuestion = () => {
                 }
 
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 

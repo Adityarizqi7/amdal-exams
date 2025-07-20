@@ -1,15 +1,12 @@
-// import axios from "axios";
+import axios from "axios";
 import Swal from "sweetalert2";
 import { getToken } from "../../../utils/Auth";
+import { Select, Switch } from "@headlessui/react";
 import { useCallback, useEffect, useState } from "react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/16/solid";
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Select, Switch } from "@headlessui/react";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import CONST from "../../../utils/Constant";
-// import { getToken } from "../../../utils/Auth";
-import CommonLayout from "../../../layouts/CommonLayout"
-import { NavLink, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import DashboardLayout from "src/layouts/DashboardLayout";
 
 const EditUser = () => {
 
@@ -190,7 +187,7 @@ const EditUser = () => {
     }, [getDetail])
 
     return (
-        <CommonLayout
+        <DashboardLayout
             title={`Ubah ${userDetail?.name?.split(' ')[0]} - Admin Dashobard Seleksi Tenaga Teknis Operasional Amdalnet 2025`}
         >
             <div className="create-question-component px-7 pb-12 montserrat">
@@ -315,7 +312,7 @@ const EditUser = () => {
                 }
 
             </div>
-        </CommonLayout>
+        </DashboardLayout>
     )
 }
 
