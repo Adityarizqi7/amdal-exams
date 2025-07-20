@@ -81,7 +81,7 @@ const ListResult = () => {
 
     }, [formDataBatchYear.exam_batch_year])
 
-    const getAllUser = useCallback( async (search) => {
+    const getAllUser = useCallback( async (search = '') => {
         setLoadingUser(true)
 
         const token = await getToken();
