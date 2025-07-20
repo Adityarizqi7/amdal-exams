@@ -43,7 +43,7 @@ const Home = () => {
           <h1 className="text-center text-gray-700 text-[2.9rem] max-xxxs:text-[5vw] max-3xs:text-[7vw] font-bold relative z-10">Kini Saatnya Menjadi Bagian dari <span className="text-green-base">AMDALNET</span> dan Berkontribusi untuk Indonesia!</h1>
           <h4 className="mt-4 text-neutral-500 font-medium text-[1.1rem] max-xxxs:text-[2vw] max-xs:text-[2.5vw] max-3xs:text-[12px] text-center leading-loose">PDLUK membuka lowongan untuk Putra Putri Terbaik Indonesia melalui Seleksi Tenaga Teknis Operasional Amdalnet 2025.</h4>
           <button onClick={() => {
-            window.open('https://www.s.id/hasil_ujikompetensi', '_blank')
+            window.open('https://drive.google.com/drive/folders/1KC7s4HBDMXv4OfV1oTAy33xJQj3I8mku', '_blank')
           }} className="bg-green-300/60 text-green-600 hover:bg-green-300 font-semibold rounded-[10px] border-0 py-3 max-2xs:py-2 px-8 max-2xs:px-5 cursor-pointer mx-auto max-xxxs:mt-8 mt-14 text-[1.1rem] max-xxxs:text-[2vw] max-2xs:text-[12px]">Lihat Pengumuman</button>
         </div>
         <div className="running-text marquee-container py-6 max-xxs:py-4 font-semibold bg-green-base mt-[6.5rem] max-xxs:mt-[4rem] max-3xs:mt-[2rem] relative z-10">
