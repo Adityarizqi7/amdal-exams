@@ -293,70 +293,70 @@ const ListResult = () => {
                                 </button>
                             </div>
                         </div>
-                        <div className="all-users-table mt-8 overflow-x-auto">
-                            <div className="mb-6 flex items-center gap-4 w-full">
-                                <div className='relative w-full'>
-                                    <Select onChange={(e) => handleChangeSelectBatchYear(e)} value={formDataBatchYear.exam_batch_year} name="exam_batch_year" className={`montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
-                                        <option value="2025">
-                                            2025
-                                        </option>
-                                        <option value="2026">
-                                            2026
-                                        </option>
-                                        <option value="" disabled hidden>
-                                            Pilih Tahun Seleksi
-                                        </option>
-                                    </Select>
-                                    <ChevronDownIcon
-                                        className="group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black"
-                                        aria-hidden="true"
-                                    />
-                               </div>
-                                <div className='relative w-full'>
-                                    <Select onChange={(e) => handleChangeSelectExam(e)} value={formDataExam.exam} name="exam" className={`${loadingExam || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
-                                    {
-                                        exam.map((el) => {
-                                            return (
-                                                <option key={el?.id} value={el.title}>
-                                                    {el?.title}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                        <option value="" disabled hidden>
-                                            {
-                                                loadingExam ? 'Memuat formasi..' : 'Pilih Formasi Seleksi'
-                                            }
-                                        </option>
-                                    </Select>
-                                    <ChevronDownIcon
-                                        className={`${loadingExam || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black`}
-                                        aria-hidden="true"
-                                    />
-                                </div>
-                                <div className='relative w-full'>
-                                    <Select onChange={(e) => handleChangeSelectBatch(e)} value={formData.exam_batch} name="exam_batch" className={`${loadingBatch || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
-                                    {
-                                        batch.map((el) => {
-                                            return (
-                                                <option key={el?.id} value={el.name}>
-                                                    {el?.name}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                        <option value="" disabled hidden>
-                                            {
-                                                loadingBatch ? 'Memuat sesi..' : 'Pilih Sesi Ujian'
-                                            }
-                                        </option>
-                                    </Select>
-                                    <ChevronDownIcon
-                                        className={`${loadingBatch || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black`}
-                                        aria-hidden="true"
-                                    />
-                                </div>
+                        <div className="mt-8 flex items-center gap-4 w-full">
+                            <div className='relative w-full'>
+                                <Select onChange={(e) => handleChangeSelectBatchYear(e)} value={formDataBatchYear.exam_batch_year} name="exam_batch_year" className={`montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                    <option value="2025">
+                                        2025
+                                    </option>
+                                    <option value="2026">
+                                        2026
+                                    </option>
+                                    <option value="" disabled hidden>
+                                        Pilih Tahun Seleksi
+                                    </option>
+                                </Select>
+                                <ChevronDownIcon
+                                    className="group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black"
+                                    aria-hidden="true"
+                                />
                             </div>
+                            <div className='relative w-full'>
+                                <Select onChange={(e) => handleChangeSelectExam(e)} value={formDataExam.exam} name="exam" className={`${loadingExam || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                {
+                                    exam.map((el) => {
+                                        return (
+                                            <option key={el?.id} value={el.title}>
+                                                {el?.title}
+                                            </option>
+                                        )
+                                    })
+                                }
+                                    <option value="" disabled hidden>
+                                        {
+                                            loadingExam ? 'Memuat formasi..' : 'Pilih Formasi Seleksi'
+                                        }
+                                    </option>
+                                </Select>
+                                <ChevronDownIcon
+                                    className={`${loadingExam || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black`}
+                                    aria-hidden="true"
+                                />
+                            </div>
+                            <div className='relative w-full'>
+                                <Select onChange={(e) => handleChangeSelectBatch(e)} value={formData.exam_batch} name="exam_batch" className={`${loadingBatch || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                {
+                                    batch.map((el) => {
+                                        return (
+                                            <option key={el?.id} value={el.name}>
+                                                {el?.name}
+                                            </option>
+                                        )
+                                    })
+                                }
+                                    <option value="" disabled hidden>
+                                        {
+                                            loadingBatch ? 'Memuat sesi..' : 'Pilih Sesi Ujian'
+                                        }
+                                    </option>
+                                </Select>
+                                <ChevronDownIcon
+                                    className={`${loadingBatch || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black`}
+                                    aria-hidden="true"
+                                />
+                            </div>
+                        </div>
+                        <div className="all-users-table mt-6 overflow-x-auto">
                             <table className="w-full text-[1.05rem] text-center border-x border-gray-200">
                                 <thead className="bg-second-base/25 text-second-base/90 uppercase montserrat">
                                     <tr>
