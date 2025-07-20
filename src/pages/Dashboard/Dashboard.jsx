@@ -246,7 +246,7 @@ const Dashboard = () => {
                                                                         <td className="py-2 pr-1 text-left leading-normal">
                                                                             {element?.label}
                                                                         </td>
-                                                                        <td className="py-2 text-left">
+                                                                        <td className="py-2 text-center font-medium">
                                                                             {element?.count}
                                                                         </td>
                                                                     </tr>
@@ -299,21 +299,21 @@ const Dashboard = () => {
                                                                         <td className="py-2 text-left">
                                                                         {
                                                                             element?.slug === 'upcoming' ?
-                                                                                <div className="label w-max bg-blue-200/80 text-blue-600 px-3 py-1 rounded-[8px] font-semibold">
+                                                                                <div className="label w-max bg-blue-200/80 text-blue-600 px-3 py-1 rounded-[8px] font-medium">
                                                                                     {element?.type}
                                                                                 </div>
                                                                             :
                                                                             element?.slug === 'finish' ?
-                                                                                <div className="label w-max bg-green-200/80 text-green-600 px-3 py-1 rounded-[8px] font-semibold">
+                                                                                <div className="label w-max bg-green-200/80 text-green-600 px-3 py-1 rounded-[8px] font-medium">
                                                                                     {element?.type}
                                                                                 </div>
                                                                             :
                                                                             element?.slug === 'new' ?
-                                                                                <div className="label w-max bg-gray-200/80 text-gray-600 px-3 py-1 rounded-[8px] font-semibold">
+                                                                                <div className="label w-max bg-gray-200/80 text-gray-600 px-3 py-1 rounded-[8px] font-medium">
                                                                                     {element?.type}
                                                                                 </div>
                                                                             :
-                                                                                <div className="label w-max bg-yellow-200/80 text-yellow-600 px-3 py-1 rounded-[8px] font-semibold">
+                                                                                <div className="label w-max bg-yellow-200/80 text-yellow-600 px-3 py-1 rounded-[8px] font-medium">
                                                                                     {element?.type}
                                                                                 </div>
 
@@ -369,10 +369,10 @@ const Dashboard = () => {
                                                                 No.
                                                             </th>
                                                             <th scope="col" className="pb-2 pr-1 font-normal">
-                                                                Formasi
+                                                                Nama
                                                             </th>
                                                             <th scope="col" className="pb-2 pr-1 font-normal">
-                                                                Nama
+                                                                Formasi
                                                             </th>
                                                             <th scope="col" className="pb-2 font-normal">
                                                                 Nilai
