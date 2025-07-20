@@ -213,7 +213,7 @@ const Dashboard = () => {
                         </TabList>
                         <TabPanels className="mt-3">
                             <TabPanel key={2025} className="rounded-xl bg-white/5 mt-6">
-                                <div className="highlight-total-wrapper grid grid-cols-2 gap-8">
+                                <div className="highlight-total-wrapper grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="card-highlight rounded-[12px] p-4 border border-gray-500/40 space-y-2">
                                         <div className="card-detail">
                                             <div className="title-card space-y-1">
@@ -264,13 +264,13 @@ const Dashboard = () => {
                                                 <h3 className="text-gray-800 text-[1.075rem] font-semibold">Sesi Ujian Terbaru</h3>
                                             </div>
                                             <div className="item-card mt-3 max-h-[20rem] overflow-y-auto">
-                                                <table className="w-full">
+                                                <table className="w-full overflow-x-auto table-fixed">
                                                     <thead className="montserrat text-[14px] text-gray-700/80 border-b border-gray-200 text-left sticky top-0 bg-white">
                                                         <tr>
                                                             <th scope="col" className="pb-2 pr-1 font-normal">
                                                                 Nama Sesi
                                                             </th>
-                                                            <th scope="col" className="pb-2 font-normal">
+                                                            <th scope="col" className="pb-2 px-2 font-normal">
                                                                 Waktu
                                                             </th>
                                                             <th scope="col" className="pb-2 font-normal">
@@ -293,7 +293,7 @@ const Dashboard = () => {
                                                                         <td className="py-2 pr-1 text-left leading-normal">
                                                                             {element?.data?.name}
                                                                         </td>
-                                                                        <td className="py-2 text-left">
+                                                                        <td className="p-2 text-left">
                                                                             {dayjs(element?.data?.start_time).format('dddd, D MMMM YYYY HH:mm')}
                                                                         </td>
                                                                         <td className="py-2 text-left">
@@ -331,10 +331,10 @@ const Dashboard = () => {
                                 </div>
 
                                 <section className="top-score mt-9">
-                                    <div className="flex items-center justify-between gap-3">
+                                    <div className="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-3">
                                         <h1 className="font-semibold text-[20px]">Top 10 Peserta Nilai Tertinggi</h1>
                                         <div className='relative'>
-                                            <Select onChange={(e) => handleChangeSelectExam(e)} value={formDataExam.exam} name="exam" className={`montserrat border border-[#ccc] block appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black w-max focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                            <Select onChange={(e) => handleChangeSelectExam(e)} value={formDataExam.exam} name="exam" className={`montserrat border border-[#ccc] block appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black lg:w-max w-full focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
                                             {
                                                 exam.map((el) => {
                                                     return (
