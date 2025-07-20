@@ -7,7 +7,7 @@ import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOption
 
 import CONST from "../../../utils/Constant";
 import { getToken } from "../../../utils/Auth";
-import DashboardLayout from "src/layouts/DashboardLayout";
+import DashboardLayout from "../../../layouts/DashboardLayout";
 
 const EditQuestion = () => {
 

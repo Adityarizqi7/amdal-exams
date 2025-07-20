@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import CONST from "../../../utils/Constant";
-import DashboardLayout from "src/layouts/DashboardLayout";
+import DashboardLayout from "../../../layouts/DashboardLayout";
 
 const EditUser = () => {
 
