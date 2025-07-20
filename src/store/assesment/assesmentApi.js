@@ -7,9 +7,20 @@ export const assesmentApi = createApi({
     tagTypes: ["Assesment"],
     endpoints: (builder) => ({
         getResult: builder.query({
-            query: () => ({
-                url: "my-submissions",
+            query: (search) => ({
+                url: "result-qualified",
                 method: "GET",
+                params: { ...search }
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Assesment"],
+            refetchOnMountOrArgChange: true,
+        }),
+        getResultExport: builder.query({
+            query: (search) => ({
+                url: "export-result-qualified",
+                method: "GET",
+                params: { ...search }
             }),
             transformResponse: (response) => response,
             providesTags: ["Assesment"],
@@ -18,5 +29,6 @@ export const assesmentApi = createApi({
     }),
 });
 export const {
-    useLazyGetResultQuery
+    useLazyGetResultQuery,
+    useLazyGetResultExportQuery
 } = assesmentApi;

@@ -73,7 +73,7 @@ const EditBatch = () => {
                 }})
                 .then((response) => {
                     setLoadingDetail(false)
-                    console.log(response)
+                    // console.log(response)
                     const resp = response.data.data
                     setDetailBatch(response.data.data)
                     setFormData(
@@ -161,7 +161,7 @@ const EditBatch = () => {
     };
 
     const handleChangeTime = (value, name) => {
-        console.log(value, name, 'hahaoo')
+        // console.log(value, name, 'hahaoo')
         setFormTime((prev) => ({
           ...prev,
           [name]: value, // value adalah objek Date
@@ -169,7 +169,7 @@ const EditBatch = () => {
     };
 
     const handleDateChange = (date, name) => {
-        console.log(date, name, 'hahaho')
+        // console.log(date, name, 'hahaho')
         setFormDate((prev) => ({
           ...prev,
           [name]: date,

@@ -344,7 +344,7 @@ const ListQuestion = () => {
                             </table>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                        <div style={{ display: 'flex', gap: '4px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                             <button
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}

@@ -203,7 +203,21 @@ export default function Topbar() {
                                     <div className="space-y-2">
                                         <Menu.Item>
                                             <ItemNav
-                                                title={'Tipe Soal'}
+                                                title={'Hasil Ujian'}
+                                                path={'/dashboard/assement/results'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Pengguna'}
+                                                path={'/dashboard/users'}
+                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <ItemNav
+                                                title={'Tipe Ujian'}
                                                 path={'/dashboard/exams'}
                                                 classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                             />
@@ -226,13 +240,6 @@ export default function Topbar() {
                                             <ItemNav
                                                 title={'Sesi'}
                                                 path={'/dashboard/batches'}
-                                                classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
-                                            />
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                            <ItemNav
-                                                title={'Pengguna'}
-                                                path={'/dashboard/users'}
                                                 classItemNav='block py-4 px-4 bg-gray-100 w-full rounded-[6px]'
                                             />
                                         </Menu.Item>

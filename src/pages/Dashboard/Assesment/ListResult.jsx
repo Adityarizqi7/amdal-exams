@@ -1,81 +1,176 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Tooltip } from 'react-tooltip'
-import { NavLink } from 'react-router-dom';
+import { Select } from '@headlessui/react';
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import CONST from '../../../utils/Constant';
 import { getToken } from '../../../utils/Auth';
 import DashboardLayout from "../../../layouts/DashboardLayout"
-import { useLazyGetResultQuery } from '../../../store/assesment/assesmentApi';
-import { CloseButton, Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 const ListResult = () => {
     
-    const [pagination, setPagination] = useState({
-        current_page: 1,
-        last_page: 1,
-    });
-
     const inputRef = useRef()
     const [search, setSearch] = useState('')
     const [focusInput, setFocusInput] = useState(false)
-    const [getUser] = useLazyGetResultQuery();
+
     const [users, setUser] = useState([]);
-    const [loadingUser, setLoadingUser] = useState(false);
-
-    const [file, setFile] = useState(null);
-    const [loadingImportExcel, setLoadingImportExcel] = useState(false)
-
-    const handleChangeImportExcel = (e) => {
-        setFile(e.target.files[0]);
-    };
-
-    let [isOpen, setIsOpenDialogSetSesi] = useState(false)
+    const [batch, setBatchExam] = useState([]);
+    const [exam, setExam] = useState([]);
     
-    function open() {
-        setIsOpenDialogSetSesi(true)
-    }
-    function close() {
-        setIsOpenDialogSetSesi(false)
-    }
+    const [loadingUser, setLoadingUser] = useState(false);
+    const [loadingBatch, setLoadingBatch] = useState(false);
+    const [loadingExam, setLoadingExam] = useState(false);
+    const [loadingExportExcel, setLoadingExportExcel] = useState(false)
 
-    const getAllUser = useCallback( async (searchInput) => {
+    const [formData, setFormData] = useState({
+        exam_batch: '',
+    });
+
+    const [formDataExam, setFormDataExam] = useState({
+        exam: '',
+    });
+
+    const [formDataBatchYear, setFormDataBatchYear] = useState({
+        exam_batch_year: 2025
+    });
+
+    const getAllBatch = useCallback( async () => {
+        setLoadingBatch(true)
+
+        const token = await getToken();
+        if(token) {
+            await axios.get(`${CONST.BASE_URL_API}exam-batches/all?year=${formDataBatchYear.exam_batch_year}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }})
+            .then((response) => {
+                setLoadingBatch(false)
+                const response_data = response?.data?.data
+                
+                setBatchExam(response_data);
+            })
+            .catch((error) => {
+                setLoadingBatch(false)
+                console.log(error)
+            })
+        }
+
+    }, [formDataBatchYear.exam_batch_year])
+
+    const getAllExam = useCallback( async () => {
+        setLoadingExam(true)
+
+        const token = await getToken();
+        if(token) {
+            await axios.get(`${CONST.BASE_URL_API}exams/all/without-paginate?year=${formDataBatchYear.exam_batch_year}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }})
+            .then((response) => {
+                setLoadingExam(false)
+                const response_data = response?.data?.data
+
+                setExam(response_data);
+            })
+            .catch((error) => {
+                setLoadingExam(false)
+                console.log(error)
+            })
+        }
+
+    }, [formDataBatchYear.exam_batch_year])
+
+    const getAllUser = useCallback( async (search) => {
+        setLoadingUser(true)
+
+        const token = await getToken();
+        if(token) {
+            await axios.get(`${CONST.BASE_URL_API}result-qualified?year=${formDataBatchYear.exam_batch_year}&title=${formDataExam.exam}&search=${search}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }})
+            .then((response) => {
+                setLoadingUser(false)
+                const response_data = response?.data?.data
+                
+                setUser(response_data);
+            })
+            .catch((error) => {
+                setLoadingUser(false)
+                console.log(error)
+            })
+        }
+    }, [formDataExam.exam, formDataBatchYear.exam_batch_year])
+
+    const getExportRank = useCallback( async () => {
+
+        const tanggal = new Date().toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        const fileName = `Rank Seleksi Tenaga Teknis Operasional Amdalnet (${tanggal}).xlsx`;
+
         try {
-            setLoadingUser(true)
-            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
-                searchInput = { search, ...searchInput }
-            } else {
-                searchInput = { search: searchInput, page: pagination.current_page }
-            }
-            const response = await getUser(searchInput);
-            const { data, error } = response;
-
-            console.log(data)
-            // setUser(data?.data?.data);
+            setLoadingExportExcel(true)
+            const response = await axios.get(`${CONST.BASE_URL_API}export-result-qualified?year=${formDataBatchYear.exam_batch_year}&title=${formData.exam_batch}&search=${search}`, {
+                responseType: 'blob',
+            });
+        
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
             // setPagination({
             //     current_page: data.data.current_page,
             //     last_page: data.data.last_page,
             //     total: data.data.total,
             //     per_page: data.data.per_page,
             // });
-
-            if (error) {
-                setLoadingUser(false)
-                throw new Error("Gagal Mengambail data.");
-            }
-            setLoadingUser(false)
+            setLoadingExportExcel(false)
             
         } catch (error) {
-            setLoadingUser(false)
+            setLoadingExportExcel(false)
             console.log(error)
         }
-    }, [getUser])
+    }, [formData.exam_batch, formDataBatchYear.exam_batch_year, search])
 
-    const handlePageChange = (page) => {
-        if (page < 1 || page > pagination.last_page) return;
-        getAllUser({page});
-    };
+    // const getPaginationPages = (current, last) => {
+    //     const delta = 2;
+    //     const pages = [];
+    //     const range = [];
+    //     let l;
+      
+    //     for (let i = 1; i <= last; i++) {
+    //       if (i === 1 || i === last || (i >= current - delta && i <= current + delta)) {
+    //         range.push(i);
+    //       }
+    //     }
+      
+    //     for (let i of range) {
+    //       if (l) {
+    //         if (i - l === 2) {
+    //           pages.push(l + 1);
+    //         } else if (i - l > 2) {
+    //           pages.push('...');
+    //         }
+    //       }
+    //       pages.push(i);
+    //       l = i;
+    //     }
+      
+    //     return pages;
+    // };
+
+    // const handlePageChange = (page) => {
+    //     if (page < 1 || page > pagination.last_page) return;
+    //     getAllUser({page});
+    // };
 
     // const handleChange = useCallback(e => setSearch(e.target.value), [])
     const handleChange = (e) => setSearch(e.target.value)
@@ -99,63 +194,37 @@ const ListResult = () => {
         [inputRef, deleteText]
     )
 
-    const importDocumentExcel = async () => {
+    const handleChangeSelectBatch = useCallback((e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    }, []);
 
-        if (!file) return alert('Pilih file Excel terlebih dahulu');
-        
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        try {
-            setLoadingImportExcel(true)
+    const handleChangeSelectExam = useCallback((e) => {
+        const { name, value } = e.target;
+        setFormData({
+            exam_batch: ''
+        })
+        setFormDataExam((prev) => ({ ...prev, [name]: value }));
+    }, []);
 
-            const token = await getToken()
-
-            if(token) {
-                const response = await axios.post(`${CONST.BASE_URL_API}users/import`, formData, {
-                    headers: {
-                    'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-                if (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: 'Berhasil Import Dokumen!',
-                        customClass: {
-                            container: 'montserrat'
-                        }
-                    })
-                    setLoadingImportExcel(false)
-                }
-            }
-          
-        } catch (error) {
-            console.log(error)
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal Mengimpor',
-                text: 'Terjadi kesalahan saat mengimpor.',
-                customClass: {
-                container: 'montserrat'
-                }
-            });
-            setLoadingImportExcel(false)
-        }
-    };
+    const handleChangeSelectBatchYear = useCallback((e) => {
+        const { name, value } = e.target;
+        setFormDataBatchYear((prev) => ({ ...prev, [name]: value }));
+        getAllBatch(value)
+        getAllExam(value)
+    }, [getAllBatch, getAllExam]);
 
     useEffect(() => {
         getAllUser()
+        getAllBatch()
+        getAllExam()
 
         document.addEventListener('keydown', handleFocusInput)
 
         return () => {
             document.removeEventListener('keydown', handleFocusInput)
         }
-    }, [getAllUser, handleFocusInput])
-
-    
+    }, [getAllUser, handleFocusInput, getAllBatch, getAllExam])
 
     return (
         <DashboardLayout
@@ -216,21 +285,81 @@ const ListResult = () => {
                                 </div>
                             </div>
                             <div className='flex items-center gap-2'>
-                                <button onClick={open} className='font-semibold bg-yellow-200/80 text-yellow-600 hover:bg-yellow-200 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
+                                <button onClick={getExportRank} className='font-semibold bg-yellow-200/80 text-yellow-600 hover:bg-yellow-200 rounded-[8px] border-0 py-2 px-4 cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                     </svg>
-                                    <span>Export Excel</span>
+                                    <span>{loadingExportExcel ? 'Proses Export...' : 'Export Excel'}</span>
                                 </button>
                             </div>
                         </div>
                         <div className="all-users-table mt-8 overflow-x-auto">
+                            <div className="mb-6 flex items-center gap-4 w-full">
+                                <div className='relative w-full'>
+                                    <Select onChange={(e) => handleChangeSelectBatchYear(e)} value={formDataBatchYear.exam_batch_year} name="exam_batch_year" className={`montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                        <option value="2025">
+                                            2025
+                                        </option>
+                                        <option value="2026">
+                                            2026
+                                        </option>
+                                        <option value="" disabled hidden>
+                                            Pilih Tahun Seleksi
+                                        </option>
+                                    </Select>
+                                    <ChevronDownIcon
+                                        className="group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black"
+                                        aria-hidden="true"
+                                    />
+                               </div>
+                                <div className='relative w-full'>
+                                    <Select onChange={(e) => handleChangeSelectExam(e)} value={formDataExam.exam} name="exam" className={`${loadingExam || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                    {
+                                        exam.map((el) => {
+                                            return (
+                                                <option key={el?.id} value={el.title}>
+                                                    {el?.title}
+                                                </option>
+                                            )
+                                        })
+                                    }
+                                        <option value="" disabled hidden>
+                                            {
+                                                loadingExam ? 'Memuat formasi..' : 'Pilih Formasi Seleksi'
+                                            }
+                                        </option>
+                                    </Select>
+                                    <ChevronDownIcon
+                                        className={`${loadingExam || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black`}
+                                        aria-hidden="true"
+                                    />
+                                </div>
+                                <div className='relative w-full'>
+                                    <Select onChange={(e) => handleChangeSelectBatch(e)} value={formData.exam_batch} name="exam_batch" className={`${loadingBatch || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} montserrat border border-[#ccc] block w-full appearance-none rounded-lg bg-white px-3 py-[0.75rem] text-black focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 *:text-black`} aria-label="Jenis">
+                                    {
+                                        batch.map((el) => {
+                                            return (
+                                                <option key={el?.id} value={el.name}>
+                                                    {el?.name}
+                                                </option>
+                                            )
+                                        })
+                                    }
+                                        <option value="" disabled hidden>
+                                            {
+                                                loadingBatch ? 'Memuat sesi..' : 'Pilih Sesi Ujian'
+                                            }
+                                        </option>
+                                    </Select>
+                                    <ChevronDownIcon
+                                        className={`${loadingBatch || formDataBatchYear.exam_batch_year === '' ? 'pointer-events-none opacity-50' : ''} group pointer-events-none absolute top-2.5 right-2.5 size-8 fill-black`}
+                                        aria-hidden="true"
+                                    />
+                                </div>
+                            </div>
                             <table className="w-full text-[1.05rem] text-center border-x border-gray-200">
                                 <thead className="bg-second-base/25 text-second-base/90 uppercase montserrat">
                                     <tr>
-                                        <th scope="col" className="px-6 py-3">
-                                            No.
-                                        </th>
                                         <th scope="col" className="px-6 py-3">
                                             Nama
                                         </th>
@@ -238,10 +367,16 @@ const ListResult = () => {
                                             Email
                                         </th>
                                         <th scope="col" className="px-6 py-3">
+                                            Formasi
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
                                             Nilai
                                         </th>
                                         <th scope="col" className="px-6 py-3">
                                             Waktu Lama Pengerjaan
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Ranking
                                         </th>
                                     </tr>
                                 </thead>
@@ -260,20 +395,23 @@ const ListResult = () => {
                                     ?.map( (e, i) => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
-                                                <td className="px-6 py-4 font-medium">
-                                                    {(pagination.current_page - 1) * pagination.per_page + (i + 1)}.
-                                                </td>
                                                 <td className="px-6 py-4 text-left">
                                                     {e?.name}
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 text-left">
                                                     {e?.email}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {e?.role === 'admin' ? 'Admin' : 'Peserta'}
+                                                    {e?.title}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {e?.total_score_fix}
                                                 </td>
                                                 <td className="px-6 py-4 ">
-                                                    {e.is_active ? 'Aktif' : 'Tidak Aktif'}
+                                                    {e?.duration}
+                                                </td>
+                                                <td className="px-6 py-4 font-semibold">
+                                                    { formData.exam_batch !== '' ? '-' : e?.ranking}
                                                 </td>
                                             </tr>
                                         )
@@ -282,8 +420,8 @@ const ListResult = () => {
                                 </tbody>
                             </table>
                         </div>
-
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end'>
+{/* 
+                        <div style={{ display: 'flex', gap: '4px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                             <button
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}
@@ -292,18 +430,27 @@ const ListResult = () => {
                                 Prev
                             </button>
 
-                            {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
-                                <button
+                            {getPaginationPages(pagination.current_page, pagination.last_page).map((page, index) =>
+                                page === '...' ? (
+                                    <span key={`ellipsis-${index}`} style={{ padding: '0 6px' }}>...</span>
+                                ) : (
+                                    <button
                                     key={page}
                                     onClick={() => handlePageChange(page)}
                                     style={{
                                         fontWeight: page === pagination.current_page ? 'bold' : 'normal',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        margin: '0 4px',
+                                        padding: '4px 8px',
+                                        border: '1px solid #ccc',
+                                        borderRadius: '4px',
+                                        backgroundColor: page === pagination.current_page ? '#ddd' : '#fff'
                                     }}
-                                >
+                                    >
                                     {page}
-                                </button>
-                            ))}
+                                    </button>
+                                )
+                                )}
 
                             <button
                                 className={`cursor-pointer ${pagination.current_page === pagination.last_page ? 'pointer-events-none opacity-50' : ''}`}
@@ -312,48 +459,7 @@ const ListResult = () => {
                             >
                                 Next
                             </button>
-                        </div>
-
-                        <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
-                            <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black/40">
-                                <form method='i' className="flex min-h-full items-center justify-center p-4 montserrat">
-                                    <DialogPanel
-                                    transition
-                                    className="w-full max-w-lg rounded-xl bg-white p-6 duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0 shadow-own"
-                                    >
-                                    <DialogTitle as="h3" className="text-lg/7 font-medium text-gray-800">
-                                        Pemberitahuan Import Excel
-                                    </DialogTitle>
-                                    <p className="mt-2 text-md/6 text-gray-500 space-y-3">
-                                        <h3>Silahkan masukkan file</h3>
-                                        <input
-                                            type="file"
-                                            name="question_text"
-                                            onChange={handleChangeImportExcel}
-                                            style={{
-                                                width: '100%',
-                                                padding: '0.75rem',
-                                                border: '1px solid #ccc',
-                                                borderRadius: '6px',
-                                                marginTop: '0.25rem',
-                                            }}
-                                            placeholder="Masukkan judul pertanyaan"
-                                            accept=".xlsx,.xls" 
-                                        />
-                                    </p>
-                                    <div className="mt-4 space-x-4">
-                                        <Button
-                                            className={`${loadingImportExcel || file === '' ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-green-base px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-green-700 data-open:bg-green-700 cursor-pointer`}
-                                            onClick={importDocumentExcel}
-                                        >
-                                            Simpan
-                                        </Button>
-                                        <CloseButton onClick={onclose} className={`${loadingImportExcel ? 'pointer-events-none opacity-50' : ''} inline-flex items-center gap-2 rounded-md bg-red-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-red-600 data-open:bg-red-600 cursor-pointer`}>Batal Simpan</CloseButton>
-                                    </div>
-                                    </DialogPanel>
-                                </form>
-                            </div>
-                        </Dialog>
+                        </div> */}
                     </div>
                 }
             </div>

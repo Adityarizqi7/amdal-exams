@@ -5,6 +5,8 @@ import Home from "../pages/Home";
 import Login from '../pages/Authentication/Login'
 
 // Dashboard
+import Dashboard from '../pages/Dashboard/Dashboard'
+
 import EditExam from '../pages/Dashboard/Exam/EditExam'
 import ListExam from '../pages/Dashboard/Exam/ListExam'
 import CreateExam from '../pages/Dashboard/Exam/CreateExam'
@@ -53,6 +55,13 @@ export default function Router() {
                     <ProtectedRoute>
                         <Login />
                     </ProtectedRoute>
+                    } />
+
+                {/* Dashboard */}
+                <Route path='/dashboard' element={
+                    <PrivateRoute>
+                        <Dashboard/>
+                    </PrivateRoute>
                     } />
 
                 {/* Exams */}

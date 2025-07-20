@@ -22,12 +22,12 @@ const CardHeader = ({ setTimeOut }) => {
       const endTime = startTime.add(activeExam.duration, "minute"); // Akhir ujian
       const diff = endTime.diff(now, "second");
 
-      console.log("⏱ WIB Countdown Debug", {
-        now: now.format(),
-        startTime: startTime.format(),
-        endTime: endTime.format(),
-        diff
-      });
+      // console.log("⏱ WIB Countdown Debug", {
+      //   now: now.format(),
+      //   startTime: startTime.format(),
+      //   endTime: endTime.format(),
+      //   diff
+      // });
 
       if (diff <= 0) {
         setQuizTime(0);

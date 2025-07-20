@@ -50,8 +50,8 @@ const CardQuiz = () => {
 
   useEffect(() => {
     const handleVisibilityChange = () => {
-      console.log(document.visibilityState)
-      console.log(isTabInactive)
+      // console.log(document.visibilityState)
+      // console.log(isTabInactive)
       if (document.visibilityState === "hidden") {
         setIsTabInactive(true)
         apiActivitySuspect()

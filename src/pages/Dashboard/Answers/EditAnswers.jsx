@@ -213,7 +213,7 @@ const EditAnswers = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value)
+        // console.log(name, value)
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
       

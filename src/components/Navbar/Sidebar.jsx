@@ -166,8 +166,8 @@ export default function Topbar() {
                 </SidebarLogo>
                 <SidebarItems>
                     <SidebarItemGroup>
-                        <SidebarItem href="/">
-                            Beranda
+                        <SidebarItem href="/dashboard">
+                            Dashboard
                         </SidebarItem>
                         <SidebarItem href="/dashboard/assesment/results">
                             Hasil Ujian

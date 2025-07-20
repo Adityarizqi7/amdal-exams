@@ -110,7 +110,7 @@ export default function Login() {
                     }).then((result) => {
                         if (result.dismiss === Swal.DismissReason.timer) {
                             if (location.pathname === '/admin/signin') {
-                                navigate("/dashboard/exams")
+                                navigate("/dashboard")
                             } else {
                                 navigate("/quiz")
                                 window.location.reload()
@@ -143,7 +143,7 @@ export default function Login() {
             title='Masuk - Seleksi Tenaga Teknis Operasional Amdalnet 2025'
         >
             <div className="login-component md:px-[7.5rem] px-8 md:py-[5rem] sm:py-[2rem] py-7 bg-green-base/5">
-                <form id="form_wrapper" onSubmit={handleSubmit} encType="multipart/form-data" className="form-login-container mx-auto shadow-own flex md:w-[75%] rounded-[14px] bg-white">
+                <form id="form_wrapper" onSubmit={handleSubmit} encType="multipart/form-data" className="form-login-container mx-auto shadow-own flex md:w-[75%] rounded-[14px] bg-white h-[30rem] overflow-hidden">
                     <section className="image-form w-[50%] lg:inline hidden">
                         <img
                             width='auto'
@@ -151,7 +151,7 @@ export default function Login() {
                             src={klh}
                             loading='lazy'
                             alt='KLH Logo'
-                            className='w-full h-full object-cover opacity-50'
+                            className='w-full h-full object-cover object-center opacity-50'
                         />
                     </section>
                     <section className="form-login-card lg:w-[50%] w-full px-6 pt-[4rem] pb-[3rem] space-y-4">

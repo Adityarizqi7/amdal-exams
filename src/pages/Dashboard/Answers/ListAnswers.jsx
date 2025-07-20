@@ -26,11 +26,17 @@ const ListAnswers = () => {
     const [answers, setAnswers] = useState([]);
     const [loadingAnswer, setLoadingAnswer] = useState(false);
 
-    const getAllAnswer = useCallback( async (search) => {
+    const getAllAnswer = useCallback( async (searchInput) => {
         try {
             setLoadingAnswer(true)
 
-            const response = await getAnswers(search);
+            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
+                searchInput = { search, ...searchInput }
+            } else {
+                searchInput = { search: searchInput, page: pagination.current_page }
+            }
+
+            const response = await getAnswers(searchInput);
             const { data, error } = response;
 
             setAnswers(data?.data?.data);
@@ -320,7 +326,7 @@ const ListAnswers = () => {
                             </table>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                        <div style={{ display: 'flex', gap: '4px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                             <button
                                 onClick={() => handlePageChange(pagination.current_page - 1)}
                                 disabled={pagination.current_page === 1}

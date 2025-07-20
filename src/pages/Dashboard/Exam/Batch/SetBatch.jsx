@@ -1,20 +1,21 @@
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
+
+import axios from 'axios';
 // import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Tooltip } from 'react-tooltip'
 import { NavLink, useLocation } from 'react-router-dom';
-import { Select, CloseButton, Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useCallback, useEffect, useRef, useState } from "react"
+import { Select, CloseButton, Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 import CONST from '../../../../utils/Constant';
 import { getToken } from '../../../../utils/Auth';
 // import { getToken } from '../../../../utils/Auth';
 import DashboardLayout from "../../../../layouts/DashboardLayout"
-import { ChevronDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { useLazyGetAllQuery } from '../../../../store/exam/batchApi';
 import { useLazyGetUserForAssignBatchQuery } from '../../../../store/exam/examApi';
-import axios from 'axios';
+import { ChevronDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 
 dayjs.locale('id')
 
@@ -22,10 +23,10 @@ const SetBatch = () => {
     
     // const navigate = useNavigate()
 
-    // const [pagination, setPagination] = useState({
-    //     current_page: 1,
-    //     last_page: 1,
-    // });
+    const [pagination, setPagination] = useState({
+        current_page: 1,
+        last_page: 1,
+    });
     const location = useLocation()
 
     const inputRef = useRef()
@@ -76,7 +77,8 @@ const SetBatch = () => {
 
             const response = await getBatch();
             const { data, error } = response;
-            
+
+
             setBatchExam(data?.data);
             // setPagination({
             //     current_page: data.data.current_page,
@@ -97,11 +99,17 @@ const SetBatch = () => {
         }
     }, [getBatch])
 
-    const getAllUserNotSubmitted = useCallback( async (search) => {
+    const getAllUserNotSubmitted = useCallback( async (searchInput) => {
         try {
             setLoadingUser(true)
 
-            const response = await getUser(search);
+            if (typeof searchInput === 'object' && !Array.isArray(searchInput) && searchInput !== null) {
+                searchInput = { search, ...searchInput }
+            } else {
+                searchInput = { search: searchInput, page: pagination.current_page }
+            }
+
+            const response = await getUser(searchInput);
             const { data, error } = response;
 
             
@@ -109,13 +117,14 @@ const SetBatch = () => {
                 setLoadingUser(false)
                 throw new Error("Gagal Mengambail data.");
             }
-            setUser(data?.data);
-            // setPagination({
-            //     current_page: data.data.current_page,
-            //     last_page: data.data.last_page,
-            //     total: data.data.total,
-            //     per_page: data.data.per_page,
-            // });
+
+            setUser(data?.data?.data);
+            setPagination({
+                current_page: data.data.current_page,
+                last_page: data.data.last_page,
+                total: data.data.total,
+                per_page: data.data.per_page,
+            });
             setSelectedRows([])
             setLoadingUser(false)
             
@@ -125,10 +134,7 @@ const SetBatch = () => {
         }
     }, [getUser])
 
-    const handleChange = useCallback(e => {
-        setSearch(e.target.value)
-        // console.log(e.target.value)   
-    }, [])
+    const handleChange = (e) => setSearch(e.target.value)
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -137,10 +143,10 @@ const SetBatch = () => {
     }, []);
     const deleteText = useCallback(() => setSearch(''), [])
 
-    // const handlePageChange = (page) => {
-    //     if (page < 1 || page > pagination.last_page) return;
-    //     getAllUserNotSubmitted(page);
-    // };
+    const handlePageChange = (page) => {
+        if (page < 1 || page > pagination.last_page) return;
+        getAllUserNotSubmitted({page});
+    };
 
     const handleFocusInput = useCallback(
         event => {
@@ -161,6 +167,33 @@ const SetBatch = () => {
           const allIds = user.map((user) => user.id);
           setSelectedRows(allIds);
         }
+    };
+
+    const getPaginationPages = (current, last) => {
+        const delta = 2;
+        const pages = [];
+        const range = [];
+        let l;
+      
+        for (let i = 1; i <= last; i++) {
+          if (i === 1 || i === last || (i >= current - delta && i <= current + delta)) {
+            range.push(i);
+          }
+        }
+      
+        for (let i of range) {
+          if (l) {
+            if (i - l === 2) {
+              pages.push(l + 1);
+            } else if (i - l > 2) {
+              pages.push('...');
+            }
+          }
+          pages.push(i);
+          l = i;
+        }
+      
+        return pages;
     };
 
   const saveSetBatch = useCallback((event) => {
@@ -261,7 +294,7 @@ const SetBatch = () => {
                                 }
                                 </span>
                                 </button>
-                                <button onClick={open} type='button' className={`${selectedRows?.length < 1 || loadingSetSession ? 'pointer-events-none opacity-50' : ''} bg-black/80 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-black cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2`}>
+                                <button onClick={open} type='button' className={`${selectedRows?.length < 1 || loadingSetSession || formData.exam_batch === '' ? 'pointer-events-none opacity-50' : ''} bg-black/80 rounded-[8px] border-0 py-2 px-4 text-white hover:bg-black cursor-pointer flex items-center max-xs:w-full w-max montserrat gap-2`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#000000" className="size-6 fill-white">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
                                         </svg>
@@ -405,27 +438,6 @@ const SetBatch = () => {
                                     )  
                                     :
                                     user
-                                        ?.filter(value => {
-                                        if (search === '') return value
-                                        if (
-                                            value.name
-                                                ?.toLowerCase()
-                                                .includes(
-                                                    search
-                                                        ?.toLowerCase()
-                                                        .trim()
-                                                )
-                                        || value.email
-                                                ?.toLowerCase()
-                                                .includes(
-                                                    search
-                                                        ?.toLowerCase()
-                                                        .trim()
-                                                )
-                                        ) {
-                                            return value
-                                        }
-                                    })
                                     ?.map( (e, i) => {
                                         return (
                                             <tr key={i + 1} className="bg-white border-b border-gray-300">
@@ -502,7 +514,7 @@ const SetBatch = () => {
                         </div>
                     </Dialog>
 
-                    {/* <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
+                    <div style={{ display: 'flex', gap: '4px', marginTop: '1rem' }} className='pagination flex justify-end montserrat'>
                         <button
                             onClick={() => handlePageChange(pagination.current_page - 1)}
                             disabled={pagination.current_page === 1}
@@ -511,17 +523,27 @@ const SetBatch = () => {
                             Prev
                         </button>
 
-                        {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
-                            <button
+                        {getPaginationPages(pagination.current_page, pagination.last_page).map((page, index) =>
+                            page === '...' ? (
+                                <span key={`ellipsis-${index}`} style={{ padding: '0 6px' }}>...</span>
+                            ) : (
+                                <button
                                 key={page}
                                 onClick={() => handlePageChange(page)}
                                 style={{
                                     fontWeight: page === pagination.current_page ? 'bold' : 'normal',
+                                    cursor: 'pointer',
+                                    margin: '0 4px',
+                                    padding: '4px 8px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    backgroundColor: page === pagination.current_page ? '#ddd' : '#fff'
                                 }}
-                            >
+                                >
                                 {page}
-                            </button>
-                        ))}
+                                </button>
+                            )
+                        )}
 
                         <button
                             className={`cursor-pointer ${pagination.current_page === pagination.last_page ? 'pointer-events-none opacity-50' : ''}`}
@@ -530,7 +552,7 @@ const SetBatch = () => {
                         >
                             Next
                         </button>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </DashboardLayout>
